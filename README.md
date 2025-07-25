@@ -8,8 +8,8 @@ You can always grab the newest build of Hector from the **Releases** page:
 
 1. Download the ZIP for the latest release.  
 2. Extract it to a folder of your choice.  
-3. Run the executable (or use Python if running from source).  
----
+3. Run the executable (or use Python if running from source).
+
 <details>
   <summary>Show screenshots</summary>
 
@@ -19,6 +19,7 @@ You can always grab the newest build of Hector from the **Releases** page:
   ![Screenshot 3](screenshots/hectorshowcase3.png)  
 
 </details>
+
 ---
 
 ## Editing Player Weights
@@ -28,25 +29,10 @@ Hector’s scoring system is **fully customizable**.
 - Pitcher scoring weights are defined in `pitcher_weights.py`.  
 - Batter scoring weights are defined in `batter_weights.py`.  
 
-To adjust how different stats affect player scores:
+To adjust how different stats affect player scores:  
 1. Open either `pitcher_weights.py` or `batter_weights.py` in a text editor.  
 2. Modify the numeric values in the `section_weights` dictionary. Higher values give more importance to that attribute.  
 3. Save the file and click **"Reload Data"** in Hector’s GUI (no restart needed).  
-
----
-
-
-# Planned Improvements
-
-- Show top 10 Potential batters at each position (25 and Under, Offense Potential + Defense)  
-- Show Top 10 Potential pitchers at SP/RP (Core attributes potential + Pitch potential)  
-- Show top 10 total score for batters at each position  
-- Show top 10 total score for pitchers at each position  
-- Recommend RP who could move to SP (3 or more pitches, 50 or higher stamina, ranked by score)  
-- Recommend 1B who could move to other positions (Range 50 or higher, arm 45 or higher, turn DP above 40, error above 40)  
-- Filter by age with `<` or `>` along with other search filters. For example: `>25 CAS 1b`
-- Make reload data also reload player weights
-- General visual and UI improvements - add scroll bar 
 
 ---
 
@@ -54,7 +40,7 @@ To adjust how different stats affect player scores:
 
 To ensure Hector works correctly, you need to export player data from OOTP with custom views for Batters and Pitchers using specific attributes. Follow the steps below carefully:
 
-## 1. Create the Batters View
+### 1. Create the Batters View
 
 Include all the attributes shown in the following screenshots exactly as displayed.
 
@@ -64,7 +50,7 @@ Include all the attributes shown in the following screenshots exactly as display
 ![Fielding Ratings](screenshots/fieldingratings.png)  
 ![Scouting Accuracy](screenshots/scoutingacc.png)  
 
-## 2. Create the Pitchers View
+### 2. Create the Pitchers View
 
 Include all the attributes shown in these screenshots exactly as displayed.
 
@@ -72,17 +58,17 @@ Include all the attributes shown in these screenshots exactly as displayed.
 ![Pitcher Ratings](screenshots/pitcherratings.png)  
 ![Scouting Accuracy](screenshots/scoutingacc.png)  
 
-## 3. Save Views as Global
+### 3. Save Views as Global
 
 - Save each view as **Global**.  
 - Name them **“Hector Batting”** and **“Hector Pitching”** (you can replace "Hector" with any name you prefer).
 
-## 4. Export Views
+### 4. Export Views
 
 - Export the Batters view as `batters.html`  
 - Export the Pitchers view as `pitchers.html`
 
-## 5. Replace Existing Files
+### 5. Replace Existing Files
 
 - Replace the files inside the `Hector` folder with your new `batters.html` and `pitchers.html` exports.
 
@@ -96,7 +82,21 @@ If you encounter any issues or missing data warnings, double-check your export v
 
 Thank you for using Hector!
 
-# Features of Hector 2.0 
+# Planned Improvements
+
+- Show top 10 Potential batters at each position (25 and Under, Offense Potential + Defense)  
+- Show Top 10 Potential pitchers at SP/RP (Core attributes potential + Pitch potential)  
+- Show top 10 total score for batters at each position  
+- Show top 10 total score for pitchers at each position  
+- Recommend RP who could move to SP (3 or more pitches, 50 or higher stamina, ranked by score)  
+- Recommend 1B who could move to other positions (Range 50 or higher, arm 45 or higher, turn DP above 40, error above 40)  
+- Filter by age with `<` or `>` along with other search filters. For example: `>25 CAS 1b`  
+- Make reload data also reload player weights  
+- General visual and UI improvements - add scroll bar  
+
+---
+
+# Features of Hector 2.0
 
 ## Modern Tkinter GUI
 - Dark-themed interface with customized fonts and colors for readability  
@@ -123,7 +123,7 @@ Thank you for using Hector!
 ### Batters
 - Parses local `batters.html` files using BeautifulSoup for comprehensive player attributes  
 - Calculates separate offensive current and potential scores weighted by attributes like contact, gap, power, eye discipline, and strikeouts  
-- Computes defensive scores adjusted for position-specific skills:
+- Computes defensive scores adjusted for position-specific skills:  
   - Catchers: ability, arm, blocking  
   - Infielders: range, errors, arm strength (with emphasis on SS and 3B)  
   - Outfielders: range (prioritizing CF), error rates, arm strength  
