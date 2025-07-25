@@ -1,0 +1,150 @@
+/*
+Attention: you can customize this style set file, but it will be overwritten whenever you load the league.
+To change the CSS data of the reports, edit the original files /templates/styles_<skin-name>.css or add a <style> section
+to the template /templates/head_bits.tpl. You could also add an additional styles CSS file and link to it in the head_bits.tpl.
+
+The file contains dummy classes. OOTP needs them to identify headers of sortable columns:
+hsn = sort numeric
+hsc = sort character
+hsd
+hsu = sort currency
+hsf
+hsp = sort position
+hsx = sorting ends here
+hsi = ignore this line when sorting
+*/
+
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400);
+
+body			{ font-family:"Open Sans", Calibri, Helvetica, Verdana, Geneva, Arial, sans-serif; font-size:13px; color:#F0F0F0; }
+body.ext_bg		{ background-color:#333333; color:#F0F0F0; }
+
+td			{ font-family:"Open Sans", Calibri, Helvetica, Verdana, Geneva, Arial, sans-serif; font-size:13px; color:#F0F0F0; vertical-align:top; text-align: left; }
+th			{ font-family:"Open Sans", Calibri, Helvetica, Verdana, Geneva, Arial, sans-serif; font-size:13px; color:#F0F0F0; vertical-align:top; text-align: left; }
+
+.linebg   		{ background-color:#00FF00; }
+
+table.stats 		{ background-color:#333333; }
+.statsbg 		{ background-color:#333333; }
+.stats th 		{ background-color:#222222; border-bottom:1px solid #505050; color:#FFFFFF; font-weight:normal; padding:1px 4px 2px 4px; white-space: nowrap;}
+.stats td 		{ border-bottom:1px solid #505050; color:#F0F0F0; padding:1px 4px 2px 4px; white-space: nowrap;}
+
+table.data   		{ background-color:#333333; }
+.databg   		{ background-color:#444444; }
+.data th 		{ background-color:#222222; border-bottom:1px solid #505050; color:#FFFFFF; font-weight:normal; padding:1px 4px 2px 4px; white-space: nowrap;}
+.datath			{ background-color:#333333; border-bottom:1px solid #505050; color:#FFFFFF; font-weight:normal; padding:1px 4px 2px 4px; white-space: nowrap;}
+.datathbg		{ background-color:#222222; }
+.datacolor		{ color:#F0F0F0; }
+.data td 		{ background-color:#333333; border-bottom:1px solid #505050; color:#F0F0F0; padding:1px 4px 2px 4px; white-space: nowrap;}
+td.data_footer 		{ background-color:#333333; border-top:1px solid #505050; color:#FFFFFF; font-weight:normal; padding:1px 4px 2px 4px; white-space: nowrap;}
+
+td.data_capt    	{ color:#F0F0F0; font-weight:bold; padding:1px 4px 2px 4px; white-space: normal;}
+td.wrap			{ white-space: normal; }
+
+th.datath		{ background-color:#333333; border-bottom:1px solid #505050; color:#FFFFFF; font-weight:normal; padding:1px 4px 2px 4px; white-space: nowrap;}
+
+.dl			{ text-align:left; }
+.dr			{ text-align:right; }
+.dc			{ text-align:center; }
+.highlight		{ font-weight:bold; color:#FFFFFF; }
+.bold			{ font-weight:bold;  }
+.grey			{ background-color:#222222; }
+.head_bg		{ }
+
+td.light		{ color:#DDDDDD; }
+td.footer		{ color:#FFFFFF; font-size:11px; padding-left:4px; }
+td.datac0		{ font-weight:bold; color:#555555; }
+td.datac1		{ font-weight:bold; color:#FF6666; }
+td.datac2		{ font-weight:bold; color:#fa7000; }
+td.datac3		{ font-weight:bold; color:#FFE10B; }
+td.datac4		{ font-weight:bold; color:#65E212; }
+td.datac5		{ font-weight:bold; color:#00C6A2; }
+td.datac6		{ font-weight:bold; color:#0099FF; }
+
+th.hsn			{}
+th.hsc			{}
+th.hsd			{}
+th.hsu			{}
+th.hsf			{}
+th.hsp			{}
+th.hsx			{}
+th.hsi			{}
+sortable		{}
+
+a:link 			{ text-decoration:underline; font-weight:normal; color:#FFFFFF; }
+a:visited 		{ text-decoration:underline; font-weight:normal; color:#FFFFFF; }
+a:hover 		{ text-decoration:underline; font-weight:normal; color:#BBBBBB; }
+a:active 		{ text-decoration:underline; font-weight:normal; color:#FFFFFF; }
+a:focus 		{ text-decoration:underline; font-weight:normal; color:#FFFFFF; }
+
+a.m:link 		{ text-decoration:none; font-weight:normal; color:#FFFFFF; }
+a.m:visited 		{ text-decoration:none; font-weight:normal; color:#FFFFFF; }
+a.m:hover 		{ text-decoration:underline; font-weight:normal; color:#BBBBBB; }
+a.m:active 		{ text-decoration:none; font-weight:normal; color:#FFFFFF; }
+a.m:focus 		{ text-decoration:none; font-weight:normal; color:#FFFFFF; }
+
+a.a1:link		{ text-decoration:none; font-weight:normal; color:#FFFFFF; }
+a.a1:visited 		{ text-decoration:none; font-weight:normal; color:#FFFFFF; }
+a.a1:hover 		{ text-decoration:underline; font-weight:normal; color:#BBBBBB; }
+a.a1:active 		{ text-decoration:none; font-weight:normal; color:#FFFFFF; }
+a.a1:focus 		{ text-decoration:none; font-weight:normal; color:#FFFFFF; }
+
+a.bold:link 		{ text-decoration:none; font-weight:bold; color:#A1B5E2; }
+a.bold:visited 		{ text-decoration:none; font-weight:bold; color:#A1B5E2; }
+a.bold:hover 		{ text-decoration:underline; font-weight:bold; color:#BBBBBB; }
+a.bold:active 		{ text-decoration:none; font-weight:bold; color:#A1B5E2; }
+a.bold:focus 		{ text-decoration:none; font-weight:bold; color:#A1B5E2; }
+
+.menu 			{ font-weight:normal; color:#F0F0F0; }
+a.menu:link 		{ text-decoration:none; font-weight:bold; color:#FFFFFF; }
+a.menu:visited 		{ text-decoration:none; font-weight:bold; color:#FFFFFF; }
+a.menu:hover 		{ text-decoration:none; font-weight:bold; color:#BBBBBB; }
+a.menu:active 		{ text-decoration:none; font-weight:bold; color:#FFFFFF; }
+a.menu:focus 		{ text-decoration:none; font-weight:bold; color:#FFFFFF; }
+
+a.btmlink:link		{ text-decoration:none; font-size:11px; color:#FFFFFF; }
+a.btmlink:visited	{ text-decoration:none; font-size:11px; color:#FFFFFF; }
+a.btmlink:hover		{ text-decoration:none; font-size:11px; color:#BBBBBB; }
+a.btmlink:active	{ text-decoration:none; font-size:11px; color:#FFFFFF; }
+a.btmlink:focus		{ text-decoration:none; font-size:11px; color:#FFFFFF; }
+
+a.boxlink:link		{ text-decoration:none; font-size:13px; font-weight:bold; color:#FFFFFF; }
+a.boxlink:visited	{ text-decoration:none; font-size:13px; font-weight:bold; color:#FFFFFF; }
+a.boxlink:hover		{ text-decoration:none; font-size:13px; font-weight:bold; color:#BBBBBB; }
+a.boxlink:active	{ text-decoration:none; font-size:13px; font-weight:bold; color:#FFFFFF; }
+a.boxlink:focus		{ text-decoration:none; font-size:13px; font-weight:bold; color:#FFFFFF; }
+
+.boxcurrent   		{ font-weight:normal; color:#FFFFFF; font-size:13px; background-color:#444444; }
+th.boxtitle		{ font-size:18px; font-weight:bold; padding:3px 4px 2px 4px; color:#FFFFFF; background-color:#444444; }
+td.boxtitle		{ font-size:18px; font-weight:bold; padding:3px 4px 2px 4px; color:#FFFFFF; background-color:#444444; }
+.boxnotes		{ font-size:11px; color:#FFFFFF; background-color:#444444; }
+.boxtitlecolors		{ color:#FFFFFF; background-color:#444444; }
+.boxsubtitle		{ font-size:13px; font-weight:bold; color:#FFFFFF; background-color:#333333; }
+.reptitle		{ font-size:28px; font-weight:bold; color:#FFFFFF; }
+.repsubtitle		{ font-size:20px; font-weight:bold; color:#FFFFFF; }
+
+ul			{ list-style-image:url(images/dot1.gif); }
+select			{ font-family:"Open Sans", Calibri, Helvetica, Verdana, Geneva, Arial, sans-serif; font-size:13px; font-weight:normal; text-align:left; color:#000000; background-color:#FFFFFF; }
+
+.sdl_off             	{ background-color:#5B5956; }
+.sdl_empty             	{ background-color:#5B5956; }
+.sdl_asg		{ background-color:#333333; }
+.sdl_asg_played		{ background-color:#282725; }
+.sdl_home		{ background-color:#3A3A3A; }
+.sdl_away		{ background-color:#080808; }
+.sdl_today		{ background-color:#aeb0b5; }
+
+a.sdl_lost:link 	{ text-decoration:none; font-weight:normal; color:#FFAAAA; }
+a.sdl_lost:visited 	{ text-decoration:none; font-weight:normal; color:#FFAAAA; }
+a.sdl_lost:hover 	{ text-decoration:none; font-weight:normal; color:#FF6A00; }
+a.sdl_lost:active 	{ text-decoration:none; font-weight:normal; color:#FFAAAA; }
+a.sdl_lost:focus 	{ text-decoration:none; font-weight:normal; color:#FFAAAA; }
+
+a.sdl_won:link 		{ text-decoration:none; font-weight:normal; color:#aaFFaa; }
+a.sdl_won:visited 	{ text-decoration:none; font-weight:normal; color:#aaFFaa; }
+a.sdl_won:hover 	{ text-decoration:none; font-weight:normal; color:#5FBF16; }
+a.sdl_won:active 	{ text-decoration:none; font-weight:normal; color:#aaFFaa; }
+a.sdl_won:focus 	{ text-decoration:none; font-weight:normal; color:#aaFFaa; }
+
+.sdl_border_left	{ border-left:1px solid #A0A09E; border-bottom:1px solid #A0A09E; border-right:1px solid #A0A09E; }
+.sdl_border_other	{ border-bottom:1px solid #A0A09E; border-right:1px solid #A0A09E; }
