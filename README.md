@@ -1,5 +1,16 @@
 # Hector 2.0
 
+## Downloading the Latest Version
+
+You can always grab the newest build of Hector from the **Releases** page:
+
+➡️ [**Download the latest version here**](../../releases)
+
+1. Download the ZIP for the latest release.  
+2. Extract it to a folder of your choice.  
+3. Run the executable (or use Python if running from source).  
+
+
 ![Screenshot 1](screenshots/hectorshowcase1.png)  
 ![Screenshot 2](screenshots/hectorshowcase2.png)  
 ![Screenshot 3](screenshots/hectorshowcase3.png)  
@@ -20,17 +31,6 @@ To adjust how different stats affect player scores:
 
 ---
 
-## Downloading the Latest Version
-
-You can always grab the newest build of Hector from the **Releases** page:
-
-➡️ [**Download the latest version here**](../../releases)
-
-1. Download the ZIP for the latest release.  
-2. Extract it to a folder of your choice.  
-3. Run the executable (or use Python if running from source).  
-
----
 
 # Planned Improvements
 
