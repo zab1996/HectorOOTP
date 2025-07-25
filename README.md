@@ -9,7 +9,7 @@ You can always grab the newest build of Hector from the **Releases** page:
 1. Download the ZIP for the latest release.  
 2. Extract it to a folder of your choice.  
 3. Run the executable (or use Python if running from source).  
-
+---
 <details>
   <summary>Show screenshots</summary>
 
