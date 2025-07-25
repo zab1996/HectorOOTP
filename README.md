@@ -1,3 +1,37 @@
+# Hector 2.0
+
+![Screenshot 1](screenshots/hectorshowcase1.png)  
+![Screenshot 2](screenshots/hectorshowcase2.png)  
+![Screenshot 3](screenshots/hectorshowcase3.png)  
+
+---
+
+## Editing Player Weights
+
+Hector’s scoring system is **fully customizable**.  
+
+- Pitcher scoring weights are defined in `pitcher_weights.py`.  
+- Batter scoring weights are defined in `batter_weights.py`.  
+
+To adjust how different stats affect player scores:
+1. Open either `pitcher_weights.py` or `batter_weights.py` in a text editor.  
+2. Modify the numeric values in the `section_weights` dictionary. Higher values give more importance to that attribute.  
+3. Save the file and click **"Reload Data"** in Hector’s GUI (no restart needed).  
+
+---
+
+## Downloading the Latest Version
+
+You can always grab the newest build of Hector from the **Releases** page:
+
+➡️ [**Download the latest version here**](../../releases)
+
+1. Download the ZIP for the latest release.  
+2. Extract it to a folder of your choice.  
+3. Run the executable (or use Python if running from source).  
+
+---
+
 # Planned Improvements
 
 - Show top 10 Potential batters at each position (25 and Under, Offense Potential + Defense)  
@@ -12,6 +46,10 @@
 
 ---
 
+# Hector Data Export Instructions
+
+To ensure Hector works correctly, you need to export player data from OOTP with custom views for Batters and Pitchers using specific attributes. Follow the steps below carefully:
+
 ## 1. Create the Batters View
 
 Include all the attributes shown in the following screenshots exactly as displayed.
@@ -22,8 +60,6 @@ Include all the attributes shown in the following screenshots exactly as display
 ![Fielding Ratings](screenshots/fieldingratings.png)  
 ![Scouting Accuracy](screenshots/scoutingacc.png)  
 
----
-
 ## 2. Create the Pitchers View
 
 Include all the attributes shown in these screenshots exactly as displayed.
@@ -32,21 +68,15 @@ Include all the attributes shown in these screenshots exactly as displayed.
 ![Pitcher Ratings](screenshots/pitcherratings.png)  
 ![Scouting Accuracy](screenshots/scoutingacc.png)  
 
----
-
 ## 3. Save Views as Global
 
 - Save each view as **Global**.  
 - Name them **“Hector Batting”** and **“Hector Pitching”** (you can replace "Hector" with any name you prefer).
 
----
-
 ## 4. Export Views
 
 - Export the Batters view as `batters.html`  
 - Export the Pitchers view as `pitchers.html`
-
----
 
 ## 5. Replace Existing Files
 
@@ -104,9 +134,3 @@ Thank you for using Hector!
 ## Modular & Dynamic Design
 - Loads data and weighting configurations dynamically from separate modules  
 - Enables easy tuning of scoring weights without restarting the application  
-
-# Hector Data Export Instructions
-
-To ensure Hector works correctly, you need to export player data from OOTP with custom views for Batters and Pitchers using specific attributes. Follow the steps below carefully:
-
----
