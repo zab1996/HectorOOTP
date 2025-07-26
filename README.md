@@ -112,7 +112,7 @@ Thank you for using Hector!
 - Visual arrow indicators for sort direction  
 - Row hover highlight for better readability  
 - Double-click player rows to open detailed stats in an external web browser  
-- Manual "Reload Data" button to refresh data and UI without restarting the app  
+- Manual "Reload Data" button to refresh HTML data and UI without restarting the app  
 
 ## Data Loading & Scoring Features
 
@@ -142,4 +142,3 @@ Thank you for using Hector!
 
 ## Modular & Dynamic Design
 - Loads data and weighting configurations dynamically from separate modules  
-- Enables easy tuning of scoring weights without restarting the application  
