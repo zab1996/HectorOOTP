@@ -32,7 +32,7 @@ Hector’s scoring system is **fully customizable**.
 To adjust how different stats affect player scores:  
 1. Open either `pitcher_weights.py` or `batter_weights.py` in a text editor.  
 2. Modify the numeric values in the `section_weights` dictionary. Higher values give more importance to that attribute.  
-3. Save the file and click **"Reload Data"** in Hector’s GUI (no restart needed).  
+3. Save the file and Reload the program(Planned feature to make "Reload Data button reload player weights)
 
 ---
 
