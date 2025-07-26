@@ -10,19 +10,9 @@ You can always grab the newest build of Hector from the **Releases** page:
 2. Extract it to a folder of your choice.  
 3. Run the executable (or use Python if running from source).
 
-<details>
-  <summary>Show screenshots</summary>
-
-  
-  ![Screenshot 1](screenshots/hectorshowcase1.png)  
-  ![Screenshot 2](screenshots/hectorshowcase2.png)  
-  ![Screenshot 3](screenshots/hectorshowcase3.png)  
-
-</details>
-
 ---
 
-## Editing Player Weights
+# Editing Player Weights
 
 Hector’s scoring system is **fully customizable**.  
 
@@ -31,18 +21,19 @@ Hector’s scoring system is **fully customizable**.
 
 To adjust how different stats affect player scores:  
 1. Open either `pitcher_weights.py` or `batter_weights.py` in a text editor.  
-2. Modify the numeric values in the `section_weights` dictionary. Higher values give more importance to that attribute.  
-3. Save the file and Reload the program(Planned feature to make "Reload Data button reload player weights)
+2. Modify the numeric values in the `section_weights` dictionary — higher values give more importance to that attribute.  
+3. Save these files in the program folder where the `.exe` is located.  
+4. Hit the Reload Data button in the program.
 
 ---
 
 # Hector Data Export Instructions
 
-To ensure Hector works correctly, you need to export player data from OOTP with custom views for Batters and Pitchers using specific attributes. Follow the steps below carefully:
+To ensure Hector works correctly, you need to export player data from OOTP with custom views for Batters and Pitchers using the specified attributes. Follow these steps carefully:
 
 ### 1. Create the Batters View
 
-Include all the attributes shown in the following screenshots exactly as displayed.
+Include all the attributes shown in the following screenshots exactly as displayed:
 
 ![Customize](screenshots/Customize.png)  
 ![General Batting](screenshots/generalbatting.png)  
@@ -52,7 +43,7 @@ Include all the attributes shown in the following screenshots exactly as display
 
 ### 2. Create the Pitchers View
 
-Include all the attributes shown in these screenshots exactly as displayed.
+Include all the attributes shown in these screenshots exactly as displayed:
 
 ![General Pitching](screenshots/generalpitching.png)  
 ![Pitcher Ratings](screenshots/pitcherratings.png)  
@@ -61,7 +52,7 @@ Include all the attributes shown in these screenshots exactly as displayed.
 ### 3. Save Views as Global
 
 - Save each view as **Global**.  
-- Name them **“Hector Batting”** and **“Hector Pitching”** (you can replace "Hector" with any name you prefer).
+- Name them **“Hector Batting”** and **“Hector Pitching”** (you can replace "Hector" with any preferred name).
 
 ### 4. Export HTML Files
 
@@ -69,22 +60,24 @@ Include all the attributes shown in these screenshots exactly as displayed.
 - Export the Pitchers view as `pitchers.html`
 
 ![Export HTML DATA](screenshots/hectorexport.png)  
-![Export HTML DATA](screenshots/hectorexport2.png) 
+![Export HTML DATA](screenshots/hectorexport2.png)  
 ![Export HTML DATA](screenshots/hectorexport3.png)   
 
 ### 5. Replace Existing Files
 
-- Replace the files inside the `Hector` folder with your new `batters.html` and `pitchers.html` exports.
+- Replace the files inside the `Hector` folder with your new `batters.html` and `pitchers.html` files.
 
 ---
 
 Make sure these steps are followed carefully to avoid missing fields or errors when running Hector.
 
-If you encounter any issues or missing data warnings, double-check your export views to ensure all required attributes are included.
+If you encounter any warnings or issues, double-check your export views to ensure all required attributes are included.
 
 ---
 
 Thank you for using Hector!
+
+---
 
 # Planned Improvements
 
@@ -94,51 +87,68 @@ Thank you for using Hector!
 - Show top 10 total score for pitchers at each position  
 - Recommend RP who could move to SP (3 or more pitches, 50 or higher stamina, ranked by score)  
 - Recommend 1B who could move to other positions (Range 50 or higher, arm 45 or higher, turn DP above 40, error above 40)  
-- Filter by age with `<` or `>` along with other search filters. For example: `>25 CAS 1b`  
-- Make reload data also reload player weights  
-- General visual and UI improvements - add scroll bar
 - Make player page link opening editable  
 
 ---
 
-# Features of Hector 2.0
+# Features (Including 2.1 Updates)
 
 ## Modern Tkinter GUI
-- Dark-themed interface with customized fonts and colors for readability  
-- Responsive tabbed layout with views for **Pitchers**, **Batters**, and **Teams**  
-- Search bars with live filtering and integrated clear ("✕") buttons  
-- Position filters with multi-select checkboxes and quick "Select All" / "Clear All" options  
-- Sortable tables with custom sort logic for special columns (e.g., velocity ranges, durability categories)  
-- Visual arrow indicators for sort direction  
-- Row hover highlight for better readability  
-- Double-click player rows to open detailed stats in an external web browser  
-- Manual "Reload Data" button to refresh HTML data and UI without restarting the app  
+- Dark-themed interface with customized fonts and colors for readability.  
+- Responsive tabbed layout with views for **Pitchers**, **Batters**, and **Teams**.  
+- Search bars with live filtering and integrated clear ("✕") buttons.  
+- Position filters with multi-select checkboxes and quick "Select All" / "Clear All" options.  
+- Sortable tables with custom sort logic for special columns (e.g., velocity ranges, durability categories).  
+- Visual arrow indicators for sort direction.  
+- Row hover highlight for better readability.  
+- Double-click player rows to open detailed stats in an external web browser.  
+- Manual "Reload Data" button to refresh HTML data and UI without restarting the app.  
+- Presented batter position scores in a compact, logically grouped layout, separating Infield and Outfield positions and showing scores by each position. *(Added in 2.1)*  
+- Displayed pitcher counts distinctly broken down into Starting Pitchers (SP) and Relief Pitchers (RP). *(Added in 2.1)*  
+- Included average total scores for SP, RP, and batters as independent groups. *(Added in 2.1)*  
+- Updated filter action buttons (Select All, Clear All) to styled `ttk.Button` components consistent with the main reload button. *(Added in 2.1)*  
+- Added age filtering support with comparison operators (`<`, `>`, `<=`, `>=`, `=`), enabling queries like `CAS 1b <25`, `1b <25`, or `1b25`. *(Added in 2.1)*  
+- Added a new tooltip explaining the enhanced search and filtering syntax. *(Added in 2.1)*  
+- Implemented fully functional and visually improved position filter checkboxes in the Pitcher tab. *(Added in 2.1)*  
+- Integrated dynamic, responsive filtering combining position, age, and text search criteria. *(Added in 2.1)*  
+- Added vertical and horizontal scrollbars to pitcher and batter tables for improved navigation, ensuring consistent dark theming. *(Added in 2.1)*  
+- Enabled automatic sorting on startup by total score in pitchers, batters, and teams tabs. *(Added in 2.1)*  
+- General visual and UI improvements (including scrollbars). *(Added in 2.1)*  
 
 ## Data Loading & Scoring Features
 
 ### Pitchers
-- Parses local `pitchers.html` files using BeautifulSoup to extract detailed stats  
-- Uses customizable `pitcher_weights` for weighted scoring of multiple pitching attributes  
-- Calculates total score combining core skills (Stuff, Movement, Control) and their potential scores  
-- Includes individual pitch type scores and potentials (fastball, curveball, slider, etc.)  
-- Weights other attributes like number of pitches thrown, velocity, stamina, ground/fly ratio, holds, scout accuracy, overall and potential ratings  
-- Applies penalties for starting pitchers with low pitch counts or stamina  
-- Supports nuanced velocity parsing (e.g., ranges like "90-92 mph" and "+" modifiers)  
+- Parses local `pitchers.html` files using BeautifulSoup to extract detailed stats.  
+- Uses customizable `pitcher_weights` for weighted scoring of multiple pitching attributes.  
+- Calculates total score combining core skills (Stuff, Movement, Control) and their potential scores.  
+- Includes individual pitch type scores and potentials (fastball, curveball, slider, etc.).  
+- Weights other attributes like number of pitches thrown, velocity, stamina, ground/fly ratio, holds, scout accuracy, overall and potential ratings.  
+- Applies penalties for starting pitchers with low pitch counts or stamina.  
+- Supports nuanced velocity parsing (e.g., ranges like "90-92 mph" and "+" modifiers).  
 
 ### Batters
-- Parses local `batters.html` files using BeautifulSoup for comprehensive player attributes  
-- Calculates separate offensive current and potential scores weighted by attributes like contact, gap, power, eye discipline, and strikeouts  
+- Parses local `batters.html` files using BeautifulSoup for comprehensive player attributes.  
+- Calculates separate offensive current and potential scores weighted by contact, gap, power, eye discipline, and strikeouts.  
 - Computes defensive scores adjusted for position-specific skills:  
   - Catchers: ability, arm, blocking  
   - Infielders: range, errors, arm strength (with emphasis on SS and 3B)  
   - Outfielders: range (prioritizing CF), error rates, arm strength  
-- Adds weighting for speed, stealing, running, and scout accuracy  
-- Combines offense and defense into a total player rating  
-- Extracts and displays overall and potential star ratings  
+- Adds weighting for speed, stealing, running, and scout accuracy.  
+- Combines offense and defense into a total player rating.  
+- Extracts and displays overall and potential star ratings.  
 
 ## Team Scores Aggregation
-- Calculates cumulative team stats by aggregating pitcher (SP, RP) and batter scores  
-- Summarizes overall team strength with pitching and batting breakdowns  
+- Calculates cumulative team stats by aggregating pitcher (SP, RP) and batter scores.  
+- Summarizes overall team strength with pitching and batting breakdowns.  
 
 ## Modular & Dynamic Design
-- Loads data and weighting configurations dynamically from separate modules  
+- Loads data and weighting configurations dynamically from separate modules.  
+- Redesigned pitcher and batter weights system for greater customization and dynamic reloading.  
+- Enhanced reload button to refresh both HTML player data and updated player weight modules seamlessly.  
+
+## Backend & Architecture Improvements
+- Reorganized code for improved lifecycle management placing `root.mainloop()` correctly.  
+- Defined key callback functions (`update`, `set_all`) before widget creation to avoid scoping errors.  
+- Modularized tab creation and data loading for easier maintenance and future enhancements.  
+
+---
