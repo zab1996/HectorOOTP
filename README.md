@@ -1,4 +1,4 @@
-# Hector 2.1
+# Hector OOTP Bot
 
 ## Downloading the Latest Version
 
