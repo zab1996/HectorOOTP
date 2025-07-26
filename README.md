@@ -63,10 +63,14 @@ Include all the attributes shown in these screenshots exactly as displayed.
 - Save each view as **Global**.  
 - Name them **“Hector Batting”** and **“Hector Pitching”** (you can replace "Hector" with any name you prefer).
 
-### 4. Export Views
+### 4. Export HTML Files
 
 - Export the Batters view as `batters.html`  
 - Export the Pitchers view as `pitchers.html`
+
+![Export HTML DATA](screenshots/hectorexport.png)  
+![Export HTML DATA](screenshots/hectorexport2.png) 
+![Export HTML DATA](screenshots/hectorexport3.png)   
 
 ### 5. Replace Existing Files
 
