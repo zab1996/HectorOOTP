@@ -96,7 +96,8 @@ Thank you for using Hector!
 - Recommend 1B who could move to other positions (Range 50 or higher, arm 45 or higher, turn DP above 40, error above 40)  
 - Filter by age with `<` or `>` along with other search filters. For example: `>25 CAS 1b`  
 - Make reload data also reload player weights  
-- General visual and UI improvements - add scroll bar  
+- General visual and UI improvements - add scroll bar
+- Make player page link opening editable  
 
 ---
 
