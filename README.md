@@ -1,4 +1,4 @@
-# Hector 2.0
+# Hector 2.1
 
 ## Downloading the Latest Version
 
