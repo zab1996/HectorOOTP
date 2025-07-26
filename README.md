@@ -1,4 +1,6 @@
-# Hector OOTP Bot
+# Hector OOTP Player Analyzer 
+
+Hector is a customizable OOTP (Out of the Park Baseball) program featuring a modern, dark-themed  GUI that analyzes player data from exported HTML files.
 
 ## Downloading the Latest Version
 
