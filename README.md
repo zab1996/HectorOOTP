@@ -57,7 +57,7 @@ Include all the attributes shown in these screenshots exactly as displayed:
 - Name them **“Hector Batting”** and **“Hector Pitching”** (you can replace "Hector" with any preferred name).
 
 ### 4. Export HTML Files
-
+While you can have batters in the pitchers html and pitchers in the batters html it's generally better to make sure after setting your new view, to match the position to the file you're exporting.(Ex. POSITION All Batters when exporting the batters.html)
 - Export the Batters view as `batters.html`  
 - Export the Pitchers view as `pitchers.html`
 
