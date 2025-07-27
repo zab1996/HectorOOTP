@@ -22,7 +22,7 @@ Hector’s scoring system is **fully customizable**.
 - Batter scoring weights are defined in `batter_weights.py`.  
 
 To adjust how different stats affect player scores:  
-1. Open either `pitcher_weights.py` or `batter_weights.py` in a text editor.  
+1. Open either `pitcher_weights.py` or `batter_weights.py` in a text editor(preferably Notepad++ or Visual Studio code).  
 2. Modify the numeric values in the `section_weights` dictionary — higher values give more importance to that attribute.  
 3. Save these files in the program folder where the `.exe` is located.  
 4. Hit the Reload Data button in the program.
