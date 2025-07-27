@@ -89,7 +89,12 @@ Thank you for using Hector!
 - Show top 10 total score for pitchers at each position  
 - Recommend RP who could move to SP (3 or more pitches, 50 or higher stamina, ranked by score)  
 - Recommend 1B who could move to other positions (Range 50 or higher, arm 45 or higher, turn DP above 40, error above 40)  
-- Make player page link opening editable  
+- Make player page link opening editable
+- Error popup for when users accidentally save pitcher data with batters and vice versa to remind users to fix this.
+- Imporved readme with better instructions
+- Create a Pitcher scores for Current and Potential which then add to total score, like its similarly done for batters(other attributes would be only counted once in current).
+- Tool tips explaning what each calculation is( EX. Batters Total score = Offense + Defense = Total score, Pitcher total score is a combination of everything inside pitcher weights - Core atts, core potentials, pitch arsenal current and potentials, other atts, and penalites)
+  
 
 ---
 
