@@ -149,8 +149,8 @@ Thank you for using Hector!
 - Enhanced reload button to refresh both HTML player data and updated player weight modules seamlessly.  
 
 ## Backend & Architecture Improvements
-- Reorganized code for improved lifecycle management placing `root.mainloop()` correctly.  
-- Defined key callback functions (`update`, `set_all`) before widget creation to avoid scoping errors.  
+- Reorganized code for improved lifecycle management placing `root.mainloop()` correctly. *(Added in 2.1)*    
+- Defined key callback functions (`update`, `set_all`) before widget creation to avoid scoping errors. *(Added in 2.1)*    
 - Modularized tab creation and data loading for easier maintenance and future enhancements.  
 
 ---
