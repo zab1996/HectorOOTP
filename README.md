@@ -84,79 +84,82 @@ Make sure these steps are followed carefully to avoid missing fields or errors w
 If you encounter any warnings or issues, double-check your export views to ensure all required attributes are included.
 
 ---
-
-Thank you for using Hector!
-
----
-
-# Planned Improvements
-
-- Show top 10 Potential batters at each position (25 and Under, Offense Potential + Defense)  
-- Show Top 10 Potential pitchers at SP/RP (Core attributes potential + Pitch potential)  
-- Show top 10 total score for batters at each position  
-- Show top 10 total score for pitchers at each position  
-- Recommend RP who could move to SP (3 or more pitches, 50 or higher stamina, ranked by score)  
-- Recommend 1B who could move to other positions (Range 50 or higher, arm 45 or higher, turn DP above 40, error above 40)  
-- Make player page link opening editable
-- Error popup for when users accidentally save pitcher data with batters and vice versa to remind users to fix this.
-- Imporved readme with better instructions
-- Create a Pitcher scores for Current and Potential which then add to total score, like its similarly done for batters(other attributes would be only counted once in current).
-- Tool tips explaning what each calculation is( EX. Batters Total score = Offense + Defense = Total score, Pitcher total score is a combination of everything inside pitcher weights - Core atts, core potentials, pitch arsenal current and potentials, other atts, and penalites)
-  
-
----
-
-# Features (Including 2.1 Updates)
+# Features
 
 ## Modern Tkinter GUI
 - Dark-themed interface with customized fonts and colors for readability.  
-- Responsive tabbed layout with views for **Pitchers**, **Batters**, and **Teams**.  
-- Search bars with live filtering and integrated clear ("✕") buttons.  
-- Position filters with multi-select checkboxes and quick "Select All" / "Clear All" options.  
+- Responsive tabbed layout with views for **Pitchers**, **Batters**, and **Teams**.
+- Sidebar navigation: Position filters and report actions are now in a modern vertical sidebar with plain frames and clearly labeled section headers.
+- Search bars with live filtering and integrated clear ("✕") buttons. Supports advanced syntax: `<`, `>`, `<=`, `>=`, `=` for age filtering like `1b <25` or `=20`.
+- Position filters with multi-select checkboxes and quick "Select All" / "Clear All" options.
 - Sortable tables with custom sort logic for special columns (e.g., velocity ranges, durability categories).  
-- Double-click player rows to open detailed stats in an external web browser.  
-- Manual "Reload Data" button to refresh HTML data and Pitcher/Batter weights without restarting the app.  
-- Presented batter position scores in a compact, logically grouped layout, separating Infield and Outfield positions and showing scores by each position. *(Added in 2.1)*  
-- Displayed  total pitcher counts in the dataset distinctly broken down into Starting Pitchers (SP) and Relief Pitchers (RP). *(Added in 2.1)*  
-- Included average total scores for SP, RP, and batters as independent groups. *(Added in 2.1)*    
-- Added age filtering support with comparison operators (`<`, `>`, `<=`, `>=`, `=`), enabling queries like `CAS 1b <25`, `1b <25`, or `1b25`. *(Added in 2.1)*  
-- Added a new tooltip explaining the enhanced search and filtering syntax. *(Added in 2.1)*    
-- Added vertical and horizontal scrollbars to pitcher and batter tables for improved navigation, ensuring consistent dark theming. *(Added in 2.1)*  
-- Enabled automatic sorting on startup by total score in pitchers, batters, and teams tabs. *(Added in 2.1)*  
-- General visual and UI improvements. *(Added in 2.1)*  
+- **Sortable “Show All” mode and grouped Top N modes for batters and pitchers, with live-updating filters by age, position, or search.**
+- Sorting is disabled in Top N mode (for group/rank integrity), re-enabled in full-table mode.
+- **Column widths have been optimized for important fields** (team names, ages, numeric stats) for improved readability out-of-the-box.
+- Automatic sorting on startup by total score in pitchers, batters, and teams tabs.
+- Double-click player rows to open detailed stats in an external web browser, with URLs configurable via a league config file (allowing compatibility with various Stats+ leagues).
+- Manual "Reload Data" button to refresh HTML data and Pitcher/Batter weights without restarting the app.
+- Added vertical and horizontal scrollbars to pitcher and batter tables for improved navigation, ensuring consistent dark theming.
+- General visual and UI improvements, cleaner layouts, and consistent control spacing across all tabs.
 
-## Data Loading & Scoring Features
+## Table Tooltips & Guidance
+- **Column header tooltips:** Every table column in all tabs (Batters, Pitchers, Teams) has a hover tooltip with clear, consistent explanations.
+- **Stat explanation tooltips:** Special tooltips clarify the differences between *potential* and *current* ratings in team/player calculations.
+- All Quick Report and Show All buttons now include centralized tooltips with explicit guidance for using text/age filters.
+
+## Data Visualization & Highlighting
+- **Automatic row highlights (classic/Show All mode only):**
+  - Highlights RP (relief pitchers) with starter (SP) potential (STM ≥ 50 & ≥ 3 pitches).
+  - Highlights 1B ready for 3B and 2B ready for SS, based on defensive stats.
+- Highlighting is suppressed in grouped Top N by Position modes for clarity.
+
+## Quick Reports & Top N Views
+- Fast, live-updating “Top N by Position” leaderboards:
+  - Batters: “Top 10 Batters by Position (Total Score)”
+  - Pitchers: “Top 20 Pitchers by Position (Total Score)”
+  - Results group the top N players by position (e.g., Top 10 2B, Top 20 SP) with separator rows and a **Rank** column.
+  - Top N tables update instantly as you filter/search.
+  - "Show All" button always restores the complete sortable list.
+- Unified styling between “Filter by Position” and “Quick Reports”—no redundant headers or nested frames.
+- **Top N tables feature wider columns for improved readability.**
+
+## Data Loading, Scoring & Aggregation
 
 ### Pitchers
 - Parses local `pitchers.html` files using BeautifulSoup to extract detailed stats.  
-- Uses customizable `pitcher_weights` for weighted scoring of multiple pitching attributes.  
-- Calculates total score combining core skills (Stuff, Movement, Control) and their potential scores.  
-- Includes individual pitch type scores and potentials (fastball, curveball, slider, etc.).  
-- Weights other attributes like number of pitches thrown, velocity, stamina, ground/fly ratio, holds, scout accuracy, overall and potential ratings.  
-- Applies penalties for starting pitchers with low pitch counts or stamina.  
+- Uses customizable `pitcher_weights.py` for fully adjustable attribute scoring.
+- Calculates total pitching score by combining core skills (Stuff, Movement, Control), potential scores, individual pitch type scores, velocity, stamina, holds, ground/fly %, scout accuracy and more.
+- **Pitching strength is now split into “Current” and “Potential” columns** for finer-grained team/league analysis.
+- Penalties applied for starting pitchers with low pitch counts or stamina.
+- Distinct counts and average total scores for SP and RP.
 
 ### Batters
-- Parses local `batters.html` files using BeautifulSoup for comprehensive player attributes.  
-- Calculates separate offensive current and potential scores weighted by contact, gap, power, eye discipline, and strikeouts.  
-- Computes defensive scores adjusted for position-specific skills:  
-  - Catchers: ability, arm, blocking  
-  - Infielders: range, errors, arm strength (with emphasis on SS and 3B)  
-  - Outfielders: range (prioritizing CF), error rates, arm strength  
-- Adds weighting for speed, stealing, running, and scout accuracy.  
-- Combines offense and defense into a total player rating.  
-- Extracts and displays overall and potential star ratings.  
+- Parses local `batters.html` using BeautifulSoup for all supported OOTP exports.
+- **Current offense, potential offense, and defensive scores now appear as distinct team stats**, not just summed.
+- Calculates offense by position, defense by role (C, IF, OF), and weighted speed/stealing/running.
+- **Separates current and potential batting offense**; both are scored for stronger player and team breakdowns.
+- Star ratings (overall, potential) are extracted and shown.
+- Combines offense and defense for a comprehensive total rating.
 
-## Team Scores Aggregation
-- Calculates cumulative team stats by aggregating pitcher (SP, RP) and batter scores.  
-- Summarizes overall team strength with pitching and batting breakdowns.  
+### Teams
+- Enhanced calculations: Team stat and ranking computations are now strictly accurate and consistent.
+- **Total Team Score uses only current pitching, current offense, and defense—reflecting actual team strength, not just projected growth.**
+- Batter and pitcher contributions are computed in line with their metrics and weights.
 
-## Modular & Dynamic Design 
-- Redesigned pitcher and batter weights system for greater customization and dynamic reloading.  
-- Enhanced reload button to refresh both HTML player data and updated player weight modules seamlessly.  
-
-## Backend & Architecture Improvements
-- Reorganized code for improved lifecycle management placing `root.mainloop()` correctly. *(Added in 2.1)*    
-- Defined key callback functions (`update`, `set_all`) before widget creation to avoid scoping errors. *(Added in 2.1)*    
-- Modularized tab creation and data loading for easier maintenance and future enhancements.  
+## Usability, Architecture & Customization
+- **Sidebar and report UI overhaul**: vertical layouts; clear labels using plain `ttk.Labels`, not LabelFrames.
+- Reorganized code: improved lifecycle management, modularized tab/data loaders, and defined callbacks for reliability.
+- **Fully customizable scoring weights**: Just edit `pitcher_weights.py` and `batter_weights.py` and reload for immediate effect.
+- Improved error messages and tool organization.
+- Editable double-click logic (player page URLs can be changed in the config file).
+- Tooltips and improved documentation on all major functions and UI elements.
+- Cleaner comments throughout for maintainers.
+- **Visually cleaner layouts and unified spacing** across all tabs.
 
 ---
+
+> For issues, guidance, or explanations, see the tooltips throughout the program or consult the updated documentation.
+
+
+Thank you for using Hector!
+
