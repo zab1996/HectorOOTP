@@ -13,6 +13,7 @@ You can always grab the newest build of Hector from the **Releases** page:
 3. Run the executable (or use Python if running from source).
 <details>
 <summary><strong>🎬 Showcase: Click to view screenshots of Hector in action</strong></summary>
+
 ![Showcase1](screenshots/showcase1.png)
 ![Showcase2](screenshots/showcase2.png) 
 ![Showcase3](screenshots/showcase3.png) 
