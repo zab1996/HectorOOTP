@@ -106,21 +106,16 @@ Thank you for using Hector!
 - Search bars with live filtering and integrated clear ("✕") buttons.  
 - Position filters with multi-select checkboxes and quick "Select All" / "Clear All" options.  
 - Sortable tables with custom sort logic for special columns (e.g., velocity ranges, durability categories).  
-- Visual arrow indicators for sort direction.  
-- Row hover highlight for better readability.  
 - Double-click player rows to open detailed stats in an external web browser.  
-- Manual "Reload Data" button to refresh HTML data and UI without restarting the app.  
+- Manual "Reload Data" button to refresh HTML data and Pitcher/Batter weights without restarting the app.  
 - Presented batter position scores in a compact, logically grouped layout, separating Infield and Outfield positions and showing scores by each position. *(Added in 2.1)*  
-- Displayed pitcher counts distinctly broken down into Starting Pitchers (SP) and Relief Pitchers (RP). *(Added in 2.1)*  
-- Included average total scores for SP, RP, and batters as independent groups. *(Added in 2.1)*  
-- Updated filter action buttons (Select All, Clear All) to styled `ttk.Button` components consistent with the main reload button. *(Added in 2.1)*  
+- Displayed  total pitcher counts in the dataset distinctly broken down into Starting Pitchers (SP) and Relief Pitchers (RP). *(Added in 2.1)*  
+- Included average total scores for SP, RP, and batters as independent groups. *(Added in 2.1)*    
 - Added age filtering support with comparison operators (`<`, `>`, `<=`, `>=`, `=`), enabling queries like `CAS 1b <25`, `1b <25`, or `1b25`. *(Added in 2.1)*  
-- Added a new tooltip explaining the enhanced search and filtering syntax. *(Added in 2.1)*  
-- Implemented fully functional and visually improved position filter checkboxes in the Pitcher tab. *(Added in 2.1)*  
-- Integrated dynamic, responsive filtering combining position, age, and text search criteria. *(Added in 2.1)*  
+- Added a new tooltip explaining the enhanced search and filtering syntax. *(Added in 2.1)*    
 - Added vertical and horizontal scrollbars to pitcher and batter tables for improved navigation, ensuring consistent dark theming. *(Added in 2.1)*  
 - Enabled automatic sorting on startup by total score in pitchers, batters, and teams tabs. *(Added in 2.1)*  
-- General visual and UI improvements (including scrollbars). *(Added in 2.1)*  
+- General visual and UI improvements. *(Added in 2.1)*  
 
 ## Data Loading & Scoring Features
 
@@ -131,7 +126,6 @@ Thank you for using Hector!
 - Includes individual pitch type scores and potentials (fastball, curveball, slider, etc.).  
 - Weights other attributes like number of pitches thrown, velocity, stamina, ground/fly ratio, holds, scout accuracy, overall and potential ratings.  
 - Applies penalties for starting pitchers with low pitch counts or stamina.  
-- Supports nuanced velocity parsing (e.g., ranges like "90-92 mph" and "+" modifiers).  
 
 ### Batters
 - Parses local `batters.html` files using BeautifulSoup for comprehensive player attributes.  
@@ -148,8 +142,7 @@ Thank you for using Hector!
 - Calculates cumulative team stats by aggregating pitcher (SP, RP) and batter scores.  
 - Summarizes overall team strength with pitching and batting breakdowns.  
 
-## Modular & Dynamic Design
-- Loads data and weighting configurations dynamically from separate modules.  
+## Modular & Dynamic Design 
 - Redesigned pitcher and batter weights system for greater customization and dynamic reloading.  
 - Enhanced reload button to refresh both HTML player data and updated player weight modules seamlessly.  
 
