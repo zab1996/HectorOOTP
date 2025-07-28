@@ -11,7 +11,14 @@ You can always grab the newest build of Hector from the **Releases** page:
 1. Download the ZIP for the latest release.  
 2. Extract it to a folder of your choice.  
 3. Run the executable (or use Python if running from source).
-
+<details>
+<summary><strong>🎬 Showcase: Click to view screenshots of Hector in action</strong></summary>
+![Showcase1](screenshots/showcase1.png)
+![Showcase2](screenshots/showcase2.png) 
+![Showcase3](screenshots/showcase3.png) 
+![Showcase4](screenshots/showcase4.png) 
+![Showcase5](screenshots/showcase5.png) 
+</details>
 ---
 
 # Editing Player Weights
