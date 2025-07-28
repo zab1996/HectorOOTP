@@ -48,7 +48,7 @@ Include all the attributes shown in the following screenshots exactly as display
 ![Customize](screenshots/Customize.png)  
 ![General Batting](screenshots/generalbatting.png)  
 ![Batting Ratings](screenshots/battingratings.png)  
-![Fielding Ratings](screenshots/fieldingratings.png)  
+![Fielding Ratings](screenshots/fieldingratingsnew.png)  
 ![Scouting Accuracy](screenshots/scoutingacc.png)  
 
 ### 2. Create the Pitchers View
