@@ -19,7 +19,7 @@ You can always grab the newest build of Hector from the **Releases** page:
 ![Showcase4](screenshots/showcase4.png) 
 ![Showcase5](screenshots/showcase5.png) 
 </details>
----
+
 
 # Editing Player Weights
 
