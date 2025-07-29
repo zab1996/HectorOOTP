@@ -2,6 +2,22 @@
 
 Hector is a powerful, fully customizable desktop analytics tool for Out of the Park Baseball (OOTP) leagues. Using a clean and modern dark-mode interface, Hector quickly imports exported HTML data and delivers a deep statistical breakdown of every player and team in your league. From customizable scoring formulas and sortable reports to intelligent player highlights and direct Stats+ integration, Hector transforms OOTP exports into actionable insights for both casual GMs and competitive online leagues. Whether you’re rebuilding, targeting trades, or looking for hidden gems, Hector gives you the tools to evaluate, filter, and compare player and team performance—your way.
 
+---
+
+## 🚀 Table of Contents
+
+- [Downloading the Latest Version](#downloading-the-latest-version)
+- [Flexible Weighting System](#flexible-weighting-system)
+- [Hector Data Export Instructions](#hector-data-export-instructions)
+- [Features Overview](#features-overview)
+  - [Core Functionality](#core-functionality)
+  - [User Interface Features](#user-interface-features)
+  - [Reporting and Analysis Tools](#reporting-and-analysis-tools)
+  - [Dataset Overview](#dataset-overview)
+  - [User Assistance](#user-assistance)
+
+---
+
 ## Downloading the Latest Version
 
 You can always grab the newest build of Hector from the **Releases** page:
@@ -28,8 +44,10 @@ You can always grab the newest build of Hector from the **Releases** page:
 ## Flexible Weighting System
 
 **Editing Player Weights**
-    - `pitcher_weights.py`: Set importance of pitching attributes
-    - `batter_weights.py`: Set importance of hitting/defense/baserunning
+
+- `pitcher_weights.py`: Set importance of pitching attributes
+- `batter_weights.py`: Set importance of hitting/defense/baserunning
+
 **How to adjust the weights:**
 
 1. Open either `pitcher_weights.py` or `batter_weights.py` in a text editor (preferably Notepad++ or Visual Studio Code).
@@ -157,6 +175,5 @@ While you can have batters in the pitchers HTML and pitchers in the batters HTML
 > For issues, guidance, or explanations, see the tooltips throughout the program or consult the updated documentation.
 
 ---
-
 
 Thank you for using Hector!
