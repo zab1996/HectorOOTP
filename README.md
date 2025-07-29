@@ -75,28 +75,38 @@ Export player data from OOTP with custom views for **Batters** and **Pitchers**:
 
 ### 1. Create the View in OOTP
 
+Customize your view:
+![Customizeview](screenshots/customize.png)
+
 Include all these columns:
 
-
+![views](screenshots/General.png)
+![views](screenshots/battingratings.png)
+![views](screenshots/pitcherratings.png)
+![views](screenshots/fieldingratings.png)
+![views](screenshots/scoutacc.png)
 
 
 ### 3. Save Views as Global
 
 - Save each view as **Global**
-- Name them **"Hector Batting"** and **"Hector Pitching"** (customize "Hector" if you want)
+![views](screenshots/global.png)
+- Name it as **"Hector All"** (or anything you'd like)
 
 ### 4. Export HTML Files
 
-- Export the Batters view as `batters.html`
-- Export the Pitchers view as `pitchers.html`
+- Export the report to disk. This will open a browser window, hit save as on the browser page and save as`Player List.html` this is the default for OOTP.
+![Export HTML DATA](screenshots/export.png)
+![Export HTML DATA](screenshots/save.png)
 
-![Export HTML DATA](screenshots/hectorexport.png)
-![Export HTML DATA](screenshots/hectorexport2.png)
-![Export HTML DATA](screenshots/hectorexport3.png)
+  
 
 ### 5. Replace Existing Files
 
-- Overwrite the old `batters.html` and `pitchers.html` files in your Hector folder.
+
+- Overwrite the `Player List.html` file in your Hector porgram folder.
+
+![Export HTML DATA](screenshots/overwrite.png)
 
 > Tip:
 > If you see errors or warnings, check your export views and make sure all fields were included.
