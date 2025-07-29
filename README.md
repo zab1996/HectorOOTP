@@ -186,7 +186,7 @@ Include all these Data points/Attributes:
 <details>
 <summary><strong>Pitcher Score Calculation Flowchart</strong></summary>
 
-![Pitcher Score Calculation Flowchart](pitcherflowchart.png)
+![Pitcher Score Calculation Flowchart](pitcherchart.png)
 
 </details>
 
