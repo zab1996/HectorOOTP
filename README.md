@@ -65,12 +65,12 @@ How to adjust the weights:
 ## Hector Data Export Instructions
 [⬆️ Back to Top](#top)
 
-Export player data from OOTP with custom views for **Batters** and **Pitchers**:
+Export player data from OOTP with custom views:
 
 - Data Import Process
-    - Create separate OOTP views for pitching and batting (see screenshots below)
-    - Export each view as HTML
-    - Replace the provided `pitchers.html` and `batters.html`
+    - Create a combined view for All Players (see screenshots below)
+    - Export the view as HTML
+    - Replace the provided `Player List.html`.
     - Click **Reload Data** in Hector for instant refresh
 
 ### 1. Create the View in OOTP
@@ -80,7 +80,7 @@ Customize your view:
 
 ![Customizeview](screenshots/customize.png)
 
-Include all these columns:
+Include all these Data points/Attributes:
 
 ![views](screenshots/General.png)
 ![views](screenshots/battingratings.png)
@@ -89,14 +89,14 @@ Include all these columns:
 ![views](screenshots/scoutacc.png)
 
 
-### 3. Save Views as Global
+### 3. Save View as Global
 
-- Save each view as **Global**
+- Save the view as **Global**
   
 ![views](screenshots/global.png)
 - Name it as **"Hector All"** (or anything you'd like)
 
-### 4. Export HTML Files
+### 4. Export HTML File
 
 - Export the report to disk. This will open a browser window, hit save as on the browser page and save as`Player List.html` this is the default for OOTP.
 
