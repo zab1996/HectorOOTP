@@ -2,28 +2,29 @@
 
 # ⚾ Hector OOTP Analyzer
 
-Hector is a powerful, fully customizable desktop analytics tool for Out of the Park Baseball (OOTP) leagues. Using a clean and modern dark-mode interface, Hector quickly imports exported HTML data and delivers a deep statistical breakdown of every player and team in your league. From customizable scoring formulas and sortable reports to intelligent player highlights and direct Stats+ integration, Hector transforms OOTP exports into actionable insights for both casual GMs and competitive online leagues. Whether you’re rebuilding, targeting trades, or looking for hidden gems, Hector gives you the tools to evaluate, filter, and compare player and team performance—your way.
+Hector is a powerful and fully customizable desktop analytics tool for Out of the Park Baseball (OOTP) leagues. Built for both casual GMs and competitive online leagues, Hector imports your exported HTML data and delivers clear, actionable insights with a modern dark-mode UI. Get in-depth, sortable breakdowns for every player and team, intelligent highlights, advanced filters, and direct Stats+ integration—helping you evaluate talent, find hidden gems, and make smart roster moves.
 
 ---
 
 ## 🚀 Table of Contents
 
-- [⬇️ Downloading the Latest Version](#downloading-the-latest-version)
-- [⚙️ Flexible Weighting System](#flexible-weighting-system)
-- [📥 Hector Data Export Instructions](#hector-data-export-instructions)
-- [✨ Features Overview](#features-overview)
-  - [🧮 Core Functionality](#core-functionality)
-  - [🖥️ User Interface Features](#user-interface-features)
-  - [📊 Reporting and Analysis Tools](#reporting-and-analysis-tools)
-  - [📈 Dataset Overview](#dataset-overview)
-  - [🆘 User Assistance](#user-assistance)
-- [🔗 Calculation Flowcharts](#calculationflowcharts)
+- [Downloading the Latest Version](#downloading-the-latest-version)
+- [Flexible Weighting System](#flexible-weighting-system)
+- [Hector Data Export Instructions](#hector-data-export-instructions)
+- [Features Overview](#features-overview)
+  - [Core Functionality](#core-functionality)
+  - [User Interface Features](#user-interface-features)
+  - [Reporting and Analysis Tools](#reporting-and-analysis-tools)
+  - [Dataset Overview](#dataset-overview)
+  - [User Assistance](#user-assistance)
+- [Calculation Flowcharts](#calculation-flowcharts)
 
 ---
 
-## ⬇️ Downloading the Latest Version&nbsp;&nbsp;[⬆️ Back to Top](#top)
+## ⬇️ Downloading the Latest Version
+[⬆️ Back to Top](#top)
 
-You can always grab the newest build of Hector from the **Releases** page:
+Download the newest build of Hector from the **Releases** page:
 
 ➡️ [**Download the latest version here**](../../releases)
 
@@ -35,16 +36,17 @@ You can always grab the newest build of Hector from the **Releases** page:
 <summary><strong>🎬 Showcase: Click to view screenshots of Hector in action</strong></summary>
 
 ![Showcase1](screenshots/showcase1.png)
-![Showcase2](screenshots/showcase2.png) 
-![Showcase3](screenshots/showcase3.png) 
-![Showcase4](screenshots/showcase4.png) 
+![Showcase2](screenshots/showcase2.png)
+![Showcase3](screenshots/showcase3.png)
+![Showcase4](screenshots/showcase4.png)
 ![Showcase5](screenshots/showcase5.png)
 
 </details>
 
 ---
 
-## ⚙️ Flexible Weighting System&nbsp;&nbsp;[⬆️ Back to Top](#top)
+## ⚙️ Flexible Weighting System
+[⬆️ Back to Top](#top)
 
 **Editing Player Weights**
 
@@ -53,129 +55,136 @@ You can always grab the newest build of Hector from the **Releases** page:
 
 **How to adjust the weights:**
 
-1. Open either `pitcher_weights.py` or `batter_weights.py` in a text editor (preferably Notepad++ or Visual Studio Code).
-2. Modify the numeric values in the `section_weights` dictionary — higher values give more importance to that attribute.
-3. Save these files in the program folder where the `.exe` is located.
-4. Hit the **Reload Data** button in the program.
+1. Open `pitcher_weights.py` or `batter_weights.py` in a text editor (e.g., Notepad++ or VS Code).
+2. Modify values in the `section_weights` dictionary — higher = more influence on the score.
+3. Save your changes in the program folder alongside the `.exe`.
+4. In Hector, click the **Reload Data** button to apply changes immediately.
 
 ---
 
-## 📥 Hector Data Export Instructions&nbsp;&nbsp;[⬆️ Back to Top](#top)
+## 📥 Hector Data Export Instructions
+[⬆️ Back to Top](#top)
 
-To ensure Hector works correctly, you need to export player data from OOTP with custom views for Batters and Pitchers using the specified attributes. Follow these steps carefully:
+Export player data from OOTP with custom views for **Batters** and **Pitchers**:
 
 - **Data Import Process**
-    - Create separate OOTP views for pitching and batting
-    - Export both as HTML
-    - Replace `pitchers.html` and `batters.html`
-    - Click **Reload Data** for instant updates
+    - Create separate OOTP views for pitching and batting (see screenshots below)
+    - Export each view as HTML
+    - Replace the provided `pitchers.html` and `batters.html`
+    - Click **Reload Data** in Hector for instant refresh
 
-### 📝 1. Create the Batters View&nbsp;&nbsp;[⬆️ Back to Top](#top)
+### 📝 1. Create the Batters View
+[⬆️ Back to Top](#top)
 
-Include all the attributes shown in the following screenshots exactly as displayed:
+Include all these columns:
 
 ![Customize](screenshots/Customize.png)  
 ![General Batting](screenshots/generalbatting.png)  
 ![Batting Ratings](screenshots/battingratings.png)  
 ![Fielding Ratings](screenshots/fieldingratingsnew.png)  
-![Scouting Accuracy](screenshots/scoutingacc.png)  
+![Scouting Accuracy](screenshots/scoutingacc.png)
 
-### 📝 2. Create the Pitchers View&nbsp;&nbsp;[⬆️ Back to Top](#top)
+### 📝 2. Create the Pitchers View
+[⬆️ Back to Top](#top)
 
-Include all the attributes shown in these screenshots exactly as displayed:
+Match these columns:
 
 ![General Pitching](screenshots/generalpitching.png)  
 ![Pitcher Ratings](screenshots/pitcherratings.png)  
-![Scouting Accuracy](screenshots/scoutingacc.png)  
+![Scouting Accuracy](screenshots/scoutingacc.png)
 
-### 💾 3. Save Views as Global&nbsp;&nbsp;[⬆️ Back to Top](#top)
+### 💾 3. Save Views as Global
+[⬆️ Back to Top](#top)
 
-- Save each view as **Global**.
-- Name them **"Hector Batting"** and **"Hector Pitching"** (you can replace "Hector" with any preferred name).
+- Save each view as **Global**
+- Name them **"Hector Batting"** and **"Hector Pitching"** (customize "Hector" if you want)
 
-### 💾 4. Export HTML Files&nbsp;&nbsp;[⬆️ Back to Top](#top)
+### 💾 4. Export HTML Files
+[⬆️ Back to Top](#top)
 
-- Export the Batters view as `batters.html`  
+- Export the Batters view as `batters.html`
 - Export the Pitchers view as `pitchers.html`
 
 ![Export HTML DATA](screenshots/hectorexport.png)  
 ![Export HTML DATA](screenshots/hectorexport2.png)  
-![Export HTML DATA](screenshots/hectorexport3.png)   
+![Export HTML DATA](screenshots/hectorexport3.png)
 
-### 🔁 5. Replace Existing Files&nbsp;&nbsp;[⬆️ Back to Top](#top)
+### 🔁 5. Replace Existing Files
+[⬆️ Back to Top](#top)
 
-- Replace the files inside the `Hector` folder with your new `batters.html` and `pitchers.html` files.
+- Overwrite the old `batters.html` and `pitchers.html` files in your Hector folder.
 
-> Make sure these steps are followed carefully to avoid missing fields or errors when running Hector.  
-> If you encounter any warnings or issues, double-check your export views to ensure all required attributes are included.
+> **Tip:**  
+> If you see errors or warnings, check your export views and make sure all fields were included.
 
 ---
 
-## ✨ Features Overview&nbsp;&nbsp;[⬆️ Back to Top](#top)
+## ✨ Features Overview
+[⬆️ Back to Top](#top)
 
-### 🧮 Core Functionality&nbsp;&nbsp;[⬆️ Back to Top](#top)
+### 🧮 Core Functionality
+[⬆️ Back to Top](#top)
 
-- **Advanced Statistical Calculations**
-    - Pitch Scoring: Individual pitch ratings combined with weighted formulas
-    - Offensive Scoring: Batting performance metrics for position players
-    - Current vs. Potential Analysis: Separate calculations for present ability and future projection
-    - Total Player Value: Comprehensive score combining all relevant attributes for optimal player evaluation
+- **Advanced Calculations**
+    - Weighted scoring for both pitchers and batters, fully customizable
+    - Current vs. potential talent projections
+    - Comprehensive "total value" scores for comparison
 
-- **Player Information Display**
-    - Durability assessment (injury proneness)
-    - Scout accuracy from your scout
-    - Player handedness (pitchers: throwing hand; hitters: bats)
-    - Pitcher specifications (velocity, number of pitches, ground/fly ratio)
+- **Scouting Details**
+    - Injury proneness (Durability/Prone)
+    - Scout accuracy confidence
+    - Player handedness (throw/bat)
+    - Pitcher velocity, repertoire count, ground/fly ball ratio
 
-### 🖥️ User Interface Features&nbsp;&nbsp;[⬆️ Back to Top](#top)
+### 🖥️ User Interface Features
+[⬆️ Back to Top](#top)
 
-- **Filtering and Navigation**
-    - Position-based filtering: Dedicated checkboxes for starters, relievers, and all batter positions
-    - Grouped Position Logic: Infield/Outfield group selection with intelligent show/hide
-    - Double-Click Integration: Direct links to your league's Stats+ page for player analysis (editable via config file)
+- **Filtering & Navigation**
+    - Easy position-based filters (SP, RP, all batting roles)
+    - Infield/Outfield group toggles for mass selection
+    - Double-click player names to open their Stats+ league page (configurable via config file)
 
-- **Advanced Search Capabilities**
-    - Team Filtering: Search by organization (e.g., `ATL`, `BOS`)
-    - Position Filtering: Filter by roles (e.g., `2B`, `SP`)
-    - Age-Based Queries: Use `<`, `>`, `>=`, `<=` for age filtering (`<30`, `>25`, `>=21`)
-    - Combined Searches: Multi-criteria support (`ATL 2B <30`, `SP >25`)
+- **Smart Search**
+    - Filter by team (`ATL` etc.), position, and age (e.g., `<30`, `>25`)
+    - Chain filters (e.g., `ATL 2B <30`)
 
-- **Intelligent Player Highlighting**
-    - Relief-to-Starter Candidates: Relievers with 3+ pitches and stamina ≥50
-    - Position Flexibility:
-        - 1B who can play 3B (Range ≥50, Arm ≥55, Error ≥45)
-        - 2B that could be trained for SS (Range ≥60, Arm ≥50, Error ≥50, DP ≥50)
-    - Interactive Tooltips: Detailed explanations for each highlight
+- **Intelligent Highlighting**
+    - Flags RPs with 3+ pitches and stamina ≥50 as SP candidates
+    - 1B who qualify at 3B: Range ≥50, Arm ≥55, Error ≥45
+    - 2B meeting criteria for SS training: Range ≥60, Arm ≥50, Error ≥50, DP ≥50
+    - Tooltips explain all highlight rules
 
-### 📊 Reporting and Analysis Tools&nbsp;&nbsp;[⬆️ Back to Top](#top)
+### 📊 Reporting and Analysis Tools
+[⬆️ Back to Top](#top)
 
 - **Quick Reports**
-    - Top Performers by Position:
-        - Top 10 batters per defensive position
-        - Top 20 pitchers by SP/RP
-    - Secondary Position Analysis: Batters with ≥50 fielding for non-primary positions (when secondary checkbox on)
-    - Sortable Data Views: Columns are sortable, ascending/descending
+    - Top 10 batters at each position
+    - Top 20 pitchers (per SP/RP)
+    - Batters with ≥50 at secondary positions can be included with one click
+    - All data columns sortable ascending/descending
 
-- **Team-Level Analysis**
-    - Team tab shows combined scores for each organization
-    - Compare SP/RP current scores, team pitching, SP/RP potential, team pitching potential
-    - Offensive production (current and future), defense, and total team score
+- **Team Evaluations**
+    - See each team's SP/RP current & potential scores, combined pitching, offense, defense, and total rating
 
-### 📈 Dataset Overview&nbsp;&nbsp;[⬆️ Back to Top](#top)
+### 📈 Dataset Overview
+[⬆️ Back to Top](#top)
 
-- **Population Breakdown**: Number of pitchers and batters (by role/position)
-- **Performance Benchmarks**: Average total score by SP, RP, and batter
-- **Positional Distribution**: How talent spreads across all defensive positions
+- **At-a-Glance Stats**
+    - Total and breakdown counts by role and position
+    - Average scores for SP, RP, and batters
+    - Visual display of positional talent spread
 
-### 🆘 User Assistance&nbsp;&nbsp;[⬆️ Back to Top](#top)
+### 🆘 User Assistance
+[⬆️ Back to Top](#top)
 
-- Tooltips on all calculations (hover for explanations)
-- Manual data/weights reload at any time
-- Interactive help throughout the interface
+- Hover tooltips for every calculated metric
+- Click **Reload Data** to refresh at any time
+- Inline help and error warnings if data is missing
 
 ---
 
-## 🔗 Calculation Flowcharts&nbsp;&nbsp;[⬆️ Back to Top](#top)
+## 🔗 Calculation Flowcharts
+[⬆️ Back to Top](#top)
 
 <details>
 <summary><strong>Pitcher Score Calculation Flowchart</strong></summary>
@@ -199,6 +208,7 @@ Include all the attributes shown in these screenshots exactly as displayed:
 </details>
 
 ---
-> For issues, guidance, or explanations, see the tooltips throughout the program or consult the updated documentation.
+
+> For issues, guidance, or detailed explanations, explore the program's tooltips or consult the full documentation.
 
 Thank you for using Hector!
