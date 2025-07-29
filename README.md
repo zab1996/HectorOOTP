@@ -1,6 +1,6 @@
-# Hector OOTP Player Analyzer 
+# Hector OOTP Analyzer
 
-Hector is a customizable OOTP (Out of the Park Baseball) program featuring a modern, dark-themed  GUI that analyzes player data from exported HTML files.
+Hector is a powerful, fully customizable desktop analytics tool for Out of the Park Baseball (OOTP) leagues. Using a clean and modern dark-mode interface, Hector quickly imports exported HTML data and delivers a deep statistical breakdown of every player and team in your league. From customizable scoring formulas and sortable reports to intelligent player highlights and direct Stats+ integration, Hector transforms OOTP exports into actionable insights for both casual GMs and competitive online leagues. Whether you’re rebuilding, targeting trades, or looking for hidden gems, Hector gives you the tools to evaluate, filter, and compare player and team performance—your way.
 
 ## Downloading the Latest Version
 
@@ -11,6 +11,7 @@ You can always grab the newest build of Hector from the **Releases** page:
 1. Download the ZIP for the latest release.  
 2. Extract it to a folder of your choice.  
 3. Run the executable (or use Python if running from source).
+
 <details>
 <summary><strong>🎬 Showcase: Click to view screenshots of Hector in action</strong></summary>
 
@@ -19,27 +20,34 @@ You can always grab the newest build of Hector from the **Releases** page:
 ![Showcase3](screenshots/showcase3.png) 
 ![Showcase4](screenshots/showcase4.png) 
 ![Showcase5](screenshots/showcase5.png) 
+
 </details>
-
-
-# Editing Player Weights
-
-Hector’s scoring system is **fully customizable**.  
-
-- Pitcher scoring weights are defined in `pitcher_weights.py`.  
-- Batter scoring weights are defined in `batter_weights.py`.  
-
-To adjust how different stats affect player scores:  
-1. Open either `pitcher_weights.py` or `batter_weights.py` in a text editor(preferably Notepad++ or Visual Studio code).  
-2. Modify the numeric values in the `section_weights` dictionary — higher values give more importance to that attribute.  
-3. Save these files in the program folder where the `.exe` is located.  
-4. Hit the Reload Data button in the program.
 
 ---
 
-# Hector Data Export Instructions
+## Flexible Weighting System
+
+**Editing Player Weights**
+    - `pitcher_weights.py`: Set importance of pitching attributes
+    - `batter_weights.py`: Set importance of hitting/defense/baserunning
+**How to adjust the weights:**
+
+1. Open either `pitcher_weights.py` or `batter_weights.py` in a text editor (preferably Notepad++ or Visual Studio Code).
+2. Modify the numeric values in the `section_weights` dictionary — higher values give more importance to that attribute.
+3. Save these files in the program folder where the `.exe` is located.
+4. Hit the **Reload Data** button in the program.
+
+---
+
+## Hector Data Export Instructions
 
 To ensure Hector works correctly, you need to export player data from OOTP with custom views for Batters and Pitchers using the specified attributes. Follow these steps carefully:
+
+- **Data Import Process**
+    - Create separate OOTP views for pitching and batting
+    - Export both as HTML
+    - Replace `pitchers.html` and `batters.html`
+    - Click **Reload Data** for instant updates
 
 ### 1. Create the Batters View
 
@@ -61,11 +69,13 @@ Include all the attributes shown in these screenshots exactly as displayed:
 
 ### 3. Save Views as Global
 
-- Save each view as **Global**.  
-- Name them **“Hector Batting”** and **“Hector Pitching”** (you can replace "Hector" with any preferred name).
+- Save each view as **Global**.
+- Name them **"Hector Batting"** and **"Hector Pitching"** (you can replace "Hector" with any preferred name).
 
 ### 4. Export HTML Files
-While you can have batters in the pitchers html and pitchers in the batters html it's generally better to make sure after setting your new view, to match the position to the file you're exporting.(Ex. POSITION All Batters when exporting the batters.html)
+
+While you can have batters in the pitchers HTML and pitchers in the batters HTML, it's generally better to make sure after setting your new view, to match the position to the file you're exporting. (Ex. POSITION All Batters when exporting the batters.html)
+
 - Export the Batters view as `batters.html`  
 - Export the Pitchers view as `pitchers.html`
 
@@ -77,89 +87,76 @@ While you can have batters in the pitchers html and pitchers in the batters html
 
 - Replace the files inside the `Hector` folder with your new `batters.html` and `pitchers.html` files.
 
----
-
-Make sure these steps are followed carefully to avoid missing fields or errors when running Hector.
-
-If you encounter any warnings or issues, double-check your export views to ensure all required attributes are included.
+> Make sure these steps are followed carefully to avoid missing fields or errors when running Hector.  
+> If you encounter any warnings or issues, double-check your export views to ensure all required attributes are included.
 
 ---
-# Features
 
-## Modern Tkinter GUI
-- Dark-themed interface with customized fonts and colors for readability.  
-- Responsive tabbed layout with views for **Pitchers**, **Batters**, and **Teams**.
-- Sidebar navigation: Position filters and report actions are now in a modern vertical sidebar with plain frames and clearly labeled section headers.
-- Search bars with live filtering and integrated clear ("✕") buttons. Supports advanced syntax: `<`, `>`, `<=`, `>=`, `=` for age filtering like `1b <25` or `=20`.
-- Position filters with multi-select checkboxes and quick "Select All" / "Clear All" options.
-- Sortable tables with custom sort logic for special columns (e.g., velocity ranges, durability categories).  
-- **Sortable “Show All” mode and grouped Top N modes for batters and pitchers, with live-updating filters by age, position, or search.**
-- Sorting is disabled in Top N mode (for group/rank integrity), re-enabled in full-table mode.
-- **Column widths have been optimized for important fields** (team names, ages, numeric stats) for improved readability out-of-the-box.
-- Automatic sorting on startup by total score in pitchers, batters, and teams tabs.
-- Double-click player rows to open detailed stats in an external web browser, with URLs configurable via a league config file (allowing compatibility with various Stats+ leagues).
-- Manual "Reload Data" button to refresh HTML data and Pitcher/Batter weights without restarting the app.
-- Added vertical and horizontal scrollbars to pitcher and batter tables for improved navigation, ensuring consistent dark theming.
-- General visual and UI improvements, cleaner layouts, and consistent control spacing across all tabs.
+## Features Overview
 
-## Table Tooltips & Guidance
-- **Column header tooltips:** Every table column in all tabs (Batters, Pitchers, Teams) has a hover tooltip with clear, consistent explanations.
-- **Stat explanation tooltips:** Special tooltips clarify the differences between *potential* and *current* ratings in team/player calculations.
-- All Quick Report and Show All buttons now include centralized tooltips with explicit guidance for using text/age filters.
+### Core Functionality
 
-## Data Visualization & Highlighting
-- **Automatic row highlights (classic/Show All mode only):**
-  - Highlights RP (relief pitchers) with starter (SP) potential (STM ≥ 50 & ≥ 3 pitches).
-  - Highlights 1B ready for 3B and 2B ready for SS, based on defensive stats.
-- Highlighting is suppressed in grouped Top N by Position modes for clarity.
+- **Advanced Statistical Calculations**
+    - Pitch Scoring: Individual pitch ratings combined with weighted formulas
+    - Offensive Scoring: Batting performance metrics for position players
+    - Current vs. Potential Analysis: Separate calculations for present ability and future projection
+    - Total Player Value: Comprehensive score combining all relevant attributes for optimal player evaluation
 
-## Quick Reports & Top N Views
-- Fast, live-updating “Top N by Position” leaderboards:
-  - Batters: “Top 10 Batters by Position (Total Score)”
-  - Pitchers: “Top 20 Pitchers by Position (Total Score)”
-  - Results group the top N players by position (e.g., Top 10 2B, Top 20 SP) with separator rows and a **Rank** column.
-  - Top N tables update instantly as you filter/search.
-  - "Show All" button always restores the complete sortable list.
-- Unified styling between “Filter by Position” and “Quick Reports”—no redundant headers or nested frames.
-- **Top N tables feature wider columns for improved readability.**
+- **Player Information Display**
+    - Durability assessment (injury proneness)
+    - Scout accuracy from your scout
+    - Player handedness (pitchers: throwing hand; hitters: bats)
+    - Pitcher specifications (velocity, number of pitches, ground/fly ratio)
 
-## Data Loading, Scoring & Aggregation
+### User Interface Features
 
-### Pitchers
-- Parses local `pitchers.html` files using BeautifulSoup to extract detailed stats.  
-- Uses customizable `pitcher_weights.py` for fully adjustable attribute scoring.
-- Calculates total pitching score by combining core skills (Stuff, Movement, Control), potential scores, individual pitch type scores, velocity, stamina, holds, ground/fly %, scout accuracy and more.
-- **Pitching strength is now split into “Current” and “Potential” columns** for finer-grained team/league analysis.
-- Penalties applied for starting pitchers with low pitch counts or stamina.
-- Distinct counts and average total scores for SP and RP.
+- **Filtering and Navigation**
+    - Position-based filtering: Dedicated checkboxes for starters, relievers, and all batter positions
+    - Grouped Position Logic: Infield/Outfield group selection with intelligent show/hide
+    - Double-Click Integration: Direct links to your league's Stats+ page for player analysis (editable via config file)
 
-### Batters
-- Parses local `batters.html` using BeautifulSoup for all supported OOTP exports.
-- **Current offense, potential offense, and defensive scores now appear as distinct team stats**, not just summed.
-- Calculates offense by position, defense by role (C, IF, OF), and weighted speed/stealing/running.
-- **Separates current and potential batting offense**; both are scored for stronger player and team breakdowns.
-- Star ratings (overall, potential) are extracted and shown.
-- Combines offense and defense for a comprehensive total rating.
+- **Advanced Search Capabilities**
+    - Team Filtering: Search by organization (e.g., `ATL`, `BOS`)
+    - Position Filtering: Filter by roles (e.g., `2B`, `SP`)
+    - Age-Based Queries: Use `<`, `>`, `>=`, `<=` for age filtering (`<30`, `>25`, `>=21`)
+    - Combined Searches: Multi-criteria support (`ATL 2B <30`, `SP >25`)
 
-### Teams
-- Enhanced calculations: Team stat and ranking computations are now strictly accurate and consistent.
-- **Total Team Score uses only current pitching, current offense, and defense—reflecting actual team strength, not just projected growth.**
-- Batter and pitcher contributions are computed in line with their metrics and weights.
+- **Intelligent Player Highlighting**
+    - Relief-to-Starter Candidates: Relievers with 3+ pitches and stamina ≥50
+    - Position Flexibility:
+        - 1B who can play 3B (Range ≥50, Arm ≥55, Error ≥45)
+        - 2B that could be trained for SS (Range ≥60, Arm ≥50, Error ≥50, DP ≥50)
+    - Interactive Tooltips: Detailed explanations for each highlight
 
-## Usability, Architecture & Customization
-- **Sidebar and report UI overhaul**: vertical layouts; clear labels using plain `ttk.Labels`, not LabelFrames.
-- Reorganized code: improved lifecycle management, modularized tab/data loaders, and defined callbacks for reliability.
-- **Fully customizable scoring weights**: Just edit `pitcher_weights.py` and `batter_weights.py` and reload for immediate effect.
-- Improved error messages and tool organization.
-- Editable double-click logic (player page URLs can be changed in the config file).
-- Tooltips and improved documentation on all major functions and UI elements.
-- Cleaner comments throughout for maintainers.
-- **Visually cleaner layouts and unified spacing** across all tabs.
+### Reporting and Analysis Tools
 
----
+- **Quick Reports**
+    - Top Performers by Position:
+        - Top 10 batters per defensive position
+        - Top 20 pitchers by SP/RP
+    - Secondary Position Analysis: Batters with ≥50 fielding for non-primary positions (when secondary checkbox on)
+    - Sortable Data Views: Columns are sortable, ascending/descending
+
+- **Team-Level Analysis**
+    - Team tab shows combined scores for each organization
+    - Compare SP/RP current scores, team pitching, SP/RP potential, team pitching potential
+    - Offensive production (current and future), defense, and total team score
+
+### Dataset Overview
+
+- **Population Breakdown**: Number of pitchers and batters (by role/position)
+- **Performance Benchmarks**: Average total score by SP, RP, and batter
+- **Positional Distribution**: How talent spreads across all defensive positions
+
+### User Assistance
+
+- Tooltips on all calculations (hover for explanations)
+- Manual data/weights reload at any time
+- Interactive help throughout the interface
 
 > For issues, guidance, or explanations, see the tooltips throughout the program or consult the updated documentation.
 
+---
+
 
 Thank you for using Hector!
-
