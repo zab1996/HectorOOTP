@@ -22,7 +22,6 @@ Hector is a powerful and fully customizable desktop analytics tool for Out of th
 ---
 
 ## Downloading the Latest Version
-[⬆️ Back to Top](#top)
 
 Download the newest build of Hector from the **Releases** page:
 
