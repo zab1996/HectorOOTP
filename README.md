@@ -105,7 +105,7 @@ Include all these Data points/Attributes:
 
   
 
-### 5. Replace Existing Files
+### 5. Replace The Existing File
 
 
 - Overwrite the `Player List.html` file in your Hector program folder. Restart the program or hit the Reload Button to refresh the data.
