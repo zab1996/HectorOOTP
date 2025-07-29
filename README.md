@@ -17,7 +17,7 @@ Hector is a powerful, fully customizable desktop analytics tool for Out of the P
   - [📊 Reporting and Analysis Tools](#reporting-and-analysis-tools)
   - [📈 Dataset Overview](#dataset-overview)
   - [🆘 User Assistance](#user-assistance)
-- [🔗 Calculation Flowcharts](#calculation-flowcharts)
+- [🔗 Calculation Flowcharts](#calculationflowcharts)
 
 ---
 
