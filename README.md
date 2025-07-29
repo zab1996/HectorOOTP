@@ -1,4 +1,6 @@
-# Hector OOTP Analyzer
+<a name="top"></a>
+
+# ⚾ Hector OOTP Analyzer
 
 Hector is a powerful, fully customizable desktop analytics tool for Out of the Park Baseball (OOTP) leagues. Using a clean and modern dark-mode interface, Hector quickly imports exported HTML data and delivers a deep statistical breakdown of every player and team in your league. From customizable scoring formulas and sortable reports to intelligent player highlights and direct Stats+ integration, Hector transforms OOTP exports into actionable insights for both casual GMs and competitive online leagues. Whether you’re rebuilding, targeting trades, or looking for hidden gems, Hector gives you the tools to evaluate, filter, and compare player and team performance—your way.
 
@@ -6,19 +8,20 @@ Hector is a powerful, fully customizable desktop analytics tool for Out of the P
 
 ## 🚀 Table of Contents
 
-- [Downloading the Latest Version](#downloading-the-latest-version)
-- [Flexible Weighting System](#flexible-weighting-system)
-- [Hector Data Export Instructions](#hector-data-export-instructions)
-- [Features Overview](#features-overview)
-  - [Core Functionality](#core-functionality)
-  - [User Interface Features](#user-interface-features)
-  - [Reporting and Analysis Tools](#reporting-and-analysis-tools)
-  - [Dataset Overview](#dataset-overview)
-  - [User Assistance](#user-assistance)
+- [⬇️ Downloading the Latest Version](#downloading-the-latest-version)
+- [⚙️ Flexible Weighting System](#flexible-weighting-system)
+- [📥 Hector Data Export Instructions](#hector-data-export-instructions)
+- [✨ Features Overview](#features-overview)
+  - [🧮 Core Functionality](#core-functionality)
+  - [🖥️ User Interface Features](#user-interface-features)
+  - [📊 Reporting and Analysis Tools](#reporting-and-analysis-tools)
+  - [📈 Dataset Overview](#dataset-overview)
+  - [🆘 User Assistance](#user-assistance)
+- [🔗 Calculation Flowcharts](#calculation-flowcharts)
 
 ---
 
-## Downloading the Latest Version
+## ⬇️ Downloading the Latest Version&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 You can always grab the newest build of Hector from the **Releases** page:
 
@@ -35,17 +38,17 @@ You can always grab the newest build of Hector from the **Releases** page:
 ![Showcase2](screenshots/showcase2.png) 
 ![Showcase3](screenshots/showcase3.png) 
 ![Showcase4](screenshots/showcase4.png) 
-![Showcase5](screenshots/showcase5.png) 
+![Showcase5](screenshots/showcase5.png)
 
 </details>
 
 ---
 
-## Flexible Weighting System
+## ⚙️ Flexible Weighting System&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 **Editing Player Weights**
 
-- `pitcher_weights.py`: Set importance of pitching attributes
+- `pitcher_weights.py`: Set importance of pitching attributes  
 - `batter_weights.py`: Set importance of hitting/defense/baserunning
 
 **How to adjust the weights:**
@@ -57,7 +60,7 @@ You can always grab the newest build of Hector from the **Releases** page:
 
 ---
 
-## Hector Data Export Instructions
+## 📥 Hector Data Export Instructions&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 To ensure Hector works correctly, you need to export player data from OOTP with custom views for Batters and Pitchers using the specified attributes. Follow these steps carefully:
 
@@ -67,7 +70,7 @@ To ensure Hector works correctly, you need to export player data from OOTP with 
     - Replace `pitchers.html` and `batters.html`
     - Click **Reload Data** for instant updates
 
-### 1. Create the Batters View
+### 📝 1. Create the Batters View&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 Include all the attributes shown in the following screenshots exactly as displayed:
 
@@ -77,7 +80,7 @@ Include all the attributes shown in the following screenshots exactly as display
 ![Fielding Ratings](screenshots/fieldingratingsnew.png)  
 ![Scouting Accuracy](screenshots/scoutingacc.png)  
 
-### 2. Create the Pitchers View
+### 📝 2. Create the Pitchers View&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 Include all the attributes shown in these screenshots exactly as displayed:
 
@@ -85,14 +88,12 @@ Include all the attributes shown in these screenshots exactly as displayed:
 ![Pitcher Ratings](screenshots/pitcherratings.png)  
 ![Scouting Accuracy](screenshots/scoutingacc.png)  
 
-### 3. Save Views as Global
+### 💾 3. Save Views as Global&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 - Save each view as **Global**.
 - Name them **"Hector Batting"** and **"Hector Pitching"** (you can replace "Hector" with any preferred name).
 
-### 4. Export HTML Files
-
-While you can have batters in the pitchers HTML and pitchers in the batters HTML, it's generally better to make sure after setting your new view, to match the position to the file you're exporting. (Ex. POSITION All Batters when exporting the batters.html)
+### 💾 4. Export HTML Files&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 - Export the Batters view as `batters.html`  
 - Export the Pitchers view as `pitchers.html`
@@ -101,7 +102,7 @@ While you can have batters in the pitchers HTML and pitchers in the batters HTML
 ![Export HTML DATA](screenshots/hectorexport2.png)  
 ![Export HTML DATA](screenshots/hectorexport3.png)   
 
-### 5. Replace Existing Files
+### 🔁 5. Replace Existing Files&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 - Replace the files inside the `Hector` folder with your new `batters.html` and `pitchers.html` files.
 
@@ -110,9 +111,9 @@ While you can have batters in the pitchers HTML and pitchers in the batters HTML
 
 ---
 
-## Features Overview
+## ✨ Features Overview&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
-### Core Functionality
+### 🧮 Core Functionality&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 - **Advanced Statistical Calculations**
     - Pitch Scoring: Individual pitch ratings combined with weighted formulas
@@ -126,7 +127,7 @@ While you can have batters in the pitchers HTML and pitchers in the batters HTML
     - Player handedness (pitchers: throwing hand; hitters: bats)
     - Pitcher specifications (velocity, number of pitches, ground/fly ratio)
 
-### User Interface Features
+### 🖥️ User Interface Features&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 - **Filtering and Navigation**
     - Position-based filtering: Dedicated checkboxes for starters, relievers, and all batter positions
@@ -146,7 +147,7 @@ While you can have batters in the pitchers HTML and pitchers in the batters HTML
         - 2B that could be trained for SS (Range ≥60, Arm ≥50, Error ≥50, DP ≥50)
     - Interactive Tooltips: Detailed explanations for each highlight
 
-### Reporting and Analysis Tools
+### 📊 Reporting and Analysis Tools&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 - **Quick Reports**
     - Top Performers by Position:
@@ -160,20 +161,44 @@ While you can have batters in the pitchers HTML and pitchers in the batters HTML
     - Compare SP/RP current scores, team pitching, SP/RP potential, team pitching potential
     - Offensive production (current and future), defense, and total team score
 
-### Dataset Overview
+### 📈 Dataset Overview&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 - **Population Breakdown**: Number of pitchers and batters (by role/position)
 - **Performance Benchmarks**: Average total score by SP, RP, and batter
 - **Positional Distribution**: How talent spreads across all defensive positions
 
-### User Assistance
+### 🆘 User Assistance&nbsp;&nbsp;[⬆️ Back to Top](#top)
 
 - Tooltips on all calculations (hover for explanations)
 - Manual data/weights reload at any time
 - Interactive help throughout the interface
 
-> For issues, guidance, or explanations, see the tooltips throughout the program or consult the updated documentation.
+---
+
+## 🔗 Calculation Flowcharts&nbsp;&nbsp;[⬆️ Back to Top](#top)
+
+<details>
+<summary><strong>Pitcher Score Calculation Flowchart</strong></summary>
+
+![Pitcher Score Calculation Flowchart](pitcherflowchart.png)
+
+</details>
+
+<details>
+<summary><strong>Batter Score Calculation Flowchart</strong></summary>
+
+![Batter Score Calculation Flowchart](batterflowchart.png)
+
+</details>
+
+<details>
+<summary><strong>Team Score Calculation Flowchart</strong></summary>
+
+![Team Score Calculation Flowchart](teamsflowchart.png)
+
+</details>
 
 ---
+> For issues, guidance, or explanations, see the tooltips throughout the program or consult the updated documentation.
 
 Thank you for using Hector!
