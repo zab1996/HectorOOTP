@@ -186,21 +186,21 @@ Include all these Data points/Attributes:
 <details>
 <summary><strong>Pitcher Score Calculation Flowchart</strong></summary>
 
-![Pitcher Score Calculation Flowchart](pitcherchart.png)
+![Pitcher Score Calculation Flowchart](screenshots/pitcherchart.png)
 
 </details>
 
 <details>
 <summary><strong>Batter Score Calculation Flowchart</strong></summary>
 
-![Batter Score Calculation Flowchart](batterflowchart.png)
+![Batter Score Calculation Flowchart](screenshots/batterflowchart.png)
 
 </details>
 
 <details>
 <summary><strong>Team Score Calculation Flowchart</strong></summary>
 
-![Team Score Calculation Flowchart](teamsflowchart.png)
+![Team Score Calculation Flowchart](screenshots/teamsflowchart.png)
 
 </details>
 
