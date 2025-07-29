@@ -73,23 +73,12 @@ Export player data from OOTP with custom views for **Batters** and **Pitchers**:
     - Replace the provided `pitchers.html` and `batters.html`
     - Click **Reload Data** in Hector for instant refresh
 
-### 1. Create the Batters View
+### 1. Create the View in OOTP
 
 Include all these columns:
 
-![Customize](screenshots/Customize.png)
-![General Batting](screenshots/generalbatting.png)
-![Batting Ratings](screenshots/battingratings.png)
-![Fielding Ratings](screenshots/fieldingratingsnew.png)
-![Scouting Accuracy](screenshots/scoutingacc.png)
 
-### 2. Create the Pitchers View
 
-Match these columns:
-
-![General Pitching](screenshots/generalpitching.png)
-![Pitcher Ratings](screenshots/pitcherratings.png)
-![Scouting Accuracy](screenshots/scoutingacc.png)
 
 ### 3. Save Views as Global
 
