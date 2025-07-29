@@ -76,6 +76,8 @@ Export player data from OOTP with custom views for **Batters** and **Pitchers**:
 ### 1. Create the View in OOTP
 
 Customize your view:
+
+
 ![Customizeview](screenshots/customize.png)
 
 Include all these columns:
@@ -90,12 +92,15 @@ Include all these columns:
 ### 3. Save Views as Global
 
 - Save each view as **Global**
+  
 ![views](screenshots/global.png)
 - Name it as **"Hector All"** (or anything you'd like)
 
 ### 4. Export HTML Files
 
 - Export the report to disk. This will open a browser window, hit save as on the browser page and save as`Player List.html` this is the default for OOTP.
+
+  
 ![Export HTML DATA](screenshots/export.png)
 ![Export HTML DATA](screenshots/save.png)
 
@@ -104,7 +109,7 @@ Include all these columns:
 ### 5. Replace Existing Files
 
 
-- Overwrite the `Player List.html` file in your Hector porgram folder.
+- Overwrite the `Player List.html` file in your Hector program folder. Restart the program or hit the Reload Button to refresh the data.
 
 ![Export HTML DATA](screenshots/overwrite.png)
 
