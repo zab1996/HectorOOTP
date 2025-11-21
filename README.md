@@ -39,6 +39,9 @@ Download the newest build of Hector from the **Releases** page:
 ![Showcase3](screenshots/showcase3.png)
 ![Showcase4](screenshots/showcase4.png)
 ![Showcase5](screenshots/showcase5.png)
+![Showcase6](screenshots/contracttool.png)
+![Showcase7](screenshots/drafttool.png)
+![Showcase8](screenshots/tradetool.png)
 
 </details>
 
@@ -83,9 +86,11 @@ Include all these Data points/Attributes:
 
 ![views](screenshots/General.png)
 ![views](screenshots/battingratings.png)
+![views](screenshots/battingstats.png)
 ![views](screenshots/pitcherratings.png)
+![views](screenshots/pitcherstats.png)
 ![views](screenshots/fieldingratings.png)
-![views](screenshots/scoutacc.png)
+![views](screenshots/scoutaccnew.png)
 
 
 ### 3. Save View as Global
