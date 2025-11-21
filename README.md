@@ -79,7 +79,6 @@ Export player data from OOTP with custom views:
 
 Customize your view:
 
-
 ![Customizeview](screenshots/customize.png)
 
 Include all these Data points/Attributes:
@@ -92,7 +91,6 @@ Include all these Data points/Attributes:
 ![views](screenshots/fieldingratings.png)
 ![views](screenshots/scoutaccnew.png)
 
-
 ### 3. Save View as Global
 
 - Save the view as **Global**
@@ -104,14 +102,10 @@ Include all these Data points/Attributes:
 
 - Export the report to disk. This will open a browser window, hit save as on the browser page and save as`Player List.html` this is the default for OOTP.
 
-  
 ![Export HTML DATA](screenshots/export.png)
 ![Export HTML DATA](screenshots/save.png)
 
-  
-
 ### 5. Replace The Existing File
-
 
 - Overwrite the `Player List.html` file in your Hector program folder. Restart the program or hit the Reload Button to refresh the data.
 
@@ -131,12 +125,14 @@ Include all these Data points/Attributes:
     - Weighted scoring for both pitchers and batters, fully customizable
     - Current vs. potential talent projections
     - Comprehensive total value scores for comparison
+    - **Draft Comparison Mode**: Toggle to emphasize potential (1.5x) over current performance (0.9x) for prospect evaluation
 
 - Scouting Details
     - Injury proneness (Durability/Prone)
     - Scout accuracy confidence
     - Player handedness (throw/bat)
     - Pitcher velocity, repertoire count, ground/fly ball ratio
+    - Enhanced statistical support: OPS+, wRC+, ERA+, WAR (Batter), WAR (Pitcher), rWAR, SLR, YL, CV
 
 ### User Interface Features
 [⬆️ Back to Top](#top)
@@ -145,6 +141,7 @@ Include all these Data points/Attributes:
     - Easy position-based filters (SP, RP, all batting roles)
     - Infield/Outfield group toggles for mass selection
     - Double-click player names to open their Stats+ league page (configurable via config file)
+    - **Smart stat-based filtering**: OPS+, wRC+, WAR for batters; ERA+, WAR, rWAR for pitchers with age ranges
 
 - Smart Search
     - Filter by team (`ATL` etc.), position, and age (e.g., `<30`, `>25`)
@@ -155,6 +152,7 @@ Include all these Data points/Attributes:
     - 1B who qualify at 3B: Range ≥50, Arm ≥55, Error ≥45
     - 2B meeting criteria for SS training: Range ≥60, Arm ≥50, Error ≥50, DP ≥50
     - Tooltips explain all highlight rules
+    - Dynamic column display showing only relevant stats based on player position
 
 ### Reporting and Analysis Tools
 [⬆️ Back to Top](#top)
@@ -167,6 +165,23 @@ Include all these Data points/Attributes:
 
 - Team Evaluations
     - See each team's SP/RP current & potential scores, combined pitching, offense, defense, and total rating
+
+- **Trade Tool** (v2.3.5+)
+    - Player search with autocomplete for pitchers and batters
+    - Team A vs Team B comparison with value totals
+    - Score normalization between pitchers and batters for fair comparison
+    - Draft pick support with configurable league settings (28 teams, 20 rounds default)
+    - Dynamic draft pick value calculation with exponential decay
+    - Trade summary comparing total values
+    - Player removal functionality
+
+- **Contract Tool** (v2.3.5+)
+    - Player selection and comparison to similar players at their position
+    - Contract suggestions based on comparable salaries and values
+    - Stat-based filtering with age ranges
+    - Position filters with "Compare to all batters" option
+    - Excludes players with 0 games (batters) or 0 innings pitched (pitchers)
+    - Displays Games (G) for batters and Innings Pitched (IP) for pitchers
 
 ### Dataset Overview
 [⬆️ Back to Top](#top)
@@ -182,6 +197,7 @@ Include all these Data points/Attributes:
 - Hover tooltips for every calculated metric
 - Click **Reload Data** to refresh at any time
 - Inline help and error warnings if data is missing
+- **Draft Comparison Mode tooltip** explaining prospect evaluation functionality
 
 ---
 
