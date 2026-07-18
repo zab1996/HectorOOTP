@@ -25,14 +25,6 @@ docker build -t hector-web .
 docker run -p 8080:80 hector-web
 ```
 
-## Deploy / updates
-
-Hosted on **Cloudflare Pages** (static files, no build step).
-
-- Live: [https://hector.ootp-analyzer.uk](https://hector.ootp-analyzer.uk) (also [hector-edf.pages.dev](https://hector-edf.pages.dev))
-- Production branch: `main`
-- Push to `main` → GitHub Action deploys with Wrangler
-
 Optional local deploy: `npx wrangler pages deploy . --project-name=hector`
 
 ## Upload
