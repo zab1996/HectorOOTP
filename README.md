@@ -10,6 +10,49 @@ Scoring and tools run entirely in your browser. Player data stays in **IndexedDB
 
 See the [changelog](#changelog--hector-30-web) below for what changed since Hector 2.4.5 Beta.
 
+<details>
+<summary><strong>Screenshots</strong> (click to expand)</summary>
+
+<br>
+
+**Pitchers** — live filters, scout accuracy, stats Total
+
+![Pitchers table](screenshots/01-pitchers.png)
+
+**Player card** — right-click a row for ratings, percentiles, archetype fits
+
+![Pitcher player card](screenshots/02-player-card-pitcher.png)
+
+![Batter player card](screenshots/03-player-card-batter.png)
+
+**Compare** — side-by-side radar, ratings, and season stats
+
+![Compare radar](screenshots/04-compare-radar.png)
+
+![Compare stats](screenshots/05-compare-stats.png)
+
+**Trade analyzer**
+
+![Trade](screenshots/06-trade.png)
+
+**Contract estimator**
+
+![Contract](screenshots/07-contract.png)
+
+**Team Salary** (More)
+
+![Team Salary](screenshots/08-team-salary.png)
+
+**Hidden Gems** (More)
+
+![Hidden Gems](screenshots/09-hidden-gems.png)
+
+**Glossary**
+
+![Glossary](screenshots/10-glossary.png)
+
+</details>
+
 ## Quick start (local)
 
 ```bash
@@ -24,8 +67,6 @@ Optional Docker (nginx):
 docker build -t hector-web .
 docker run -p 8080:80 hector-web
 ```
-
-Optional local deploy: `npx wrangler pages deploy . --project-name=hector`
 
 ## Upload
 
@@ -43,7 +84,7 @@ All Totals and tools run client-side from your HTML export. Weights are editable
 |------|-------------------------------------|
 | **Pitchers / Batters** | Default **stats Total** (e.g. pitchers: WAR / ERA+ / rWAR / FIP- / HLD; batters: wRC+ / OPS+ / WAR) with sample floors (IP/G → Total 0 below floor). Toggle **ratings Total** for weighted current + potential scout grades. Live filters, percentiles, StatsPlus links. |
 | **Draft** | Separate Draft Class pool; ratings scoring with **potential ×1.5 / current ×0.9** emphasis. |
-| **Player cards** | On Pitchers, Batters, or Draft rows — ratings, percentiles, and archetype fits (Draft cards rank vs the draft class). |
+| **Player cards** | **Right-click** a Pitchers, Batters, or Draft row — ratings, percentiles, and archetype fits (Draft cards rank vs the draft class). |
 | **Your team** | Set your franchise in Options after loading data so your players highlight on Pitchers/Batters and your org on Teams. |
 | **Teams** | Org aggregates of pitching / offense / defense (ratings or stats modes). Optional Team List parks & standings; Avg $/WAR = SLR ÷ WAR (context only). |
 | **Compare** | 2–3 players side-by-side: 20–80 ratings **radar**, season stats + ranks, league percentiles. Optional **Neutral park** (raw rates ÷ park factors from Team List). |
