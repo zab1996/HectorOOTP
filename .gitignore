@@ -9,3 +9,4 @@ Thumbs.db
 *.html.bak
 .wrangler/
 HECTOR_WEB_SUMMARY.txt
+CHANGELOG.md
