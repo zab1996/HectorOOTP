@@ -1,8 +1,7 @@
 # Hector 3.0 Web
 
-Browser-only OOTP / StatsPlus analyzer. Upload HTML exports; scoring and tools run entirely in your browser. Player data stays in **IndexedDB** and settings in **localStorage** — nothing is uploaded to a server for analysis.
+Hector OOTP analyzer has changed to a web page! Instead of having to install a program you can now just visit the **Live site:** [https://hector.zabbyplex.xyz](https://hector.zabbyplex.xyz) or host your own version! On the website you will find instructions on how to setup your views in OOTP to export the proper data for the program Browser-only OOTP analyzer. Scoring and tools run entirely in your browser. Player data stays in **IndexedDB** and settings in **localStorage** — nothing is uploaded to a server for analysis. Thanks to @quarterback for forking the original desktop app into PortalOOTP and giving some fresh ideas to the program! Such as Player cards, Archetypes, League analysis, and stat/rating percentiles.
 
-**Live site:** [https://hector.zabbyplex.xyz](https://hector.zabbyplex.xyz)
 
 See [CHANGELOG.md](CHANGELOG.md) for what changed since Hector 2.4.5 Beta.
 
@@ -21,12 +20,7 @@ docker build -t hector-web .
 docker run -p 8080:80 hector-web
 ```
 
-## Deploy / updates
 
-This repo is hosted on **Cloudflare Pages** (static files, no build step).
-
-- Production branch: `main`
-- After you change the site: `git commit` and `git push` — Pages redeploys automatically
 
 ## Upload
 
