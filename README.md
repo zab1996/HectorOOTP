@@ -10,7 +10,7 @@ To run the app yourself offline, grab **hector-3.0-web.zip** from the [3.0.0 rel
 
 Scoring and tools run entirely in your browser. Player data stays in **IndexedDB** and settings in **localStorage** — nothing is uploaded to a server for analysis. Thanks to @quarterback for forking the original desktop app into PortalOOTP and giving some fresh ideas to the program! Such as Player cards, Archetypes, League analysis, and stat/rating percentiles.
 
-This is an AI coded project and has been since v1, many changes have been made throughout the various version but yeah its still AI slop. Hope you find it interesting still anyways!
+This is an AI coded project and has been since v1, many changes have been made throughout the various versions but yeah its still AI slop. Hope you find it interesting still anyways!
 
 See the [changelog](#changelog--hector-30-web) below for what changed since Hector 2.4.5 Beta.
 
