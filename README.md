@@ -1,4 +1,4 @@
-# Hector 3.0 Web
+# Hector Web
 
 Hector OOTP analyzer has changed to a web page! Instead of having to install a program you can now just visit the **Live site:** [https://hector.ootp-analyzer.uk](https://hector.ootp-analyzer.uk) or host your own version!
 
