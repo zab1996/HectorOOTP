@@ -4,6 +4,8 @@ import {
   createColumnFilter,
   normalizeFilterVal,
   normalizeDuraKey,
+  normalizeBatsKey,
+  normalizeThrowsKey,
   DURA_VALUES,
   BATS_VALUES,
   THROWS_VALUES,
@@ -59,12 +61,14 @@ import { mountCompareSelect, comparePickTd, comparePickTh } from "./compare-sele
     id: "bats",
     title: "Bats",
     values: BATS_VALUES,
+    normalizeKey: normalizeBatsKey,
     onChange: onFilterChange,
   });
   const throwsFilter = createColumnFilter({
     id: "throws",
     title: "Throws",
     values: THROWS_VALUES,
+    normalizeKey: normalizeThrowsKey,
     onChange: onFilterChange,
   });
   const scoutFilter = createColumnFilter({

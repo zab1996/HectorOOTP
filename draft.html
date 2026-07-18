@@ -80,6 +80,8 @@
       createColumnFilter,
       normalizeFilterVal,
       normalizeDuraKey,
+      normalizeBatsKey,
+      normalizeThrowsKey,
       DURA_VALUES,
       BATS_VALUES,
       THROWS_VALUES,
@@ -88,7 +90,7 @@
       duraOptionClass,
       duraClass,
       scoutOptionClass,
-    } from "./static/js/column-filter.js?v=3";
+    } from "./static/js/column-filter.js?v=4";
 
     if (!(await requireData())) throw new Error("redirect");
     const state = await mountShell("draft");
@@ -145,12 +147,14 @@
       id: "bats",
       title: "Bats",
       values: BATS_VALUES,
+      normalizeKey: normalizeBatsKey,
       onChange: onFilterChange,
     });
     const throwsFilter = createColumnFilter({
       id: "throws",
       title: "Throws",
       values: THROWS_VALUES,
+      normalizeKey: normalizeThrowsKey,
       onChange: onFilterChange,
     });
     const scoutFilter = createColumnFilter({

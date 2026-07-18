@@ -1,4 +1,4 @@
-# Hector Web
+# Hector 3.0 Web
 
 Hector OOTP analyzer has changed to a web page! Instead of having to install a program you can now just visit the **Live site:** [https://hector.ootp-analyzer.uk](https://hector.ootp-analyzer.uk) or host your own version!
 
@@ -9,8 +9,6 @@ You can also **Try without building OOTP views:** download [hector-sample-export
 To run the app yourself offline, grab **hector-3.1-web.zip** from the [3.1.0 release](https://github.com/zab1996/HectorOOTP/releases/tag/3.1.0).
 
 Scoring and tools run entirely in your browser. Player data stays in **IndexedDB** and settings in **localStorage** — nothing is uploaded to a server for analysis. Thanks to @quarterback for forking the original desktop app into PortalOOTP and giving some fresh ideas to the program! Such as Player cards, Archetypes, League analysis, and stat/rating percentiles.
-
-This is an AI coded website, and the original program was also AI coded. I'm not smart enough to do this stuff on my own but I hope you get some fun/value outta my AI slop.
 
 See the [changelog](#changelog--hector-30-web) below for what changed since Hector 2.4.5 Beta.
 

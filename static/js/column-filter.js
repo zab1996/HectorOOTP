@@ -27,6 +27,49 @@ export function normalizeDuraKey(val) {
   return s.toLowerCase();
 }
 
+/**
+ * Canonical bats key — exports may use L/R/S or Left/Right/Switch.
+ * Returns "l" | "r" | "s" | "" (or lowercased unknown).
+ */
+export function normalizeBatsKey(val) {
+  const s = normalizeFilterVal(val);
+  if (!s) return "";
+  const compact = s.toLowerCase().replace(/[\s_\-]+/g, "");
+  if (compact === "l" || compact === "left" || compact === "lhb" || compact === "lefthanded") {
+    return "l";
+  }
+  if (compact === "r" || compact === "right" || compact === "rhb" || compact === "righthanded") {
+    return "r";
+  }
+  if (
+    compact === "s" ||
+    compact === "switch" ||
+    compact === "b" ||
+    compact === "both" ||
+    compact === "switchhitter"
+  ) {
+    return "s";
+  }
+  return compact;
+}
+
+/**
+ * Canonical throws key — exports may use L/R or Left/Right.
+ * Returns "l" | "r" | "" (or lowercased unknown).
+ */
+export function normalizeThrowsKey(val) {
+  const s = normalizeFilterVal(val);
+  if (!s) return "";
+  const compact = s.toLowerCase().replace(/[\s_\-]+/g, "");
+  if (compact === "l" || compact === "left" || compact === "lhp" || compact === "lefthanded") {
+    return "l";
+  }
+  if (compact === "r" || compact === "right" || compact === "rhp" || compact === "righthanded") {
+    return "r";
+  }
+  return compact;
+}
+
 export function duraOptionClass(key) {
   const k = normalizeDuraKey(key);
   if (k === "ironman") return "dura-ironman";
@@ -306,3 +349,5 @@ export function createDuraFilter({ onChange }) {
 }
 
 export const normalizeDura = normalizeDuraKey;
+export const normalizeBats = normalizeBatsKey;
+export const normalizeThrows = normalizeThrowsKey;
