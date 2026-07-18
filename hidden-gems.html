@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hidden Gems — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=58" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+    <section class="panel">
+      <h2>Hidden Gems</h2>
+      <p class="lede muted tip"
+        data-tip="Uses 20–80 current ratings only — OVR/POT and star-scale values are ignored. AAAA matches minors to productive majors’ tool bands. Park Nerfed needs a Team List upload.">
+        <strong>Under construction.</strong> Overlooked players by category: amended AAAA (minors), miscast bats, toolsy gambles, SP→RP / RP→SP converts, and park-suppressed talent. Rules and Gem% may still change.
+      </p>
+      <div class="filters" id="hidden-gems-filters">
+        <div class="compare-type" role="group" aria-label="Player type">
+          <button type="button" class="btn compare-type-btn active" data-type="all">All</button>
+          <button type="button" class="btn compare-type-btn" data-type="batter">Batters</button>
+          <button type="button" class="btn compare-type-btn" data-type="pitcher">Pitchers</button>
+        </div>
+        <label class="chk tip" data-tip="When checked, Miscast / Converts include major leaguers. AAAA and Toolsy are always minors-only; Park Nerfed is always majors-only (MLB park factors).">
+          <input type="checkbox" id="include-majors-toggle" checked /> Include majors
+        </label>
+        <input type="search" id="player-search" class="search" placeholder="Search name / team / POS" />
+        <span class="muted" id="filter-count"></span>
+      </div>
+      <p id="park-list-hint" class="muted gems-park-hint" hidden>
+        Upload a <strong>Team List</strong> on Upload to enable Park Nerfed (home PF / PF HR).
+      </p>
+    </section>
+
+    <div class="gems-layout">
+      <aside class="gems-cards" id="gems-cards" aria-label="Gem categories"></aside>
+      <div class="table-wrap gems-table-wrap">
+        <table class="data-table sortable" id="hidden-gems-table">
+          <thead>
+            <tr id="table-head-row">
+              <th data-col="Category">Category</th>
+              <th data-col="Name">Name</th>
+              <th data-col="Team">Team</th>
+              <th data-col="POS">POS</th>
+              <th data-col="Age">Age</th>
+              <th data-col="Lev">Lev</th>
+              <th class="tip" data-col="Gem%" data-tip="How strongly this player matches this gem category (0–100). Separate from Archetypes Fit %.">Gem%</th>
+              <th data-col="Key">Key</th>
+            </tr>
+          </thead>
+          <tbody id="hidden-gems-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+  <script type="module" src="static/js/pages/hidden-gems.js?v=5"></script>
+  <script src="static/js/tooltips.js"></script>
+  <script src="static/js/app.js?v=20"></script>
+  <script type="module">
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=42";
+    bindPlayerCardRows();
+  </script>
+</body>
+</html>

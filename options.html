@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Options — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=33" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+    <section class="options-page">
+      <header class="glossary-intro">
+        <h1>Options</h1>
+        <p class="lede">
+          Edit scoring weights and StatsPlus links stored in this browser. Saving weights recalculates all loaded players.
+          <strong>Leave Pitcher/Batter (ratings) weights alone unless you really intend to change scout scoring</strong> — most people only tweak stats weights.
+          <span class="badge" id="weights-badge">Defaults</span>
+        </p>
+      </header>
+      <div id="save-banner" class="banner ok" hidden>Weights saved and players rescored.</div>
+
+      <section class="panel options-links">
+        <h2>Your team</h2>
+        <p class="muted">
+          After data is loaded, pick your franchise so your players are highlighted on Pitchers/Batters
+          and your row stands out on Teams. Uses the export’s <code>ORG</code> abbr.
+        </p>
+        <form id="my-team-form" class="links-form">
+          <label class="weight-field links-field">
+            <span>My team (ORG)</span>
+            <select id="my-team" name="myTeam">
+              <option value="">— None —</option>
+            </select>
+          </label>
+          <p class="muted" id="my-team-hint" hidden>Upload a Player List first to populate this list.</p>
+          <div class="options-actions">
+            <button type="submit" class="btn btn-accent">Save my team</button>
+            <button type="button" class="btn" id="clear-my-team">Clear</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel options-links">
+        <h2>Statsplus website integration</h2>
+        <p class="muted">
+          Used when you click a player name. Put <code>{pid}</code> where the player ID goes.
+        </p>
+        <form id="links-form" class="links-form">
+          <label class="weight-field links-field">
+            <span>URL template</span>
+            <input type="url" id="url-template" name="urlTemplate" spellcheck="false"
+              placeholder="https://…/player/{pid}?page=dash" />
+          </label>
+          <div class="options-actions">
+            <button type="submit" class="btn btn-accent">Save link template</button>
+            <button type="button" class="btn" id="reset-url-template">Reset to default</button>
+          </div>
+        </form>
+      </section>
+
+      <div class="options-tabs">
+        <button type="button" class="btn tab-btn" data-tab="pitchers">Pitcher weights</button>
+        <button type="button" class="btn tab-btn" data-tab="batters">Batter weights</button>
+        <button type="button" class="btn tab-btn" data-tab="pitcher-stats">Pitcher stats weights</button>
+        <button type="button" class="btn tab-btn" data-tab="batter-stats">Batter stats weights</button>
+      </div>
+      <form id="weights-form">
+        <div class="weight-panel" id="panel-pitchers"></div>
+        <div class="weight-panel" id="panel-batters" hidden></div>
+        <div class="weight-panel" id="panel-pitcher-stats" hidden></div>
+        <div class="weight-panel" id="panel-batter-stats" hidden></div>
+      </form>
+      <div class="options-actions secondary-actions">
+        <button type="button" class="btn" id="reset-tab">Reset this tab to defaults</button>
+        <button type="button" class="btn" id="reset-all">Reset all weights</button>
+      </div>
+      <p class="muted options-footnote">
+        Ratings tabs (Pitcher / Batter weights) drive scout-based scores — avoid casual edits.
+        Stats tabs affect Total when stats-based scoring is on (Pitchers/Batters default).
+        The Draft tab applies its own 1.5× / 0.9× meta on draft-class players only.
+        Changes stay in this browser’s localStorage.
+      </p>
+    </section>
+  </main>
+  <script type="module" src="static/js/pages/options.js?v=21"></script>
+  <script src="static/js/tooltips.js"></script>
+</body>
+</html>

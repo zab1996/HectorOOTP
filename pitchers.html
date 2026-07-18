@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pitchers — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=33" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+    <section class="toolbar">
+      <div class="filters" id="live-filters" data-kind="pitchers">
+        <label class="chk"><input type="checkbox" name="pos" value="SP" checked /> SP</label>
+        <label class="chk"><input type="checkbox" name="pos" value="RP" checked /> RP</label>
+        <input type="search" id="player-search" class="search tip" placeholder="Search: CAS SP >25"
+          data-tip="Search tips:
+- Filter by team: CAS, ATL
+- Filter by position: SP, RP
+- Age filters: >25, <30, >=21, =19
+- Combine: CAS SP >25" />
+        <button type="button" class="btn view-btn tip btn-accent" data-view="all" data-tip="Full sortable pitcher list.">Show All</button>
+        <button type="button" class="btn view-btn tip" data-view="top20" data-tip="Top 20 pitchers at each position by Total Score.">Top 20 by POS</button>
+        <label class="chk tip" data-tip="When checked, shows Triple-A / Double-A / etc.
+Unchecked = Major League / MLB only.">
+          <input type="checkbox" id="include-minors-toggle" /> Include minors
+        </label>
+        <label class="chk tip" data-tip="When enabled, Total uses scout ratings instead of performance stats. Unchecked (default) = stats Total (WAR, ERA+, rWAR, IP, HLD). ERA+ scales with IP sample size. Players under the Min IP floors get Total 0 and are hidden from the list.">
+          <input type="checkbox" id="stats-scoring-toggle" /> Use Ratings-Based Scoring
+        </label>
+        <div class="sample-mins" id="sample-mins" hidden>
+          <label class="sample-field tip"
+            data-tip="Minimum innings for starters to use stats Total (and appear in the list).
+Default: 40 IP">Min SP IP
+            <input type="number" id="min-ip-sp" min="0" step="1" />
+          </label>
+          <label class="sample-field tip"
+            data-tip="Minimum innings for relievers/closers to use stats Total (and appear in the list).
+Default: 20 IP">Min RP IP
+            <input type="number" id="min-ip-rp" min="0" step="1" />
+          </label>
+        </div>
+        <button type="button" id="edit-weights-link" class="btn tip"
+          data-tip="Open Options to edit the weights used for the current scoring mode.">Edit Pitcher weights</button>
+        <span class="muted" id="filter-count"></span>
+      </div>
+    </section>
+    <div class="table-wrap">
+      <table class="data-table sortable" id="players-table">
+        <thead><tr id="table-head-row"></tr></thead>
+        <tbody id="players-tbody"></tbody>
+      </table>
+    </div>
+  </main>
+  <script type="module">
+    import { mountShell, requireData } from "./static/js/shell.js?v=40";
+    import { pitcherDisplayRow, buildSummary, formatAppSummaryHtml } from "./static/js/hector/display.js?v=16";
+    import {
+      setUseStatsScoring,
+      setPitcherSampleMinimums,
+      setMajorsOnly,
+    } from "./static/js/hector/store.js?v=17";
+    import {
+      mergePitcherStatWeights,
+      MIN_INNINGS_PITCHED,
+      MIN_INNINGS_SP,
+    } from "./static/js/hector/stat_weights.js?v=14";
+
+    if (!(await requireData())) throw new Error("redirect");
+    let state = await mountShell("pitchers");
+    if (state.majorsOnly == null) state.majorsOnly = true;
+
+    function syncPlayers(next) {
+      state = next;
+      const cfg = mergePitcherStatWeights(state.pitcherStatWeights);
+      window.HECTOR_MIN_IP_SP = cfg.MIN_INNINGS_SP ?? MIN_INNINGS_SP;
+      window.HECTOR_MIN_IP_RP = cfg.MIN_INNINGS_PITCHED ?? MIN_INNINGS_PITCHED;
+      window.HECTOR_PLAYERS = state.pitchers.map((p) => pitcherDisplayRow(p));
+      window.HECTOR_USE_STATS = !!state.useStatsScoring;
+      window.HECTOR_MAJORS_ONLY = state.majorsOnly !== false;
+      window.dispatchEvent(new CustomEvent("hector:players"));
+      const summaryEl = document.getElementById("app-summary");
+      if (summaryEl && !summaryEl.hidden) {
+        summaryEl.innerHTML = formatAppSummaryHtml(buildSummary(state.pitchers, state.batters));
+      }
+    }
+
+    window.HECTOR_PLAYERS = state.pitchers.map((p) => pitcherDisplayRow(p));
+    window.HECTOR_VIEW = new URLSearchParams(location.search).get("view") || "all";
+    window.HECTOR_KIND = "pitchers";
+    window.HECTOR_USE_STATS = !!state.useStatsScoring;
+    window.HECTOR_MAJORS_ONLY = state.majorsOnly !== false;
+    window.PLAYER_URL_TEMPLATE = state.urlTemplate;
+    {
+      const cfg = mergePitcherStatWeights(state.pitcherStatWeights);
+      window.HECTOR_MIN_IP_SP = cfg.MIN_INNINGS_SP ?? MIN_INNINGS_SP;
+      window.HECTOR_MIN_IP_RP = cfg.MIN_INNINGS_PITCHED ?? MIN_INNINGS_PITCHED;
+    }
+    window.dispatchEvent(new CustomEvent("hector:players"));
+
+    const toggle = document.getElementById("stats-scoring-toggle");
+    const minorsToggle = document.getElementById("include-minors-toggle");
+    const weightsLink = document.getElementById("edit-weights-link");
+    const sampleMins = document.getElementById("sample-mins");
+    const minSpEl = document.getElementById("min-ip-sp");
+    const minRpEl = document.getElementById("min-ip-rp");
+
+    function weightsTab(useStats) {
+      return useStats ? "pitcher-stats" : "pitchers";
+    }
+    function syncWeightsLink(useStats) {
+      if (!weightsLink) return;
+      weightsLink.textContent = useStats ? "Edit Pitcher stats weights" : "Edit Pitcher weights";
+      weightsLink.dataset.tab = weightsTab(useStats);
+    }
+    function syncSampleMinsUi(useStats) {
+      if (!sampleMins) return;
+      sampleMins.hidden = !useStats;
+      if (!useStats) return;
+      const cfg = mergePitcherStatWeights(state.pitcherStatWeights);
+      if (minSpEl) minSpEl.value = String(cfg.MIN_INNINGS_SP ?? MIN_INNINGS_SP);
+      if (minRpEl) minRpEl.value = String(cfg.MIN_INNINGS_PITCHED ?? MIN_INNINGS_PITCHED);
+    }
+
+    if (weightsLink) {
+      weightsLink.addEventListener("click", () => {
+        const t = weightsLink.dataset.tab || weightsTab(!!state.useStatsScoring);
+        const url = new URL("options", window.location.href);
+        url.searchParams.set("tab", t);
+        window.location.assign(url.pathname + "?" + url.searchParams.toString());
+      });
+    }
+
+    let minTimer = null;
+    function scheduleMinApply() {
+      clearTimeout(minTimer);
+      minTimer = setTimeout(async () => {
+        const sp = parseFloat(minSpEl?.value);
+        const rp = parseFloat(minRpEl?.value);
+        syncPlayers(await setPitcherSampleMinimums(sp, rp));
+      }, 280);
+    }
+    minSpEl?.addEventListener("input", scheduleMinApply);
+    minRpEl?.addEventListener("input", scheduleMinApply);
+    minSpEl?.addEventListener("change", scheduleMinApply);
+    minRpEl?.addEventListener("change", scheduleMinApply);
+
+    if (minorsToggle) {
+      minorsToggle.checked = state.majorsOnly === false;
+      minorsToggle.addEventListener("change", async () => {
+        syncPlayers(await setMajorsOnly(!minorsToggle.checked));
+      });
+    }
+
+    if (toggle) {
+      toggle.checked = !state.useStatsScoring;
+      syncWeightsLink(!!state.useStatsScoring);
+      syncSampleMinsUi(!!state.useStatsScoring);
+      toggle.addEventListener("change", async () => {
+        const useStats = !toggle.checked;
+        syncPlayers(await setUseStatsScoring(useStats));
+        syncWeightsLink(useStats);
+        syncSampleMinsUi(useStats);
+      });
+    } else {
+      syncWeightsLink(!!state.useStatsScoring);
+      syncSampleMinsUi(!!state.useStatsScoring);
+    }
+  </script>
+  <script src="static/js/tooltips.js"></script>
+  <script type="module" src="static/js/live-filter.js?v=29"></script>
+  <script type="module">
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=41";
+    bindPlayerCardRows();
+  </script>
+</body>
+</html>

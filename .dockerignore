@@ -1,0 +1,12 @@
+.venv/
+.git/
+__pycache__/
+*.pyc
+.env
+*.md
+!README.md
+*.egg-info/
+.pytest_cache/
+.DS_Store
+Thumbs.db
+*.html.bak

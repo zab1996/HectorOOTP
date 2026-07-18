@@ -1,0 +1,16 @@
+/** @deprecated Prefer column-filter.js — re-exports for compatibility. */
+export {
+  createDuraFilter,
+  createColumnFilter,
+  normalizeDura,
+  normalizeDuraKey,
+  normalizeFilterVal,
+  DURA_VALUES,
+  BATS_VALUES,
+  THROWS_VALUES,
+  SCOUT_ACC_VALUES,
+  GF_VALUES,
+  duraOptionClass,
+  duraClass,
+  scoutOptionClass,
+} from "./column-filter.js";

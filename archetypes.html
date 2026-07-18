@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Archetypes — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=31" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main class="archetypes-layout">
+    <section class="panel">
+      <h2>Franchise Archetypes</h2>
+      <p class="lede muted">Find players that fit a team-building philosophy. Fit % is 0–100 from a smoothed checklist (no hard rating cliffs).</p>
+      <div class="inline-form">
+        <label class="arch-select-label">Archetype
+          <div class="arch-select" id="archetype-select-wrap">
+            <button type="button" class="arch-select-trigger" id="archetype-trigger" aria-haspopup="listbox" aria-expanded="false"></button>
+            <ul class="arch-select-menu" id="archetype-menu" role="listbox" hidden></ul>
+            <input type="hidden" id="archetype-select" value="" />
+          </div>
+        </label>
+        <label>Player type
+          <select id="player-type">
+            <option value="batter">Batters</option>
+            <option value="pitcher">Pitchers</option>
+          </select>
+        </label>
+        <label>Min fit <input type="number" id="min-fit" min="0" max="100" value="40" /></label>
+        <button type="button" class="btn btn-accent" id="run-arch">Find players</button>
+      </div>
+      <p id="arch-desc" class="muted"></p>
+    </section>
+    <div class="table-wrap">
+      <table class="data-table sortable">
+        <thead>
+          <tr>
+            <th>Name</th><th>Team</th><th>POS</th><th>Age</th><th>OVR</th><th>POT</th><th>Fit %</th>
+          </tr>
+        </thead>
+        <tbody id="arch-body"></tbody>
+      </table>
+    </div>
+  </main>
+  <script type="module" src="static/js/pages/archetypes.js"></script>
+  <script src="static/js/tooltips.js"></script>
+  <script src="static/js/app.js"></script>
+  <script type="module">
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=41";
+    bindPlayerCardRows();
+  </script>
+</body>
+</html>

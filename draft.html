@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Draft — Hector 3.0 Web</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=33" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+    <section class="panel" id="draft-empty" hidden>
+      <h2>Draft class</h2>
+      <p class="lede muted">No draft class loaded. On <a href="index.html">Upload</a>, optionally add a Draft Class HTML export (same shape as Player List). This tab uses draft meta (default potential ×1.5 / current ×0.9); use the Current↔Potential slider to bias without changing Options.</p>
+    </section>
+
+    <section class="toolbar" id="draft-toolbar" hidden>
+      <div class="filters" id="live-filters" data-kind="pitchers">
+        <div class="compare-type" id="draft-type">
+          <button type="button" class="btn compare-type-btn active" data-type="pitcher">Pitchers</button>
+          <button type="button" class="btn compare-type-btn" data-type="batter">Batters</button>
+        </div>
+        <div id="pos-pitchers" class="pos-row">
+          <label class="chk"><input type="checkbox" name="pos" value="SP" checked /> SP</label>
+          <label class="chk"><input type="checkbox" name="pos" value="RP" checked /> RP</label>
+          <label class="chk"><input type="checkbox" name="pos" value="CL" checked /> CL</label>
+        </div>
+        <div id="pos-batters" class="pos-row" hidden>
+          <label class="chk"><input type="checkbox" name="pos" value="C" checked /> C</label>
+          <label class="chk"><input type="checkbox" name="pos" value="1B" checked /> 1B</label>
+          <label class="chk"><input type="checkbox" name="pos" value="2B" checked /> 2B</label>
+          <label class="chk"><input type="checkbox" name="pos" value="3B" checked /> 3B</label>
+          <label class="chk"><input type="checkbox" name="pos" value="SS" checked /> SS</label>
+          <label class="chk"><input type="checkbox" name="pos" value="LF" checked /> LF</label>
+          <label class="chk"><input type="checkbox" name="pos" value="CF" checked /> CF</label>
+          <label class="chk"><input type="checkbox" name="pos" value="RF" checked /> RF</label>
+          <label class="chk"><input type="checkbox" name="pos" value="DH" checked /> DH</label>
+        </div>
+        <button type="button" class="btn view-btn tip btn-accent" data-view="all" data-tip="Full sortable draft list.">Show All</button>
+        <button type="button" class="btn view-btn tip" id="draft-top-btn" data-view="top" data-tip="Top players by position by Total (ratings). Pitchers: top 20 SP/RP. Batters: top 10 per position.">Top by POS</button>
+        <label class="chk tip" id="draft-secondary-wrap" style="display:none"
+          data-tip="Include batters with secondary position rating ≥ 50 in that position’s top 10.">
+          <input type="checkbox" id="draft-secondary-pos" /> Secondary ≥50
+        </label>
+        <input type="search" id="player-search" class="search" placeholder="Search name / POS" />
+        <label class="draft-blend tip"
+          data-tip="Biases draft Total between current and potential without editing Options Meta multipliers. Center = default (curr ×0.9 / pot ×1.5). Does not affect Pitchers/Batters tabs.">
+          <span class="draft-blend-label">Current</span>
+          <input type="range" id="draft-meta-bias" min="-100" max="100" step="5" value="0" />
+          <span class="draft-blend-label">Potential</span>
+          <span class="draft-blend-vals muted" id="draft-meta-bias-label">×0.9 / ×1.5</span>
+        </label>
+        <span class="muted tip" data-tip="Draft tab always uses ratings scoring with its own current/potential meta (slider above). Stats Total is not used here.">Ratings scoring (draft meta)</span>
+        <span class="muted" id="filter-count"></span>
+      </div>
+    </section>
+    <div class="table-wrap" id="draft-table-wrap" hidden>
+      <table class="data-table sortable" id="players-table">
+        <thead>
+          <tr id="table-head-row"></tr>
+        </thead>
+        <tbody id="players-tbody"></tbody>
+      </table>
+    </div>
+  </main>
+  <script type="module">
+    import { mountShell, requireData } from "./static/js/shell.js?v=40";
+    import { pitcherDisplayRow, batterDisplayRow } from "./static/js/hector/display.js?v=31";
+    import { hasDraftData, playerUrl, setDraftMetaBias } from "./static/js/hector/store.js?v=31";
+    import { draftMetaFromBias } from "./static/js/hector/parse.js?v=31";
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=41";
+    import {
+      mountCompareSelect,
+      comparePickTd,
+      comparePickTh,
+    } from "./static/js/compare-select.js?v=1";
+    import {
+      createColumnFilter,
+      normalizeFilterVal,
+      normalizeDuraKey,
+      DURA_VALUES,
+      BATS_VALUES,
+      THROWS_VALUES,
+      SCOUT_ACC_VALUES,
+      GF_VALUES,
+      duraOptionClass,
+      duraClass,
+      scoutOptionClass,
+    } from "./static/js/column-filter.js?v=3";
+
+    if (!(await requireData())) throw new Error("redirect");
+    const state = await mountShell("draft");
+
+    const empty = document.getElementById("draft-empty");
+    const toolbar = document.getElementById("draft-toolbar");
+    const wrap = document.getElementById("draft-table-wrap");
+    const head = document.getElementById("table-head-row");
+    const body = document.getElementById("players-tbody");
+    const countEl = document.getElementById("filter-count");
+    const searchEl = document.getElementById("player-search");
+    const secondaryWrap = document.getElementById("draft-secondary-wrap");
+    const secondaryEl = document.getElementById("draft-secondary-pos");
+    const topBtn = document.getElementById("draft-top-btn");
+    const biasEl = document.getElementById("draft-meta-bias");
+    const biasLabelEl = document.getElementById("draft-meta-bias-label");
+    const filtersEl = document.getElementById("live-filters");
+    const tableEl = document.getElementById("players-table");
+
+    let playerType = "pitcher";
+    let view = "all"; // "all" | "top"
+
+    const compareSelect = mountCompareSelect({
+      filtersEl,
+      tableEl,
+      getPlayerType: () => playerType,
+      getPool: () => "draft",
+    });
+
+    function biasFromSlider() {
+      return (Number(biasEl.value) || 0) / 100;
+    }
+
+    function syncBiasLabel() {
+      const m = draftMetaFromBias(biasFromSlider());
+      biasLabelEl.textContent = `×${m.current} / ×${m.potential}`;
+      biasEl.classList.toggle("is-default", Number(biasEl.value) === 0);
+    }
+
+    // Restore saved bias (center = draft default 0.9 / 1.5)
+    biasEl.value = String(Math.round((Number(state.draftMetaBias) || 0) * 100));
+    syncBiasLabel();
+
+    const onFilterChange = () => render();
+    const duraFilter = createColumnFilter({
+      id: "dura",
+      title: "Durability",
+      values: DURA_VALUES,
+      optionClass: duraOptionClass,
+      normalizeKey: normalizeDuraKey,
+      onChange: onFilterChange,
+    });
+    const batsFilter = createColumnFilter({
+      id: "bats",
+      title: "Bats",
+      values: BATS_VALUES,
+      onChange: onFilterChange,
+    });
+    const throwsFilter = createColumnFilter({
+      id: "throws",
+      title: "Throws",
+      values: THROWS_VALUES,
+      onChange: onFilterChange,
+    });
+    const scoutFilter = createColumnFilter({
+      id: "scout",
+      title: "Scout Acc.",
+      values: SCOUT_ACC_VALUES,
+      optionClass: scoutOptionClass,
+      onChange: onFilterChange,
+    });
+    const gfFilter = createColumnFilter({
+      id: "gf",
+      title: "G/F",
+      values: GF_VALUES,
+      onChange: onFilterChange,
+    });
+    const allColFilters = [duraFilter, batsFilter, throwsFilter, scoutFilter, gfFilter];
+
+    const PITCHER_TIPS = {
+      "G/F": "Ground ball / fly ball tendency from the export.",
+      Durability:
+        "Durability / injury proneness from the export’s Prone column (e.g. Durable, Normal, Fragile).",
+      "Scout Acc.":
+        "Scout accuracy from the export (SctAcc). How reliable the scouting grades are for this player.",
+      Pitch:
+        "Pitch Score: Weighted sum of current pitch arsenal grades only (Fastball, Slider, Curveball, etc.). Does not include Stuff, Movement, or Control.",
+      "Pitch Pot.":
+        "Pitch Pot. Score: Weighted sum of each pitch type’s potential grade only. Does not include Stuff / Movement / Control potential.",
+      Potential:
+        "Potential Score: Core potential (Stuff Pot. + Movement Pot. + Control Pot.) plus all pitch potential grades. Overall future ceiling.",
+      Current:
+        "Current Score: Present-day value only — current Stuff / Movement / Control + current arsenal + other current factors (stamina, # pitches, etc.) and penalties. No potential ratings.",
+      Total:
+        "Total Score (draft): Full ratings value with draft meta. Default potential ×1.5 / current ×0.9; the Current↔Potential slider biases those without changing Options.",
+    };
+
+    const BATTER_TIPS = {
+      Durability:
+        "Durability / injury proneness from the export’s Prone column (e.g. Durable, Normal, Fragile).",
+      "Scout Acc.":
+        "Scout accuracy from the export (SctAcc). How reliable the scouting grades are for this player.",
+      Contact: "Scout Contact rating (current).",
+      Power: "Scout Power rating (current).",
+      EYE: "Scout Eye / plate discipline rating (current).",
+      Offense:
+        "Offense: Weighted sum of current batting tools (Contact, Gap, Power, Eye, K’s).",
+      "Off. Pot.":
+        "Offense Pot.: Same as Offense using potential ratings only.",
+      Defense:
+        "Defense: Position-gated fielding value for primary POS (DH contributes 0).",
+      Total:
+        "Total Score (draft): Offense + offense potential + defense + baserunning + scout accuracy, with draft meta. Default potential ×1.5 / overall ×0.9; use the Current↔Potential slider to bias.",
+    };
+
+    function escapeHtml(s) {
+      return String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function th(label, tip) {
+      if (label === "Dura") return duraFilter.headerCell(label, tip);
+      if (label === "Bats") return batsFilter.headerCell(label, tip);
+      if (label === "Throws") return throwsFilter.headerCell(label, tip);
+      if (label === "Scout Acc.") return scoutFilter.headerCell(label, tip);
+      if (label === "G/F") return gfFilter.headerCell(label, tip);
+      if (tip) {
+        return `<th class="tip" data-col="${escapeHtml(label)}" data-tip="${escapeHtml(tip)}">${escapeHtml(label)}</th>`;
+      }
+      return `<th data-col="${escapeHtml(label)}">${escapeHtml(label)}</th>`;
+    }
+
+    function duraTd(prone) {
+      const text = String(prone ?? "").trim() || "—";
+      const cls = text === "—" ? "" : duraClass(prone);
+      return cls
+        ? `<td class="${cls}">${escapeHtml(text)}</td>`
+        : `<td>${escapeHtml(text)}</td>`;
+    }
+
+    function nameCell(p) {
+      const href = p.id ? playerUrl(p.id, state) : "";
+      return href
+        ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(p.name)}</a>`
+        : escapeHtml(p.name);
+    }
+
+    function ratingNum(val) {
+      const s = String(val ?? "").replace(/ Stars/gi, "").trim();
+      if (!s || s === "-") return 0;
+      const n = parseFloat(s);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function allowedPos() {
+      const root = playerType === "pitcher"
+        ? document.getElementById("pos-pitchers")
+        : document.getElementById("pos-batters");
+      return new Set(
+        [...root.querySelectorAll('input[name="pos"]:checked')].map((el) => el.value),
+      );
+    }
+
+    function posAllowed(p, allowed, secondary) {
+      const primary = String(p.pos || "").toUpperCase();
+      if (playerType === "pitcher") {
+        const norm = primary === "CL" ? "RP" : primary;
+        if (norm === "SP") return allowed.has("SP");
+        if (norm === "RP") return allowed.has("RP") || allowed.has("CL");
+        return allowed.has(primary);
+      }
+      if (allowed.has(primary)) return true;
+      // Top-10 secondary: keep players who rate ≥50 at a checked position
+      if (secondary) {
+        for (const pos of allowed) {
+          if (ratingNum(p.pos_ratings && p.pos_ratings[pos]) >= 50) return true;
+        }
+      }
+      return false;
+    }
+
+    function pool() {
+      if (playerType === "pitcher") {
+        return (state.draftPitchers || []).map((p) => pitcherDisplayRow(p));
+      }
+      return (state.draftBatters || []).map((b) => batterDisplayRow(b));
+    }
+
+    function topByPosition(list, positions, n, secondary) {
+      const sections = [];
+      for (const pos of positions) {
+        const group = [];
+        const seen = new Set();
+        for (const p of list) {
+          const primary = String(p.pos || "").toUpperCase() === "CL"
+            ? "RP"
+            : String(p.pos || "").toUpperCase();
+          let include = primary === pos;
+          if (!include && secondary && primary !== pos) {
+            include = ratingNum(p.pos_ratings && p.pos_ratings[pos]) >= 50;
+          }
+          if (!include) continue;
+          const key = p.id || p.name;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          group.push(p);
+        }
+        group.sort((a, b) => Number(b.total || 0) - Number(a.total || 0));
+        sections.push({ pos, players: group.slice(0, n) });
+      }
+      return sections;
+    }
+
+    function sectionColEchoRow() {
+      const labels = Array.from(head.querySelectorAll("th")).map((el) =>
+        (el.dataset.col || el.textContent || "").replace(/\s*[↑↓▾]\s*$/, "").trim(),
+      );
+      if (!labels.length) return "";
+      return `<tr class="col-echo">${labels
+        .map((lab) => `<td>${escapeHtml(lab)}</td>`)
+        .join("")}</tr>`;
+    }
+
+    function syncChrome() {
+      if (topBtn) {
+        topBtn.textContent =
+          playerType === "pitcher" ? "Top 20 by POS" : "Top 10 by POS";
+        topBtn.dataset.tip =
+          playerType === "pitcher"
+            ? "Top 20 draft pitchers at SP and RP by Total (ratings / draft meta)."
+            : "Top 10 draft batters by position by Total (ratings / draft meta).";
+      }
+      if (secondaryWrap) {
+        const showSecondary = playerType === "batter" && view === "top";
+        secondaryWrap.style.display = showSecondary ? "" : "none";
+        if (!showSecondary && secondaryEl) secondaryEl.checked = false;
+      }
+      document.querySelectorAll("#draft-toolbar .view-btn").forEach((b) => {
+        b.classList.toggle("btn-accent", b.dataset.view === view);
+        b.classList.toggle("active", b.dataset.view === view);
+      });
+    }
+
+    function renderHead(topMode) {
+      const cmp = comparePickTh();
+      const rank = topMode ? th("Rank") : "";
+      if (playerType === "pitcher") {
+        const t = PITCHER_TIPS;
+        head.innerHTML =
+          cmp +
+          rank +
+          th("Name") +
+          th("Age") +
+          th("POS") +
+          th("Throws") +
+          th("Velo") +
+          th("G/F", t["G/F"]) +
+          th("Dura", t.Durability) +
+          th("Scout Acc.", t["Scout Acc."]) +
+          th("Pitches") +
+          th("Pitch", t.Pitch) +
+          th("Pitch Pot.", t["Pitch Pot."]) +
+          th("Potential", t.Potential) +
+          th("Current", t.Current) +
+          th("Total", t.Total);
+      } else {
+        const t = BATTER_TIPS;
+        head.innerHTML =
+          cmp +
+          rank +
+          th("Name") +
+          th("Age") +
+          th("POS") +
+          th("Bats") +
+          th("Dura", t.Durability) +
+          th("Scout Acc.", t["Scout Acc."]) +
+          th("Contact", t.Contact) +
+          th("Power", t.Power) +
+          th("EYE", t.EYE) +
+          th("Offense", t.Offense) +
+          th("Off. Pot.", t["Off. Pot."]) +
+          th("Defense", t.Defense) +
+          th("Total", t.Total);
+      }
+    }
+
+    function pitcherRowHtml(p, rank) {
+      const rankTd = rank != null ? `<td>${rank}</td>` : "";
+      return `<tr data-player-id="${escapeHtml(p.id)}" data-player-name="${escapeHtml(p.name)}" data-player-type="pitcher" data-player-pool="draft">
+        ${comparePickTd(p.id, p.name)}${rankTd}<td>${nameCell(p)}</td><td>${escapeHtml(p.age)}</td><td>${escapeHtml(p.pos)}</td>
+        <td>${escapeHtml(p.throws)}</td><td>${escapeHtml(p.velo)}</td><td>${escapeHtml(p.gf)}</td>${duraTd(p.prone)}<td>${escapeHtml(p.scout)}</td><td>${escapeHtml(p.pitches)}</td>
+        <td>${escapeHtml(p.pitch_score)}</td><td>${escapeHtml(p.pitch_pot)}</td>
+        <td>${escapeHtml(p.potential)}</td><td>${escapeHtml(p.current)}</td>
+        <td class="num-strong">${escapeHtml(p.total)}</td>
+      </tr>`;
+    }
+
+    function batterRowHtml(p, rank) {
+      const rankTd = rank != null ? `<td>${rank}</td>` : "";
+      return `<tr data-player-id="${escapeHtml(p.id)}" data-player-name="${escapeHtml(p.name)}" data-player-type="batter" data-player-pool="draft">
+        ${comparePickTd(p.id, p.name)}${rankTd}<td>${nameCell(p)}</td><td>${escapeHtml(p.age)}</td><td>${escapeHtml(p.pos)}</td>
+        <td>${escapeHtml(p.bats)}</td>${duraTd(p.prone)}<td>${escapeHtml(p.scout)}</td>
+        <td>${escapeHtml(p.contact)}</td><td>${escapeHtml(p.power)}</td><td>${escapeHtml(p.eye)}</td>
+        <td>${escapeHtml(p.offense)}</td><td>${escapeHtml(p.offense_pot)}</td><td>${escapeHtml(p.defense)}</td>
+        <td class="num-strong">${escapeHtml(p.total)}</td>
+      </tr>`;
+    }
+
+    function render() {
+      if (!hasDraftData(state)) {
+        empty.hidden = false;
+        toolbar.hidden = true;
+        wrap.hidden = true;
+        return;
+      }
+      empty.hidden = true;
+      toolbar.hidden = false;
+      wrap.hidden = false;
+
+      const topMode = view === "top";
+      syncChrome();
+      renderHead(topMode);
+
+      const q = (searchEl.value || "").trim().toLowerCase();
+      const pos = allowedPos();
+      const secondary = playerType === "batter" && topMode && !!(secondaryEl && secondaryEl.checked);
+      let rows = pool().filter((p) => {
+        if (!posAllowed(p, pos, secondary)) return false;
+        if (!duraFilter.isAllowed(p.prone)) return false;
+        if (!scoutFilter.isAllowed(p.scout)) return false;
+        if (playerType === "pitcher") {
+          if (!throwsFilter.isAllowed(p.throws)) return false;
+          if (!gfFilter.isAllowed(p.gf)) return false;
+        } else if (!batsFilter.isAllowed(p.bats)) {
+          return false;
+        }
+        return true;
+      });
+      if (q) {
+        const tokens = q.split(/\s+/).filter(Boolean);
+        rows = rows.filter((p) => {
+          const hay = `${p.name} ${p.pos}`.toLowerCase();
+          return tokens.every((t) => hay.includes(t));
+        });
+      }
+      rows.sort((a, b) => Number(b.total || 0) - Number(a.total || 0));
+
+      const colSpan = head.querySelectorAll("th").length || (playerType === "pitcher" ? 14 : 13);
+      if (!rows.length && !topMode) {
+        countEl.textContent = "0 players";
+        body.innerHTML = `<tr><td colspan="${colSpan}" class="muted">No draft players match</td></tr>`;
+        compareSelect.afterRender();
+        return;
+      }
+
+      let html = "";
+      let shown = 0;
+
+      if (topMode && playerType === "pitcher") {
+        const pitOrder = ["SP", "RP"].filter((p) => pos.has(p) || (p === "RP" && pos.has("CL")));
+        const sections = topByPosition(rows, pitOrder.length ? pitOrder : ["SP", "RP"], 20, false);
+        sections.forEach((sec, idx) => {
+          html += `<tr class="sep"><td colspan="${colSpan}">— Top 20 ${escapeHtml(sec.pos)} —</td></tr>`;
+          if (idx > 0) html += sectionColEchoRow();
+          sec.players.forEach((p, i) => {
+            html += pitcherRowHtml(p, i + 1);
+            shown++;
+          });
+        });
+      } else if (topMode && playerType === "batter") {
+        const order = ["C", "1B", "2B", "3B", "SS", "DH", "LF", "CF", "RF"].filter((p) => pos.has(p));
+        const sections = topByPosition(rows, order.length ? order : ["C", "1B", "2B", "3B", "SS", "DH", "LF", "CF", "RF"], 10, secondary);
+        sections.forEach((sec, idx) => {
+          html += `<tr class="sep"><td colspan="${colSpan}">— Top 10 ${escapeHtml(sec.pos)} —</td></tr>`;
+          if (idx > 0) html += sectionColEchoRow();
+          sec.players.forEach((p, i) => {
+            html += batterRowHtml(p, i + 1);
+            shown++;
+          });
+        });
+      } else if (playerType === "pitcher") {
+        rows.forEach((p) => {
+          html += pitcherRowHtml(p);
+          shown++;
+        });
+      } else {
+        rows.forEach((p) => {
+          html += batterRowHtml(p);
+          shown++;
+        });
+      }
+
+      countEl.textContent = `${shown} players`;
+      body.innerHTML =
+        html || `<tr><td colspan="${colSpan}" class="muted">No draft players match</td></tr>`;
+      allColFilters.forEach((f) => f.syncTriggerButtons());
+      compareSelect.afterRender();
+    }
+
+    function poolExtras(field) {
+      return pool().map((p) => normalizeFilterVal(p[field])).filter(Boolean);
+    }
+
+    duraFilter.bind(() => poolExtras("prone"));
+    batsFilter.bind(() => poolExtras("bats"));
+    throwsFilter.bind(() => poolExtras("throws"));
+    scoutFilter.bind(() => poolExtras("scout"));
+    gfFilter.bind(() => poolExtras("gf"));
+
+    document.getElementById("draft-type").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-type]");
+      if (!btn) return;
+      playerType = btn.dataset.type;
+      document.querySelectorAll("#draft-type .compare-type-btn").forEach((b) => {
+        b.classList.toggle("active", b.dataset.type === playerType);
+      });
+      document.getElementById("pos-pitchers").hidden = playerType !== "pitcher";
+      document.getElementById("pos-batters").hidden = playerType !== "batter";
+      compareSelect.clear();
+      render();
+    });
+
+    document.getElementById("draft-toolbar").addEventListener("click", (e) => {
+      const btn = e.target.closest(".view-btn");
+      if (!btn) return;
+      view = btn.dataset.view === "top" ? "top" : "all";
+      render();
+    });
+
+    document.getElementById("live-filters").addEventListener("change", render);
+    searchEl.addEventListener("input", render);
+
+    let biasTimer = null;
+    biasEl.addEventListener("input", () => {
+      syncBiasLabel();
+      if (biasTimer) clearTimeout(biasTimer);
+      biasTimer = setTimeout(async () => {
+        biasTimer = null;
+        const next = await setDraftMetaBias(biasFromSlider());
+        state.draftPitchers = next.draftPitchers;
+        state.draftBatters = next.draftBatters;
+        state.draftMetaBias = next.draftMetaBias;
+        render();
+      }, 80);
+    });
+
+    bindPlayerCardRows();
+    render();
+  </script>
+  <script src="static/js/tooltips.js"></script>
+  <script src="static/js/app.js?v=20"></script>
+</body>
+</html>

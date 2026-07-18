@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Team Salary — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=56" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+    <section class="panel">
+      <h2>Team Salary</h2>
+      <p class="lede muted tip"
+        data-tip="Relative seasons from YL (+ extension years). Cells repeat current SLR or AAV — OOTP exports do not include year-by-year escalators or a calendar year.">
+        PuckPedia-style roster commitment by year. Columns are <strong>Now / +1 / +2…</strong> from remaining YL (and ECV/ETY if present). Not true calendar seasons.
+      </p>
+      <div class="filters" id="team-salary-filters">
+        <label class="arch-select-label">Team
+          <select id="team-select" class="team-salary-select"></select>
+        </label>
+        <div class="compare-type" role="group" aria-label="Value mode">
+          <button type="button" class="btn compare-type-btn salary-mode-btn active tip" data-mode="aav"
+            data-tip="Show AAV (CV ÷ TY) for main-term years when available; else SLR. Extension years always use ECV ÷ ETY.">AAV</button>
+          <button type="button" class="btn compare-type-btn salary-mode-btn tip" data-mode="slr"
+            data-tip="Show current salary (SLR) for each remaining main-term year.">Salary</button>
+        </div>
+        <div class="compare-type" role="group" aria-label="Group layout">
+          <button type="button" class="btn compare-type-btn salary-layout-btn active tip" data-layout="combined"
+            data-tip="One roster table and one team-wide Now payroll pie.">Combined</button>
+          <button type="button" class="btn compare-type-btn salary-layout-btn tip" data-layout="simple"
+            data-tip="One Pitchers section and one Batters section (pie per section).">P / B</button>
+          <button type="button" class="btn compare-type-btn salary-layout-btn tip" data-layout="detail"
+            data-tip="Split into SP · RP · C · IF · OF · DH (pie per section).">By POS</button>
+        </div>
+        <label class="chk tip" data-tip="When checked, includes Triple-A / Double-A / etc. Unchecked = Major League / MLB only.">
+          <input type="checkbox" id="include-minors-toggle" /> Include minors
+        </label>
+        <span class="muted" id="team-salary-summary"></span>
+      </div>
+    </section>
+
+    <div id="team-salary-empty" class="panel" hidden>
+      <p class="muted">No teams found on the Player List. Upload a roster with <strong>ORG</strong> and contract columns (<strong>SLR</strong>, <strong>YL</strong>; ideally <strong>CV</strong>/<strong>TY</strong>/<strong>ECV</strong>/<strong>ETY</strong>). Set your franchise in Options to default here.</p>
+    </div>
+
+    <div id="team-salary-content" class="team-salary-content" hidden></div>
+  </main>
+  <script type="module" src="static/js/pages/team-salary.js?v=18"></script>
+  <script src="static/js/tooltips.js"></script>
+  <script src="static/js/app.js?v=20"></script>
+  <script type="module">
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=41";
+    bindPlayerCardRows();
+  </script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Teams — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=31" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+    <section class="toolbar">
+      <div class="filters" id="teams-filters">
+        <label class="chk tip" data-tip="When checked, includes Triple-A / Double-A / etc.
+Unchecked = Major League / MLB only.">
+          <input type="checkbox" id="include-minors-toggle" /> Include minors
+        </label>
+        <label class="chk tip" data-tip="When enabled, Teams uses scout ratings columns. Unchecked (default) = production stats.
+Pitching: WAR, ERA+, rWAR, FIP, SIERA (+ HLD for RP). No Min IP floor.
+Batters: Offense (wRC+, WAR, OPS+, G, UBR) + Defense (ZR, CERA, Errors).">
+          <input type="checkbox" id="stats-scoring-toggle" /> Use Ratings-Based Scoring
+        </label>
+      </div>
+    </section>
+    <div class="table-wrap">
+      <table class="data-table sortable" id="teams-table">
+        <thead>
+          <tr id="teams-head-row"></tr>
+        </thead>
+        <tbody id="teams-body"></tbody>
+      </table>
+    </div>
+  </main>
+  <script type="module">
+    import { mountShell, requireData } from "./static/js/shell.js?v=36";
+    import { aggregateTeams } from "./static/js/hector/teams.js?v=17";
+    import { setMajorsOnly, saveState, isMyTeam } from "./static/js/hector/store.js?v=30";
+    import { teamListByAbbr } from "./static/js/hector/team_list.js?v=31";
+
+    if (!(await requireData())) throw new Error("redirect");
+    let state = await mountShell("teams");
+    if (state.majorsOnly == null) state.majorsOnly = true;
+    if (state.teamsUseStats == null) state.teamsUseStats = true;
+
+    const headRow = document.getElementById("teams-head-row");
+    const body = document.getElementById("teams-body");
+    const minorsToggle = document.getElementById("include-minors-toggle");
+    const statsToggle = document.getElementById("stats-scoring-toggle");
+    const teamMap = () => teamListByAbbr(state.teamList || []);
+
+    function th(label, tip, extraClass = "") {
+      const cls = ["tip", extraClass].filter(Boolean).join(" ");
+      if (tip) {
+        return `<th class="${cls}" data-tip="${String(tip).replace(/"/g, "&quot;")}">${label}</th>`;
+      }
+      return `<th class="${extraClass}">${label}</th>`;
+    }
+
+    function formatDpw(v) {
+      if (v == null || !Number.isFinite(v)) return "—";
+      return `$${v}M`;
+    }
+
+    function dash(v) {
+      const s = String(v ?? "").trim();
+      return !s || s === "-" ? "—" : s;
+    }
+
+    function pfCell(teamRow, key) {
+      if (!teamRow?.pf || teamRow.pf[key] == null) return "—";
+      const n = Number(teamRow.pf[key]);
+      return Number.isFinite(n) ? n.toFixed(2) : "—";
+    }
+
+    function teamExtra(r) {
+      const t = teamMap().get(String(r.team || "").toUpperCase());
+      return {
+        park: dash(t?.park),
+        record: t ? `${dash(t.w)}-${dash(t.l)}` : "—",
+        pct: dash(t?.win_pct),
+        pf: pfCell(t, "PF"),
+      };
+    }
+
+    const DPW_TIP =
+      "Team Avg $/WAR (context only — not in Total):\nTotal salary (SLR) ÷ total WAR for players on this team.\nShown in millions per WAR. Blank when team WAR ≤ 0.";
+
+    const HAS_TEAM_LIST = (state.teamList || []).length > 0;
+
+    async function setTeamsUseStats(enabled) {
+      state.teamsUseStats = !!enabled;
+      await saveState(state);
+      return state;
+    }
+
+    function teamListHeads(include) {
+      if (!HAS_TEAM_LIST || !include) return "";
+      return (
+        th("Park", "From Team List export") +
+        th("W-L", "From Team List") +
+        th("%", "Win percentage from Team List") +
+        th("PF", "Overall park factor (Team List). See League Analysis for PF HR and more.")
+      );
+    }
+
+    function teamListCells(extra, include) {
+      if (!HAS_TEAM_LIST || !include) return "";
+      return `<td>${extra.park}</td><td>${extra.record}</td><td>${extra.pct}</td><td>${extra.pf}</td>`;
+    }
+
+    function render() {
+      const useStats = !!state.teamsUseStats;
+      const majorsOnly = state.majorsOnly !== false;
+      const rows = aggregateTeams(state.pitchers, state.batters, {
+        majorsOnly,
+        useStats,
+      });
+      // Park / W-L / % / PF are production context — hide in ratings mode
+      const showTeamList = useStats;
+
+      if (useStats) {
+        headRow.innerHTML =
+          th("Team") +
+          teamListHeads(showTeamList) +
+          th("Avg Age") +
+          th("Avg $/WAR", DPW_TIP, "meta-col") +
+          th("SP Stats", "Sum of starter stats (WAR, ERA+, rWAR, FIP, SIERA). No Min IP floor.", "score-start") +
+          th("RP Stats", "Sum of reliever stats (includes HLD). No Min IP floor.") +
+          th("Pitching Stats", "SP Stats + RP Stats") +
+          th("Offense Stats", "Sum of batter offense (wRC+, WAR, OPS+, G, UBR)") +
+          th("Defense Stats", "Sum of batter defense (ZR, CERA, Errors — CERA/E inverted)") +
+          th("Total", "Pitching Stats + Offense Stats + Defense Stats");
+        body.innerHTML = rows
+          .map((r) => {
+            const x = teamExtra(r);
+            const mine = isMyTeam(r.team, state);
+            const cls = mine
+              ? ` class="tip hl-my-team" data-tip="Your team (set in Options)."`
+              : "";
+            return `
+          <tr${cls}>
+            <td>${r.team}</td>
+            ${teamListCells(x, showTeamList)}
+            <td>${r.avg_age}</td>
+            <td class="meta-col muted">${formatDpw(r.dollar_per_war)}</td>
+            <td class="score-start">${r.sp_stats}</td>
+            <td>${r.rp_stats}</td>
+            <td>${r.pitching_stats}</td>
+            <td>${r.bat_off_stats}</td>
+            <td>${r.bat_def_stats}</td>
+            <td class="num-strong">${r.total}</td>
+          </tr>`;
+          })
+          .join("");
+      } else {
+        headRow.innerHTML =
+          th("Team") +
+          teamListHeads(showTeamList) +
+          th("Avg Age") +
+          th("Avg $/WAR", DPW_TIP, "meta-col") +
+          th("SP Curr.", "Sum of Curr.Total for starters (POS=SP).", "score-start") +
+          th("RP Curr.", "Sum of Curr.Total for relievers (RP/CL).") +
+          th("Pitching Curr.", "SP Curr. + RP Curr.") +
+          th("SP Pot.", "Sum of SP potential scores (scouted pot only).") +
+          th("RP Pot.", "Sum of RP potential scores.") +
+          th("Pitching Pot.", "SP Pot. + RP Pot.") +
+          th("Offense Curr.", "Sum of batters' Offense scores.") +
+          th("Offense Pot.", "Sum of batters' Offense Pot. scores.") +
+          th("Defense", "Sum of batters' Defense scores.") +
+          th("Total", "Pitching Curr. + Offense Curr. + Defense.");
+        body.innerHTML = rows
+          .map((r) => {
+            const x = teamExtra(r);
+            const mine = isMyTeam(r.team, state);
+            const cls = mine
+              ? ` class="tip hl-my-team" data-tip="Your team (set in Options)."`
+              : "";
+            return `
+          <tr${cls}>
+            <td>${r.team}</td>
+            ${teamListCells(x, showTeamList)}
+            <td>${r.avg_age}</td>
+            <td class="meta-col muted">${formatDpw(r.dollar_per_war)}</td>
+            <td class="score-start">${r.sp_curr}</td>
+            <td>${r.rp_curr}</td>
+            <td>${r.pitching_curr}</td>
+            <td>${r.sp_pot}</td>
+            <td>${r.rp_pot}</td>
+            <td>${r.pitching_pot}</td>
+            <td>${r.bat_off_curr}</td>
+            <td>${r.bat_off_pot}</td>
+            <td>${r.team_def}</td>
+            <td class="num-strong">${r.total}</td>
+          </tr>`;
+          })
+          .join("");
+      }
+    }
+
+    if (minorsToggle) {
+      minorsToggle.checked = state.majorsOnly === false;
+      minorsToggle.addEventListener("change", async () => {
+        state = await setMajorsOnly(!minorsToggle.checked);
+        render();
+      });
+    }
+
+    if (statsToggle) {
+      statsToggle.checked = !state.teamsUseStats;
+      statsToggle.addEventListener("change", async () => {
+        state = await setTeamsUseStats(!statsToggle.checked);
+        render();
+      });
+    }
+
+    render();
+  </script>
+  <script src="static/js/tooltips.js"></script>
+  <script src="static/js/app.js?v=15"></script>
+</body>
+</html>

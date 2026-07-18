@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contract — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=31" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+    <section class="panel">
+      <h2>Contract Estimator</h2>
+      <form id="contract-form" class="contract-form">
+        <div class="inline-form autocomplete-form">
+          <input type="text" id="player-name" class="ac-input search" placeholder="Select player" autocomplete="off" required />
+          <button type="submit" class="btn btn-accent">Analyze</button>
+        </div>
+        <div class="filter-grid">
+          <label>Position scope
+            <select id="pos-filter">
+              <option>Auto (same group)</option>
+              <option>Auto (same position)</option>
+              <option>All Batters</option>
+              <option>All OF</option>
+              <option>All IF</option>
+              <option>All C</option>
+              <option>All SP</option>
+              <option>All RP</option>
+            </select>
+          </label>
+          <label>Age ± years <input type="number" id="age-window" min="0" placeholder="Off" /></label>
+          <label>OPS+ ±% <input type="number" step="0.1" id="ops-percent" value="10" /></label>
+          <label>wRC+ ±% <input type="number" step="0.1" id="wrc-percent" value="10" /></label>
+          <label>WAR ± (bat) <input type="number" step="0.1" id="war-batter" value="1" /></label>
+          <label>ERA+ ±% <input type="number" step="0.1" id="era-percent" value="10" /></label>
+          <label class="tip" data-tip="FIP- is lower-is-better (100 = league average). Band is ±% around the selected pitcher’s FIP-.">FIP- ±% <input type="number" step="0.1" id="fip-percent" value="10" /></label>
+          <label>WAR ± (pit) <input type="number" step="0.1" id="war-pitcher" value="1" /></label>
+          <label>rWAR ± <input type="number" step="0.1" id="rwar-range" value="1" /></label>
+          <label class="checkbox-label tip" data-tip="When off (default), pre-arb and arbitration players are hidden from comps and excluded from the suggested AAV. Turn on to include them — updates live.">
+            <input type="checkbox" id="include-prefa" />
+            Include pre-arb / arb comps
+          </label>
+        </div>
+      </form>
+    </section>
+    <section class="panel" id="result-panel" hidden>
+      <h3 id="selected-title"></h3>
+      <p class="muted" id="selected-meta"></p>
+      <p class="suggestion" id="suggestion"></p>
+      <div class="contract-compare-bar" id="contract-compare-bar" hidden>
+        <p class="muted tip-note">Select 1–2 comps below, then compare with the estimated player.</p>
+        <button type="button" class="btn btn-accent" id="contract-compare-btn" disabled>Compare selected</button>
+      </div>
+    </section>
+    <div class="table-wrap" id="comps-wrap" hidden>
+      <table class="data-table sortable">
+        <thead id="comps-head"></thead>
+        <tbody id="comps-body"></tbody>
+      </table>
+    </div>
+  </main>
+  <script type="module" src="static/js/pages/contract.js?v=6"></script>
+  <script src="static/js/tooltips.js"></script>
+  <script src="static/js/app.js"></script>
+  <script type="module">
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=41";
+    bindPlayerCardRows();
+  </script>
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Upload — Hector 3.0 Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=31" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary" hidden></section>
+  <main>
+    <section class="hero-panel">
+      <h1>Hector 3.0 Web</h1>
+      <p class="lede">OOTP analyzer — All scoring runs in your browser. Upload OOTP HTML exports.</p>
+      <div id="upload-error" class="banner error" hidden></div>
+
+      <form class="upload-form upload-form-multi" id="upload-form">
+        <div class="upload-block">
+          <h2>1. Player List <span class="req" id="player-req-label">(required)</span></h2>
+          <p class="muted" id="player-help">Main roster export used by Pitchers, Batters, Teams, Trade, Contract, and Compare.</p>
+          <label class="file-drop">
+            <input type="file" id="file-input" accept=".html,text/html" required />
+            <span id="file-input-label">Choose Player List.html</span>
+          </label>
+          <div class="upload-field-check-wrap" id="player-field-check" aria-live="polite">
+            <p class="upload-field-check muted">Choose a file to check columns.</p>
+          </div>
+        </div>
+
+        <div class="upload-block">
+          <h2>2. Draft Class <span class="opt">(optional)</span></h2>
+          <p class="muted">Amateur / draft-class export for the <strong>Draft</strong> tab (potential-heavy scoring). Same table shape as Player List.</p>
+          <label class="file-drop">
+            <input type="file" id="draft-input" accept=".html,text/html" />
+            <span>Choose Draft Class.html</span>
+          </label>
+          <div class="upload-field-check-wrap" id="draft-field-check" aria-live="polite">
+            <p class="upload-field-check muted">Choose a file to check columns.</p>
+          </div>
+        </div>
+
+        <div class="upload-block">
+          <h2>3. Team List <span class="opt">(optional)</span></h2>
+          <p class="muted">Adds standings and park factors on Teams and League Analysis (join on Abbr ↔ ORG). Include DIV for division breakdowns.</p>
+          <label class="file-drop">
+            <input type="file" id="team-input" accept=".html,text/html" />
+            <span>Choose Team List.html</span>
+          </label>
+          <div class="upload-field-check-wrap" id="team-field-check" aria-live="polite">
+            <p class="upload-field-check muted">Choose a file to check columns.</p>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-accent btn-lg" id="upload-submit">Analyze</button>
+      </form>
+
+      <p class="muted" id="loaded-msg" hidden></p>
+
+      <section class="panel upload-instructions">
+        <h2>How to export from OOTP</h2>
+        <p class="export-load-warn">
+          <strong>Important:</strong> After <strong>Write report to disk</strong>, wait until the HTML page has <em>fully finished loading</em> in your browser before you Save as / upload.
+          Large lists can take a while — if you save too early, players at the bottom will be missing from Hector.
+        </p>
+        <details>
+          <summary>Player List (required)</summary>
+          <p class="muted">Create a custom Player List view with the columns below, then export to disk as HTML (StatsPlus / in-game HTML export). Column <em>order</em> can vary — Hector matches by header name.</p>
+
+          <ol class="export-steps">
+            <li class="export-step">
+              <p><strong>League menu → Transactions</strong></p>
+              <img src="static/img/export-guide/playerlist/1.jpg" alt="Open league menu and choose Transactions" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>Players → Player List</strong> — include minor leaguers and free agents as shown (retirees / international complex off unless you need them).</p>
+              <img src="static/img/export-guide/playerlist/2.jpg" alt="Open Players, Player List, and set include filters" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>VIEW → Customize…</strong> to build the Hector export view.</p>
+              <img src="static/img/export-guide/playerlist/3.jpg" alt="Open VIEW menu and choose Customize" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>GENERAL</strong> — identity columns (ORG, POS, Name, Age, Bats/Throws, OVR/POT, Injury Prone, National / Local Popularity, Personality Type, etc.).</p>
+              <img src="static/img/export-guide/playerlist/4.jpg?v=3" alt="Customize View GENERAL tab column selections" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>BATTING RATINGS</strong> — Contact, Gap, Power, Eye, K’s and potentials.</p>
+              <img src="static/img/export-guide/playerlist/5.jpg" alt="Customize View BATTING RATINGS tab" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>PITCHING RATINGS</strong> — Stuff / Movement / Control, arsenal grades + potentials, Pitches, Velocity, Stamina, Ground/Fly, Hold.</p>
+              <img src="static/img/export-guide/playerlist/6.jpg" alt="Customize View PITCHING RATINGS tab" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>FIELDING RATINGS</strong> — catcher / infield / outfield tools and position fielding grades.</p>
+              <img src="static/img/export-guide/playerlist/7.jpg" alt="Customize View FIELDING RATINGS tab" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>BATTING STATS</strong> — G, rate stats, wRC+, WAR, etc.</p>
+              <img src="static/img/export-guide/playerlist/8.jpg" alt="Customize View BATTING STATS tab" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>PITCHING STATS</strong> — IP, ERA+, FIP, WAR, rWAR, HLD/SV, etc.</p>
+              <img src="static/img/export-guide/playerlist/9.jpg" alt="Customize View PITCHING STATS tab" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>FIELDING STATS</strong> — at least E, ZR, and CERA.</p>
+              <img src="static/img/export-guide/playerlist/10.jpg" alt="Customize View FIELDING STATS tab with E ZR CERA" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>MISC. INFO</strong> — Salary / years / contract value fields and Scout Acc.</p>
+              <img src="static/img/export-guide/playerlist/11.jpg" alt="Customize View MISC INFO salary and Scout Acc" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>VIEW → Save View…</strong> so you can reuse this column set next time.</p>
+              <img src="static/img/export-guide/playerlist/18.jpg" alt="Open VIEW menu and choose Save View" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p>Name the view (e.g. <strong>Hector All</strong>) and click <strong>Save as Global</strong>.</p>
+              <img src="static/img/export-guide/playerlist/19.jpg" alt="Save View dialog with Save as Global" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>REPORT → Write report to disk</strong> to open the HTML export in your browser.</p>
+              <p class="export-load-warn export-load-warn-inline"><strong>Wait for the page to finish loading completely</strong> before the next step — otherwise the saved file can be missing players.</p>
+              <img src="static/img/export-guide/playerlist/20.jpg" alt="REPORT menu Write report to disk" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p>Once loading is done, <strong>right-click → Save as…</strong></p>
+              <img src="static/img/export-guide/playerlist/21.jpg" alt="Browser context menu Save as on player list HTML" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p>Save as <code>Player List.html</code> (Webpage, Complete / HTML) — then upload that file above.</p>
+              <img src="static/img/export-guide/playerlist/22.jpg" alt="Save dialog naming file Player List.html" loading="lazy" width="640" height="360" />
+            </li>
+          </ol>
+
+          <h3 class="export-cols-heading">Required columns (checklist)</h3>
+          <p class="muted">These are the finalized table columns from Customize View (names as shown in OOTP). After export, the dropzone above reports how many Hector-expected fields were found.</p>
+          <div id="player-column-checklist" class="export-cols"></div>
+        </details>
+
+        <details>
+          <summary>Draft Class (optional)</summary>
+          <p class="muted">Same columns as Player List — <strong>reuse the Hector All view</strong> you already saved (no need to rebuild Customize View). Export the draft pool as HTML for the Draft tab (potential-heavy scoring: potential ×1.5, current ×0.9).</p>
+
+          <ol class="export-steps">
+            <li class="export-step">
+              <p><strong>League menu → Rookie Draft</strong></p>
+              <img src="static/img/export-guide/draftlist/1.jpg" alt="Open league menu and choose Rookie Draft" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p>Open the <strong>DRAFT POOL</strong> tab.</p>
+              <img src="static/img/export-guide/draftlist/2.jpg" alt="Select DRAFT POOL tab" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>VIEW → Hector All</strong> (or whatever you named the Player List view) — same columns, no re-customize needed.</p>
+              <img src="static/img/export-guide/draftlist/3.jpg" alt="Select saved Hector All view on draft pool" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>REPORT → Write report to disk</strong> to open the HTML in your browser.</p>
+              <p class="export-load-warn export-load-warn-inline"><strong>Wait for the page to finish loading completely</strong> before Save as — otherwise the draft file can be missing players.</p>
+              <img src="static/img/export-guide/draftlist/4.jpg" alt="REPORT menu Write report to disk for draft pool" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p>Once loading is done, <strong>right-click → Save as…</strong></p>
+              <img src="static/img/export-guide/draftlist/5.jpg" alt="Browser context menu Save as on draft list HTML" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p>Save as <code>Draft List.html</code> (Webpage, Complete / HTML) — then upload that file in Draft Class above.</p>
+              <img src="static/img/export-guide/draftlist/6.jpg" alt="Save dialog naming file Draft List.html" loading="lazy" width="640" height="360" />
+            </li>
+          </ol>
+        </details>
+
+        <details>
+          <summary>Team List (optional)</summary>
+          <p class="muted">Standings + park factors for Teams and League Analysis (join on <strong>Abbr</strong> ↔ player ORG). Talent / WAR on League Analysis still comes from the <strong>Player List</strong>, not Team List WAR columns.</p>
+
+          <ol class="export-steps">
+            <li class="export-step">
+              <p><strong>League menu → Statistics</strong></p>
+              <img src="static/img/export-guide/teamlist/1.jpg" alt="Open league menu and choose Statistics" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>TEAM STATISTICS &amp; INFO → SORTABLE STATS</strong></p>
+              <img src="static/img/export-guide/teamlist/2.jpg" alt="Open Team Statistics and Sortable Stats" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>VIEW → Customize…</strong> (save as e.g. <strong>hector team stats</strong> when done).</p>
+              <img src="static/img/export-guide/teamlist/3.jpg" alt="Open VIEW Customize for team sortable stats" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>GENERAL</strong> — Team Name, Abbr, Park, League, Sub-League, Division, Nation.</p>
+              <img src="static/img/export-guide/teamlist/4.jpg" alt="Customize View GENERAL team identity columns" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>RECORD</strong> — Games, Wins, Losses, PCT, Streak, Magic, POS, GB, Clinch.</p>
+              <img src="static/img/export-guide/teamlist/5.jpg" alt="Customize View RECORD standings columns" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>HISTORY</strong> — Last Wins, Last Losses, Last PCT (exports as lyW / lyL / ly%).</p>
+              <img src="static/img/export-guide/teamlist/6.jpg" alt="Customize View HISTORY last season record columns" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>MISC INFO</strong> — park factors: PF, PF AVG, AVG L/R, PF HR, HR L/R, PF D, PF T.</p>
+              <img src="static/img/export-guide/teamlist/7.jpg" alt="Customize View MISC INFO park factor columns" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>VIEW → Save View…</strong> so you can reuse this team stats view next time.</p>
+              <img src="static/img/export-guide/teamlist/8.jpg" alt="Open VIEW menu and choose Save View" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p>Name the view (e.g. <strong>hector team stats</strong>) and click <strong>Save as Global</strong>.</p>
+              <img src="static/img/export-guide/teamlist/9.jpg" alt="Save View dialog with Save as Global" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p><strong>Report → Write report to disk</strong> to open the HTML in your browser.</p>
+              <p class="export-load-warn export-load-warn-inline"><strong>Wait for the page to finish loading completely</strong> before Save as — otherwise clubs can be missing from the file.</p>
+              <img src="static/img/export-guide/teamlist/10.jpg" alt="Report menu Write report to disk for team list" loading="lazy" width="640" height="360" />
+            </li>
+            <li class="export-step">
+              <p>Once loading is done, <strong>right-click → Save as…</strong> and save as <code>Team List.html</code> (Webpage, Complete / HTML) — then upload that file above.</p>
+            </li>
+          </ol>
+
+          <h3 class="export-cols-heading">Expected Team List columns</h3>
+          <ul class="export-cols-flat" id="team-column-checklist"></ul>
+        </details>
+      </section>
+
+      <aside class="tip-callout" aria-label="Player card tip">
+        <div class="tip-callout-keys" aria-hidden="true">
+          <kbd>Right-click</kbd>
+          <span class="tip-callout-or">or</span>
+          <kbd>Ctrl</kbd><span class="tip-callout-plus">/</span><kbd>⌘</kbd><span class="tip-callout-plus">+</span><kbd>Click</kbd>
+        </div>
+        <p class="tip-callout-body">
+          <strong>Player cards</strong> — on Pitchers, Batters, or Draft rows, open ratings, percentiles, and archetype fits (Draft cards rank vs the draft class).
+        </p>
+      </aside>
+      <aside class="tip-callout tip-callout-secondary" aria-label="Your team tip">
+        <p class="tip-callout-body">
+          <strong>Your team</strong> — after loading data, set your franchise in
+          <a href="options.html">Options</a> so your players highlight on Pitchers/Batters and your org on Teams.
+        </p>
+      </aside>
+      <ul class="notes">
+        <li>Data stays in this browser (IndexedDB / localStorage) — no server upload.</li>
+        <li>See the <a href="glossary.html">Glossary</a> for every Hector-created score.</li>
+      </ul>
+    </section>
+  </main>
+  <script type="module">
+    import { mountShell } from "./static/js/shell.js?v=40";
+    import {
+      ingestHtml,
+      ingestDraftClassHtml,
+      ingestTeamList,
+      hasData,
+      hasDraftData,
+    } from "./static/js/hector/store.js?v=30";
+    import { parseTeamListHtml } from "./static/js/hector/team_list.js?v=31";
+    import {
+      PLAYER_LIST_COLUMN_GROUPS,
+      EXPECTED_TEAM_LIST,
+      checkPlayerListHtml,
+      checkTeamListHtml,
+      fieldCheckHtml,
+    } from "./static/js/upload-checklist.js?v=4";
+
+    const state = await mountShell("home");
+    const alreadyLoaded = hasData(state);
+    const fileInput = document.getElementById("file-input");
+    const draftInput = document.getElementById("draft-input");
+    const teamInput = document.getElementById("team-input");
+    const reqLabel = document.getElementById("player-req-label");
+    const playerHelp = document.getElementById("player-help");
+    const submitBtn = document.getElementById("upload-submit");
+
+    function escapeHtml(s) {
+      return String(s ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    const playerColsEl = document.getElementById("player-column-checklist");
+    if (playerColsEl) {
+      playerColsEl.innerHTML = PLAYER_LIST_COLUMN_GROUPS.map(
+        (g) => `<div class="export-cols-group">
+          <h4>${escapeHtml(g.title)}</h4>
+          <p class="export-cols-text">${g.columns.map(escapeHtml).join(" · ")}</p>
+        </div>`,
+      ).join("");
+    }
+    const teamColsEl = document.getElementById("team-column-checklist");
+    if (teamColsEl) {
+      teamColsEl.innerHTML = EXPECTED_TEAM_LIST.map(
+        (f) => `<li>${escapeHtml(f.label)}</li>`,
+      ).join("");
+    }
+
+    if (alreadyLoaded) {
+      fileInput.required = false;
+      reqLabel.textContent = "(optional — already loaded)";
+      reqLabel.classList.remove("req");
+      reqLabel.classList.add("opt");
+      playerHelp.textContent =
+        "Player List is already loaded. Leave blank to keep it, or choose a new file to replace. You can add Draft Class / Team List alone.";
+      submitBtn.textContent = "Update / Analyze";
+      const el = document.getElementById("loaded-msg");
+      el.hidden = false;
+      const draftNote = hasDraftData(state)
+        ? ` Draft class: ${state.draftPitchers.length} P / ${state.draftBatters.length} B.`
+        : "";
+      const teamNote =
+        state.teamList && state.teamList.length
+          ? ` Team List: ${state.teamList.length} clubs.`
+          : "";
+      const stats = state.importStats;
+      const detail = stats
+        ? `Parsed ${stats.rowsParsed} rows → ${state.pitchers.length} pitchers, ${state.batters.length} batters.`
+        : `Data loaded (${state.pitchers.length} pitchers, ${state.batters.length} batters).`;
+      el.innerHTML = `${detail}${draftNote}${teamNote} Open <a href="pitchers.html">Pitchers</a>, <a href="batters.html">Batters</a>, or <a href="draft.html">Draft</a>.`;
+    }
+
+    function fileLabel(input, fallback) {
+      const f = input.files?.[0];
+      const span = input.parentElement?.querySelector("span");
+      if (span) span.textContent = f ? f.name : fallback;
+    }
+
+    async function runFieldCheck(input, wrapId, kind) {
+      const wrap = document.getElementById(wrapId);
+      if (!wrap) return;
+      const file = input.files?.[0];
+      if (!file) {
+        wrap.innerHTML = fieldCheckHtml(null);
+        return;
+      }
+      wrap.innerHTML = `<p class="upload-field-check muted">Checking columns…</p>`;
+      try {
+        const html = await file.text();
+        const result =
+          kind === "team" ? checkTeamListHtml(html) : checkPlayerListHtml(html);
+        wrap.innerHTML = fieldCheckHtml(result);
+      } catch (ex) {
+        wrap.innerHTML = fieldCheckHtml(null, String(ex.message || ex));
+      }
+    }
+
+    function bindFileCheck(input, wrapId, kind, fallbackLabel) {
+      // Clearing value on open lets re-selecting the same file fire `change` again.
+      input.addEventListener("click", () => {
+        input.value = "";
+        const wrap = document.getElementById(wrapId);
+        if (wrap) wrap.innerHTML = fieldCheckHtml(null);
+        fileLabel(input, fallbackLabel);
+      });
+      input.addEventListener("change", () => {
+        fileLabel(input, fallbackLabel);
+        runFieldCheck(input, wrapId, kind);
+      });
+    }
+
+    bindFileCheck(fileInput, "player-field-check", "player", "Choose Player List.html");
+    bindFileCheck(draftInput, "draft-field-check", "player", "Choose Draft Class.html");
+    bindFileCheck(teamInput, "team-field-check", "team", "Choose Team List.html");
+
+    document.getElementById("upload-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const file = fileInput.files[0];
+      const draftFile = draftInput.files[0];
+      const teamFile = teamInput.files[0];
+      const err = document.getElementById("upload-error");
+      err.hidden = true;
+
+      if (!file && !alreadyLoaded) {
+        err.hidden = false;
+        err.textContent = "Upload a Player List.html first.";
+        return;
+      }
+      if (!file && !draftFile && !teamFile) {
+        err.hidden = false;
+        err.textContent = "Choose at least one file to upload (Player List, Draft Class, or Team List).";
+        return;
+      }
+
+      try {
+        let next = null;
+        if (file) {
+          next = await ingestHtml(await file.text(), file.name);
+          const stats = next.importStats;
+          if (stats && stats.rowsParsed) {
+            sessionStorage.setItem(
+              "hector_last_import",
+              `${stats.rowsParsed} rows → ${stats.pitchers} P / ${stats.batters} B`,
+            );
+          }
+        }
+        if (draftFile) {
+          await ingestDraftClassHtml(await draftFile.text(), draftFile.name);
+        }
+        if (teamFile) {
+          const { teams } = parseTeamListHtml(await teamFile.text());
+          await ingestTeamList(teams, teamFile.name);
+        }
+
+        if (file) {
+          window.location.href = "pitchers.html";
+        } else if (draftFile && !teamFile) {
+          window.location.href = "draft.html";
+        } else if (teamFile && !draftFile) {
+          window.location.href = "teams.html";
+        } else {
+          window.location.href = "pitchers.html";
+        }
+      } catch (ex) {
+        err.hidden = false;
+        err.textContent = String(ex.message || ex);
+      }
+    });
+  </script>
+  <script src="static/js/tooltips.js"></script>
+</body>
+</html>

@@ -1,232 +1,71 @@
-<a name="top"></a>
+# Hector 3.0 Web
 
-# Hector OOTP Analyzer
+Browser-only OOTP / StatsPlus analyzer. Upload HTML exports; scoring and tools run entirely in your browser. Player data stays in **IndexedDB** and settings in **localStorage** — nothing is uploaded to a server for analysis.
 
-Hector is a powerful and fully customizable desktop analytics tool for Out of the Park Baseball (OOTP) leagues. Built for both casual GMs and competitive online leagues, Hector imports your exported HTML data and delivers clear, actionable insights with a dark-mode UI. Get in-depth, sortable breakdowns for every player and team, intelligent highlights, advanced filters, and direct Stats+ integration—helping you evaluate talent, find hidden gems, and make smart roster moves.
+**Live site:** [https://hector.zabbyplex.xyz](https://hector.zabbyplex.xyz)
 
----
+See [CHANGELOG.md](CHANGELOG.md) for what changed since Hector 2.4.5 Beta.
 
-## Table of Contents
+## Quick start (local)
 
-- [Downloading the Latest Version](#downloading-the-latest-version)
-- [Flexible Weighting System](#flexible-weighting-system)
-- [Hector Data Export Instructions](#hector-data-export-instructions)
-- [Features Overview](#features-overview)
-  - [Core Functionality](#core-functionality)
-  - [User Interface Features](#user-interface-features)
-  - [Reporting and Analysis Tools](#reporting-and-analysis-tools)
-  - [Dataset Overview](#dataset-overview)
-  - [User Assistance](#user-assistance)
-- [Calculation Flowcharts](#calculation-flowcharts)
+```bash
+npx --yes serve -p 8000
+```
 
----
+Open http://localhost:8000
 
-## Downloading the Latest Version
+Optional Docker (nginx):
 
-Download the newest build of Hector from the **Releases** page:
+```bash
+docker build -t hector-web .
+docker run -p 8080:80 hector-web
+```
 
-➡️ [**Download the latest version here**](../../releases)
+## Deploy / updates
 
-1. Download the ZIP for the latest release.
-2. Extract it to a folder of your choice.
-3. Run the executable (or use Python if running from source).
+This repo is hosted on **Cloudflare Pages** (static files, no build step).
 
-<details>
-<summary><strong>Showcase: Click to view screenshots of Hector in action</strong></summary>
+- Production branch: `main`
+- After you change the site: `git commit` and `git push` — Pages redeploys automatically
 
-![Showcase1](screenshots/showcase1.png)
-![Showcase2](screenshots/showcase2.png)
-![Showcase3](screenshots/showcase3.png)
-![Showcase4](screenshots/showcase4.png)
-![Showcase5](screenshots/showcase5.png)
-![Showcase6](screenshots/contracttool.png)
-![Showcase7](screenshots/drafttool.png)
-![Showcase8](screenshots/tradetool.png)
+## Upload
 
-</details>
+1. **Player List.html (required)** — roster for Pitchers, Batters, Teams, Trade, Contract, Compare.
+2. **Draft Class.html (optional)** — amateur pool for the **Draft** tab.
+3. **Team List.html (optional)** — standings + park factors on **Teams** and **League Analysis**.
 
----
+StatsPlus profile links use a `{pid}` URL template under **Options → Statsplus website integration**.
 
-## Flexible Weighting System
-[⬆️ Back to Top](#top)
+## Features
 
-**Editing Player Weights**
+| Area | What it does |
+|------|----------------|
+| **Pitchers / Batters** | Live filters, stats or ratings Total, sample floors, row highlights, player cards, name → StatsPlus |
+| **Draft** | Separate draft-class list; potential-heavy ratings scoring |
+| **Teams** | Club aggregates; optional park / standings from Team List |
+| **Compare** | Side-by-side players + radar |
+| **Trade** | Two-sided trade with ratings, stats, $/WAR, contract Δ, draft picks |
+| **Contract** | Comp-based AAV suggestion + role-pooled $/WAR context |
+| **Archetypes** | Franchise philosophy fits (under **More**) |
+| **League Analysis** | Parity, parks, talent WAR, divisions, YoY trends |
+| **Options** | Weights, StatsPlus URL, your team |
+| **Glossary** | Score definitions |
 
-- `pitcher_weights.py`: Set importance of pitching attributes
-- `batter_weights.py`: Set importance of hitting/defense/baserunning
+## Desktop Hector (archived)
 
-How to adjust the weights:
+Older Tkinter / Python desktop sources (through 2.4.5 Beta) are preserved here:
 
-1. Open `pitcher_weights.py` or `batter_weights.py` in a text editor (e.g., Notepad++ or VS Code).
-2. Modify values in the `section_weights` dictionary — higher = more influence on the score.
-3. Save your changes in the program folder alongside the `.exe`.
-4. In Hector, click the **Reload Data** button to apply changes immediately.
+- Branch: [`archive/desktop`](https://github.com/zab1996/HectorOOTP/tree/archive/desktop)
+- Tag: [`desktop-2.4.5`](https://github.com/zab1996/HectorOOTP/tree/desktop-2.4.5)
 
----
+Desktop ZIP builds remain under [Releases](https://github.com/zab1996/HectorOOTP/releases).
 
-## Hector Data Export Instructions
-[⬆️ Back to Top](#top)
+## Layout
 
-Export player data from OOTP with custom views:
-
-- Data Import Process
-    - Create a combined view for All Players (see screenshots below)
-    - Export the view as HTML
-    - Replace the provided `Player List.html`.
-    - Click **Reload Data** in Hector for instant refresh
-
-### 1. Create the View in OOTP
-
-Customize your view:
-
-![Customizeview](screenshots/customize.png)
-
-Include all these Data points/Attributes:
-
-![views](screenshots/General.png)
-![views](screenshots/battingratings.png)
-![views](screenshots/battingstats.png)
-![views](screenshots/pitcherratings.png)
-![views](screenshots/pitcherstats.png)
-![views](screenshots/fieldingratings.png)
-![views](screenshots/scoutaccnew.png)
-
-### 3. Save View as Global
-
-- Save the view as **Global**
-  
-![views](screenshots/global.png)
-- Name it as **"Hector All"** (or anything you'd like)
-
-### 4. Export HTML File
-
-- Export the report to disk. This will open a browser window, hit save as on the browser page and save as`Player List.html` this is the default for OOTP.
-
-![Export HTML DATA](screenshots/export.png)
-![Export HTML DATA](screenshots/save.png)
-
-### 5. Replace The Existing File
-
-- Overwrite the `Player List.html` file in your Hector program folder. Restart the program or hit the Reload Button to refresh the data.
-
-![Export HTML DATA](screenshots/overwrite.png)
-
-> Tip:
-> If you see errors or warnings, check your export views and make sure all fields were included.
-
----
-
-## Features Overview
-
-### Core Functionality
-[⬆️ Back to Top](#top)
-
-- Advanced Calculations
-    - Weighted scoring for both pitchers and batters, fully customizable
-    - Current vs. potential talent projections
-    - Comprehensive total value scores for comparison
-    - **Draft Comparison Mode**: Toggle to emphasize potential (1.5x) over current performance (0.9x) for prospect evaluation
-
-- Scouting Details
-    - Injury proneness (Durability/Prone)
-    - Scout accuracy confidence
-    - Player handedness (throw/bat)
-    - Pitcher velocity, repertoire count, ground/fly ball ratio
-    - Enhanced statistical support: OPS+, wRC+, ERA+, WAR (Batter), WAR (Pitcher), rWAR, SLR, YL, CV
-
-### User Interface Features
-[⬆️ Back to Top](#top)
-
-- Filtering & Navigation
-    - Easy position-based filters (SP, RP, all batting roles)
-    - Infield/Outfield group toggles for mass selection
-    - Double-click player names to open their Stats+ league page (configurable via config file)
-    - **Smart stat-based filtering**: OPS+, wRC+, WAR for batters; ERA+, WAR, rWAR for pitchers with age ranges
-
-- Smart Search
-    - Filter by team (`ATL` etc.), position, and age (e.g., `<30`, `>25`)
-    - Chain filters (e.g., `ATL 2B <30`)
-
-- Intelligent Highlighting
-    - Flags RPs with 3+ pitches and stamina ≥50 as SP candidates
-    - 1B who qualify at 3B: Range ≥50, Arm ≥55, Error ≥45
-    - 2B meeting criteria for SS training: Range ≥60, Arm ≥50, Error ≥50, DP ≥50
-    - Tooltips explain all highlight rules
-    - Dynamic column display showing only relevant stats based on player position
-
-### Reporting and Analysis Tools
-[⬆️ Back to Top](#top)
-
-- Quick Reports
-    - Top 10 batters at each position
-    - Top 20 pitchers (per SP/RP)
-    - Batters with ≥50 at secondary positions can be included with one click
-    - All data columns sortable ascending/descending
-
-- Team Evaluations
-    - See each team's SP/RP current & potential scores, combined pitching, offense, defense, and total rating
-
-- **Trade Tool** (v2.3.5+)
-    - Player search with autocomplete for pitchers and batters
-    - Team A vs Team B comparison with value totals
-    - Score normalization between pitchers and batters for fair comparison
-    - Draft pick support with configurable league settings (28 teams, 20 rounds default)
-    - Dynamic draft pick value calculation with exponential decay
-    - Trade summary comparing total values
-    - Player removal functionality
-
-- **Contract Tool** (v2.3.5+)
-    - Player selection and comparison to similar players at their position
-    - Contract suggestions based on comparable salaries and values
-    - Stat-based filtering with age ranges
-    - Position filters with "Compare to all batters" option
-    - Excludes players with 0 games (batters) or 0 innings pitched (pitchers)
-    - Displays Games (G) for batters and Innings Pitched (IP) for pitchers
-
-### Dataset Overview
-[⬆️ Back to Top](#top)
-
-- At-a-Glance Stats
-    - Total and breakdown counts by role and position
-    - Average scores for SP, RP, and batters
-    - Visual display of positional talent spread
-
-### User Assistance
-[⬆️ Back to Top](#top)
-
-- Hover tooltips for every calculated metric
-- Click **Reload Data** to refresh at any time
-- Inline help and error warnings if data is missing
-- **Draft Comparison Mode tooltip** explaining prospect evaluation functionality
-
----
-
-## Calculation Flowcharts
-[⬆️ Back to Top](#top)
-
-<details>
-<summary><strong>Pitcher Score Calculation Flowchart</strong></summary>
-
-![Pitcher Score Calculation Flowchart](screenshots/pitcherchart.png)
-
-</details>
-
-<details>
-<summary><strong>Batter Score Calculation Flowchart</strong></summary>
-
-![Batter Score Calculation Flowchart](screenshots/batterflowchart.png)
-
-</details>
-
-<details>
-<summary><strong>Team Score Calculation Flowchart</strong></summary>
-
-![Team Score Calculation Flowchart](screenshots/teamsflowchart.png)
-
-</details>
-
----
-
-> For issues, guidance, or detailed explanations, explore the program's tooltips or consult the full documentation.
-
-Thank you for using Hector!
+```
+*.html                 # App pages (site root)
+static/js/hector/      # Scoring, trade, contract, parse
+static/js/pages/       # Page modules
+static/css/app.css
+Dockerfile             # Optional local nginx:alpine host
+```

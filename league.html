@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>League Analysis — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=31" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main class="league-layout">
+    <header class="glossary-intro">
+      <h1>League Analysis</h1>
+      <p class="lede">League-wide insights from Team List standings/parks plus majors WAR from your Player List (by ORG).</p>
+    </header>
+    <div id="league-empty" class="panel" hidden>
+      <p class="muted">Upload a <strong>Team List.html</strong> on the <a href="index.html">Upload</a> page to unlock League Analysis. Include <strong>DIV</strong>, standings, park factors, and last-year columns when possible.</p>
+    </div>
+    <div id="league-content" hidden></div>
+  </main>
+  <script type="module" src="static/js/pages/league.js?v=4"></script>
+  <script src="static/js/tooltips.js"></script>
+  <script src="static/js/app.js?v=17"></script>
+</body>
+</html>

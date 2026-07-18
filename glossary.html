@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Glossary — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=36" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+<section class="glossary">
+  <header class="glossary-intro">
+    <h1>Glossary</h1>
+    <p class="lede">Definitions for Hector’s custom scores and tools. Raw OOTP fields (Contact, Stuff, WAR, etc.) come from your export; the metrics below are what Hector calculates from them using client-side weights (editable in Options).</p>
+  </header>
+
+  <nav class="glossary-toc" id="glossary-toc" aria-label="Glossary sections">
+    <a href="#all" data-section="all" class="is-active">All</a>
+    <a href="#pitchers" data-section="pitchers">Pitchers</a>
+    <a href="#batters" data-section="batters">Batters</a>
+    <a href="#teams" data-section="teams">Teams</a>
+    <a href="#compare" data-section="compare">Compare</a>
+    <a href="#trade" data-section="trade">Trade</a>
+    <a href="#contract" data-section="contract">Contract</a>
+    <a href="#upcoming-fa" data-section="upcoming-fa">Upcoming FA</a>
+    <a href="#team-salary" data-section="team-salary">Team Salary</a>
+    <a href="#hidden-gems" data-section="hidden-gems">Hidden Gems</a>
+    <a href="#modes" data-section="modes">Modes &amp; search</a>
+    <a href="#percentiles" data-section="percentiles">Percentiles</a>
+    <a href="#archetypes" data-section="archetypes">Archetypes</a>
+    <a href="#league" data-section="league">League Analysis</a>
+    <a href="#highlights" data-section="highlights">Row highlights</a>
+  </nav>
+
+  <section id="pitchers" class="panel glossary-section">
+    <h2>Pitcher scores</h2>
+    <p class="glossary-lead">Default Total on the Pitchers tab is <strong>stats-based</strong>. Toggle <strong>Use Ratings-Based Scoring</strong> for scout-ratings Total. Sample floors (default SP ≥40 IP, RP ≥20 IP) update live; below the floor, Total is 0 (not ratings). Pitch / Current / Potential stay ratings-based for reference. Stats contribution weights are under Options → Pitcher stats weights.</p>
+    <dl class="glossary-list">
+      <div>
+        <dt>Total Score (stats)</dt>
+        <dd>WAR 28%, ERA+ 28% (scaled by IP sample reliability — full at 120 IP SP / 50 IP RP), rWAR 14%, FIP- 10% (lower better; sample-scaled), HLD 5% (RP/CL only). IP is not in the score. Prefer WAR or rWAR in Options by raising one and lowering the other.</dd>
+      </div>
+      <div>
+        <dt>Total Score (ratings)</dt>
+        <dd>Full pitcher value: current core + arsenal + all potentials + other attributes + penalties. Used when Use Ratings-Based Scoring is on.</dd>
+      </div>
+      <div>
+        <dt>Pitch Score</dt>
+        <dd>Weighted sum of <strong>current</strong> pitch arsenal grades only (Fastball, Slider, Curveball, etc.). Does <em>not</em> include Stuff, Movement, or Control.</dd>
+      </div>
+      <div>
+        <dt>Pitch Pot. Score</dt>
+        <dd>Weighted sum of each pitch type’s <strong>potential</strong> grade only. Does not include Stuff / Movement / Control potential.</dd>
+      </div>
+      <div>
+        <dt>Potential Score</dt>
+        <dd>Core potential (Stuff Pot. + Movement Pot. + Control Pot.) <strong>plus</strong> all pitch potential grades <strong>plus</strong> potential penalties. Overall future ceiling signal.</dd>
+      </div>
+      <div>
+        <dt>Current Score</dt>
+        <dd>Present-day value only: current Stuff / Movement / Control + current arsenal + other current factors (stamina, # pitches, G/F, etc.) and <strong>current</strong> penalties. No potential ratings.</dd>
+      </div>
+    </dl>
+    <p class="glossary-note">Current penalties: SP low pitch count (&lt;4), SP low stamina (&lt;50), SP low Control (&lt;50), or no current pitch ≥50. Potential penalties: SP low Control Potential (&lt;50), or no pitch potential ≥50. Current ones hit Current Score; potential ones hit Potential Score; both are in Total. <strong>FIP-</strong> on the Pitchers tab isolates skill from team defense; the <strong>Teams</strong> tab uses raw <strong>FIP</strong> (+ SIERA) because franchise defense is relevant when scoring a club.</p>
+  </section>
+
+  <section id="batters" class="panel glossary-section">
+    <h2>Batter scores</h2>
+    <p class="glossary-lead">Default Total on the Batters tab is <strong>stats-based</strong>. Toggle <strong>Use Ratings-Based Scoring</strong> for scout-ratings Total. Min games (default ≥50) updates live; below the floor, Total is 0 (not ratings). Offense / Defense / Off. Pot. stay ratings-based for reference. Stats contribution weights are under Options → Batter stats weights.</p>
+    <dl class="glossary-list">
+      <div>
+        <dt>Total Score (stats)</dt>
+        <dd>wRC+ 30% and OPS+ 15% (scaled by games — full at 120 G), WAR 30%. ZR, UBR, and CERA default to weight 0 (still shown on the table; raise in Options for an extra boost on top of WAR). G is not in the score.</dd>
+      </div>
+      <div>
+        <dt>Total Score (ratings)</dt>
+        <dd>Offense + offense potential + defense + baserunning + scout accuracy (as weighted). Used when Use Ratings-Based Scoring is on.</dd>
+      </div>
+      <div>
+        <dt>Offense</dt>
+        <dd>Weighted sum of <strong>current</strong> batting tools: Contact, Gap, Power, Eye, K’s (<code>overall</code> section in batter weights).</dd>
+      </div>
+      <div>
+        <dt>Offense Pot. / Off. Pot.</dt>
+        <dd>Same idea as Offense, but using <strong>potential</strong> ratings only (Contact Pot., Gap Pot., etc.).</dd>
+      </div>
+      <div>
+        <dt>Defense</dt>
+        <dd>Position-gated fielding value (catcher / infield / outfield skills as relevant to primary POS). DH contributes 0 defense. Range/arm weights can vary by position (e.g. SS range, 3B arm, CF range).</dd>
+      </div>
+      <div>
+        <dt>OVR / POT Stars</dt>
+        <dd>Passthrough from the export’s overall / potential star ratings — displayed, not re-scored into Total.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="teams" class="panel glossary-section">
+    <h2>Team aggregates</h2>
+    <p class="glossary-lead">Per organization (ORG). Defaults to <strong>Major League / MLB</strong> only (Include minors to add lower levels; blank Lev still counts). Potential pitching columns use scouted potential skills only — stamina / velocity / pitch count are not projected, so pitching potential can look lower than current.</p>
+    <dl class="glossary-list">
+      <div>
+        <dt>Include minors</dt>
+        <dd>When off, only Major League / MLB (and blank Lev) are summed. Same Lev preference as Pitchers/Batters list filters.</dd>
+      </div>
+      <div>
+        <dt>Use Ratings-Based Scoring (Teams)</dt>
+        <dd>Teams-only toggle. Unchecked (default) = production stats columns. Checked = scout ratings columns. Does <strong>not</strong> change Pitchers/Batters scoring or weights.</dd>
+      </div>
+      <div>
+        <dt>Avg Age</dt>
+        <dd>Mean age of included pitchers and batters on that ORG.</dd>
+      </div>
+      <div>
+        <dt>Avg $/WAR</dt>
+        <dd>Context only — <strong>not</strong> in Total. Team total salary (SLR) ÷ team total WAR, in millions per WAR (e.g. $4.25M). Blank when team WAR ≤ 0.</dd>
+      </div>
+      <div>
+        <dt>SP Curr. / RP Curr.</dt>
+        <dd>Ratings mode: sum of Current Score for starters (SP) or relievers (RP/CL).</dd>
+      </div>
+      <div>
+        <dt>Pitching Curr.</dt>
+        <dd>Ratings mode: SP Curr. + RP Curr.</dd>
+      </div>
+      <div>
+        <dt>SP Pot. / RP Pot. / Pitching Pot.</dt>
+        <dd>Ratings mode: sum of pitcher Potential Score pieces (core pot + pitch pot) by role, then combined.</dd>
+      </div>
+      <div>
+        <dt>Offense Curr. / Offense Pot.</dt>
+        <dd>Ratings mode: sum of batters’ Offense and Offense Potential on the team.</dd>
+      </div>
+      <div>
+        <dt>Team Defense</dt>
+        <dd>Ratings mode: sum of batters’ Defense scores.</dd>
+      </div>
+      <div>
+        <dt>Total Team Score (ratings)</dt>
+        <dd><strong>Pitching Curr. + Offense Curr. + Defense</strong> only. Potential is shown for context but not included in Total.</dd>
+      </div>
+      <div>
+        <dt>SP Stats / RP Stats / Pitching Stats</dt>
+        <dd>Stats mode: weighted WAR, ERA+, rWAR, FIP, SIERA (lower FIP/SIERA better); RP also includes HLD. IP is not in the score. No Min IP floor on Teams. Pitching Stats = SP + RP.</dd>
+      </div>
+      <div>
+        <dt>Offense Stats</dt>
+        <dd>Stats mode: weighted wRC+, WAR, OPS+, G, UBR.</dd>
+      </div>
+      <div>
+        <dt>Defense Stats</dt>
+        <dd>Stats mode: weighted ZR; CERA and Errors inverted (lower/fewer is better). Blank CERA skipped.</dd>
+      </div>
+      <div>
+        <dt>Total Team Score (stats)</dt>
+        <dd><strong>Pitching Stats + Offense Stats + Defense Stats</strong>.</dd>
+      </div>
+      <div>
+        <dt>Team List upload</dt>
+        <dd>Optional HTML export (Abbr, record, park, park factors, <strong>DIV</strong>, lyW/lyL/ly%). Joined to Teams / League Analysis / Neutral park (Compare &amp; Trade) by Abbr ↔ ORG.</dd>
+      </div>
+      <div>
+        <dt>Neutral park</dt>
+        <dd>Toggle on Compare and Trade. Estimates park-sensitive counting/raw rates as if PF = 1.0 using the player’s home-team factors from Team List: <code>adjusted = raw / PF</code> (PF HR for HR and HR/9; PF AVG for AVG/OBP/SLG/OPS/ISO/wOBA; overall PF for ERA/WHIP/FIP). On Trade, also scales each player’s <strong>Total</strong> (and side Stats Total / Overall comparison): batters × 1/√(PF AVG × PF HR), pitchers × PF (clamped ~0.80–1.25). <strong>Does not</strong> change OPS+, wRC+, ERA+, FIP-, WAR, or Curr/Pot. Disabled until a Team List is uploaded. Preference is shared across Compare and Trade.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="compare" class="panel glossary-section">
+    <h2>Compare</h2>
+    <dl class="glossary-list">
+      <div>
+        <dt>Player compare</dt>
+        <dd>Side-by-side view of 2–3 batters or pitchers: identity/contract, overlaid 20–80 ratings radar (current grades), ratings (current/potential), season stats with majors ranks, and league percentiles. Same type only. Choose <strong>Roster</strong> or <strong>Draft class</strong> pool (draft needs a Draft Class upload). On Pitchers, Batters, and Draft, check up to 3 rows then use <strong>Compare (n)</strong> to open with those players preloaded. Player cards also have Compare.</dd>
+      </div>
+      <div>
+        <dt>Draft class pool</dt>
+        <dd>Compare against the draft-class upload: search, percentiles, and ratings use that pool. Season stats ranks are omitted (amateurs have no majors production).</dd>
+      </div>
+      <div>
+        <dt>Neutral park (Season stats)</dt>
+        <dd>Checkbox next to Season stats. When on, adjustable counting/raw rates (and MLB ranks for those rows) use Team List park factors. Plus-stats and WAR rows stay as exported.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="trade" class="panel glossary-section">
+    <h2>Trade analyzer</h2>
+    <dl class="glossary-list">
+      <div>
+        <dt>Normalized player value</dt>
+        <dd>Each side’s players are scaled so the league’s max pitcher Total and max batter Total map to 100. Lets arms and bats compare on a shared scale.</dd>
+      </div>
+      <div>
+        <dt>Current / Potential / Def (trade)</dt>
+        <dd>Ratings sub-scores (always shown). When stats Total is on, Total still comes from production stats — Curr/Pot/Def do not sum to Total.</dd>
+      </div>
+      <div>
+        <dt>Stats columns</dt>
+        <dd>Separate columns: AVG, HR (batters), ERA, HR/9 (pitchers) — park-adjustable with Neutral park — plus wRC+, OPS+, CERA (catchers), WAR, ERA+, FIP- — unused cells are blank for the other player type — plus SLR and role-pooled $/WAR. With Neutral park on, the Total column and trade comparison use park-scaled Totals; +stats columns stay as exported.</dd>
+      </div>
+      <div>
+        <dt>$/WAR pools</dt>
+        <dd>Separate medians for SP, RP (RP+CL), and batters among majors with WAR &gt; 0.5 and SLR &gt; 0. For each pool’s market median: if there are at least <strong>8 signed</strong> deals (YL status signed, not pre-arb/arb), the median uses signed $/WAR rates only — so cheap team-control contracts don’t drag the rate down. Otherwise the median uses all eligible rates. Lower player $/WAR → higher value percentile within that pool.</dd>
+      </div>
+      <div>
+        <dt>Stats Total</dt>
+        <dd>Side sum of player score totals before the modest Contract Δ adjustment (ratings + production weights).</dd>
+        <dt>WAR (sum)</dt>
+        <dd>Raw WAR added across players on that side of the trade.</dd>
+        <dt>Contract Δ</dt>
+        <dd>Sum of (WAR × pool median $/WAR − SLR) for that side. Positive means under the pool rate. A modest capped version of this is folded into Overall.</dd>
+      </div>
+      <div>
+        <dt>Draft pick value</dt>
+        <dd>R1P1 targets ~65% of the best player Total in the loaded file. Value falls by pick slot (exponential curve) and by round.</dd>
+      </div>
+      <div>
+        <dt>Standings position</dt>
+        <dd>When adding a pick: 1 = best team (picks later), last place = worst team (picks earlier). Pick # = teams + 1 − standings position.</dd>
+      </div>
+      <div>
+        <dt>Overall Trade Winner</dt>
+        <dd>Side with the higher <strong>Total</strong> (normalized players + pick values + modest Contract Δ adjustment).</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="contract" class="panel glossary-section">
+    <h2>Contract estimator</h2>
+    <p class="glossary-lead">Uses spreadsheet stats (OPS+, wRC+, ERA+, FIP-, WAR, rWAR, SLR, YL) — <strong>not</strong> Hector Total Scores.</p>
+    <dl class="glossary-list">
+      <div>
+        <dt>Comparables</dt>
+        <dd>Same player type (batter vs pitcher), filtered by position scope, optional age window (empty by default = no age filter; set Age ± years to limit), tighter ±% / ±WAR bands (defaults ±10% rate stats including FIP- for pitchers, ±1 WAR/rWAR), and playing-time floors (G ≥ 40 or the selected batter’s G if lower; IP ≥ 30 or the selected pitcher’s IP if lower). After Analyze, changing these filters updates comps and the suggested AAV live.</dd>
+      </div>
+      <div>
+        <dt>Pre-arb / arb</dt>
+        <dd>YL values like <code>1 (auto.)</code> / <code>1 (arbitr.)</code> are team-controlled. By default they are <strong>hidden</strong> from the comps table and <strong>excluded</strong> from the suggested AAV. Enable <strong>Include pre-arb / arb comps</strong> to show and price off them (updates live without re-analyzing).</dd>
+      </div>
+      <div>
+        <dt>Similarity</dt>
+        <dd>Lower is closer. Batters: OPS+ 35% + wRC+ 35% + WAR 15% + age 15%. Pitchers: ERA+ 25% + FIP- 20% + WAR 20% + rWAR 20% + age 15% (FIP- is lower-is-better; similarity uses relative gap the same way). Age distance is |Δage|/10 (capped at 1).</dd>
+      </div>
+      <div>
+        <dt>Suggested AAV</dt>
+        <dd>From eligible comps (signed by default; up to 12). Prefer median $/WAR in the same scarcity group (SP, RP, C, SS, CF, IF, OF, DH) × the player’s WAR, with premiums for C/SS/CF. If fewer than 4 $/WAR rates, fall back to median SLR. Extreme salaries are dropped first.</dd>
+      </div>
+      <div>
+        <dt>Suggested years</dt>
+        <dd>Median years left (YL) from that same eligible set, then age-adjusted (shorter if age ≥ 32, longer if age ≤ 25).</dd>
+      </div>
+      <div>
+        <dt>Compare from comps</dt>
+        <dd>After analyzing, check 1–2 rows in the comps table and use <strong>Compare selected</strong> to open Compare with the estimated player plus those comps preloaded.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="upcoming-fa" class="panel glossary-section">
+    <h2>Upcoming FA</h2>
+    <p class="glossary-lead">Under <strong>More → Upcoming FA</strong>. Lists roster players who may hit free agency or be deadline trade candidates — not Extension Watch deal-grading.</p>
+    <dl class="glossary-list">
+      <div>
+        <dt>Who is listed</dt>
+        <dd><strong>Signed</strong> players with <strong>YL = 1</strong> (final year of the deal) and <strong>no extension</strong> in the export (<code>ECV</code> / <code>ETY</code> blank, <code>-</code>, or zero). Pre-arb (<code>auto.</code>) and arbitration (<code>arbitr.</code>) are excluded even if years left is 1.</dd>
+      </div>
+      <div>
+        <dt>vs Extension Watch</dt>
+        <dd>Portal’s Extension Watch focused on players who already have pending/accepted extensions (<code>ECV</code> &gt; 0) and graded those deals. Hector’s Upcoming FA is the opposite market signal: expiring deals <em>without</em> an extension.</dd>
+      </div>
+      <div>
+        <dt>Export columns</dt>
+        <dd>Requires <strong>YL</strong> (Yrs) on the Player List. Include <strong>ECV</strong> and <strong>ETY</strong> under MISC so players who already signed extensions are filtered out; if those columns are missing, everyone with signed YL = 1 appears.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="team-salary" class="panel glossary-section">
+    <h2>Team Salary</h2>
+    <p class="glossary-lead">Under <strong>More → Team Salary</strong>. PuckPedia-style multi-year roster grid for one ORG (defaults to your Options franchise). OOTP Player List exports do not include calendar year or year-by-year escalators.</p>
+    <dl class="glossary-list">
+      <div>
+        <dt>Columns</dt>
+        <dd>Relative seasons: <strong>Now</strong>, <strong>+1</strong>, <strong>+2</strong>, … built from remaining <code>YL</code> (capped at 10). After main years, if <code>ECV</code> &gt; 0 and <code>ETY</code> &gt; 0, extension AAV years follow. After the last committed season: <strong>FA</strong> for signed deals, or <strong>EXP</strong> (expiring) for pre-arb / arb — not labeled FA.</dd>
+      </div>
+      <div>
+        <dt>Cell values</dt>
+        <dd>Defaults to <strong>AAV</strong> (<code>CV</code> ÷ <code>TY</code> when present, else SLR). Toggle to <strong>Salary</strong> for flat current <code>SLR</code>. Extension years always use extension AAV (<code>ECV</code> ÷ <code>ETY</code>). Pre-arb / arb still fill years from YL with a status chip — not FA until signed/control years end.</dd>
+      </div>
+      <div>
+        <dt>$/WAR</dt>
+        <dd>Current-season rate: <code>SLR</code> ÷ <code>WAR</code> (millions per WAR), shown between the player and year columns. Negative WAR yields a negative rate (e.g. <code>-$2.50M</code>). Blank when WAR is 0 or salary is missing. Independent of the AAV/Salary year toggle.</dd>
+      </div>
+      <div>
+        <dt>Groups &amp; totals</dt>
+        <dd>Default layout is <strong>Combined</strong> (one roster table and one team-wide Now payroll pie). <strong>P / B</strong> splits Pitchers vs Batters; <strong>By POS</strong> splits SP · RP · C · IF · OF · DH (CL→RP; corner OF→OF; 1B/2B/3B/SS→IF). Grouped layouts show a <strong>% of group</strong> donut per section; Combined shows one larger <strong>% of team</strong> pie. Each header shows count, sum of This-year amounts, and % of that team’s This-year payroll (not league salary cap). Click column headers (Player, $/WAR, Now, +1…) to sort rows; contract cells are unchanged.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="hidden-gems" class="panel glossary-section">
+    <h2>Hidden Gems</h2>
+    <p class="glossary-lead">Under <strong>More → Hidden Gems</strong>. Flags overlooked players by category. All eligibility uses <strong>20–80 current ratings only</strong> — OVR, POT, and star-scale values are ignored.</p>
+    <dl class="glossary-list">
+      <div>
+        <dt>AAAA Players</dt>
+        <dd>Confirmed <strong>non-majors</strong> only (<code>Lev</code> not MLB). Tool composite (bat: CON/POW/EYE; pit: STU/MOV/Control) falls in the <strong>p25–p75</strong> band of productive major leaguers in the <strong>same position group</strong> (SP, RP, C, IF, OF, DH — CL→RP; LF/CF/RF→OF; 1B/2B/3B/SS→IF), with sample floors (wRC+/ERA+ ≥ 100), and below that group’s p90.</dd>
+      </div>
+      <div>
+        <dt>Miscast Players</dt>
+        <dd>Batters whose primary POS is <strong>C, SS, or CF</strong>, bat composite (CON/POW/EYE) ≥ 50, and position-specific defense mean &lt; 40 (C: ABI/ARM/FRM; SS/CF: RNG/ARM/ERR). Upside: DH / corner.</dd>
+      </div>
+      <div>
+        <dt>Toolsy Gambles</dt>
+        <dd>Age ≤ 27 with <strong>1–2 tools ≥ 65</strong> and at least one tool in <strong>40–50</strong> (bat: CON/POW/EYE/SPE; pit: STU/MOV/CON). <strong>Minors only</strong> (same Lev rule as AAAA).</dd>
+      </div>
+      <div>
+        <dt>Starter Converts</dt>
+        <dd>Primary POS <strong>SP</strong>, STM &lt; 45, STU ≥ 55 or MOV ≥ 55, and at least <strong>three</strong> current pitches rated ≥ 45 — better suited as a reliever.</dd>
+      </div>
+      <div>
+        <dt>Reliever Converts</dt>
+        <dd>Primary POS <strong>RP</strong> or <strong>CL</strong>, STM ≥ 50, STU ≥ 55 or MOV ≥ 55, and at least <strong>three</strong> current pitches rated ≥ 45 — candidate to stretch out as a starter.</dd>
+      </div>
+      <div>
+        <dt>Park Nerfed</dt>
+        <dd>Requires Team List. <strong>Major leaguers only</strong> (ORG park factors are MLB parks). Batters in extreme pitcher parks (PF &lt; 0.95 or PF HR &lt; 0.90) with POW ≥ 50 or CON ≥ 55. Pitchers in extreme hitter parks (PF &gt; 1.05 or PF HR &gt; 1.10) with STU ≥ 50 or MOV ≥ 55.</dd>
+      </div>
+      <div>
+        <dt>Gem%</dt>
+        <dd>Per-category strength score (0–100) for how well the player matches that gem rule — e.g. how centered in the AAAA band, how extreme a miscast, convert stamina/stuff, park extremity. <strong>Not</strong> the Archetypes Fit %.</dd>
+      </div>
+      <div>
+        <dt>Why / Upside</dt>
+        <dd>Hover the player name for Why and Upside; they are not separate table columns.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="modes" class="panel glossary-section">
+    <h2>Modes &amp; search</h2>
+    <dl class="glossary-list">
+      <div>
+        <dt>Draft tab</dt>
+        <dd>Separate draft-class player pool from an optional Draft Class HTML upload. Scored with draft ratings meta (default potential ×1.5, current/overall ×0.9). A Current↔Potential slider on the Draft tab biases that meta without changing Options multipliers. Check rows and use <strong>Compare (n)</strong> to open Compare in draft-class pool. No Team column (amateurs are undrafted). Batter list shows Dura (Prone), Contact, Power, and EYE instead of OVR/POT stars. Pitchers also show G/F and Dura after Velo. Score columns have hover tips. Player cards use the draft pool for percentiles and show full ratings + radar (no majors Stats tab).</dd>
+      </div>
+      <div>
+        <dt>Top 20 by POS (pitchers)</dt>
+        <dd>Top 20 by Total within SP and within RP (CL counted as RP), after your live filters.</dd>
+      </div>
+      <div>
+        <dt>Top 10 by POS (batters)</dt>
+        <dd>Top 10 by Total at each position. Optional <strong>Secondary ≥50</strong> includes players whose rating at that position is at least 50.</dd>
+      </div>
+      <div>
+        <dt>Search bar</dt>
+        <dd>Space-separated tokens. Text matches Name / Team / POS. Age comparisons like <code>&gt;25</code>, <code>&lt;30</code>. Example: <code>CAS SP &gt;25</code>.</dd>
+      </div>
+      <div>
+        <dt>Player profile URL</dt>
+        <dd>Options → Statsplus website integration. Template with <code>{pid}</code> for StatsPlus pages. Saved in this browser’s localStorage.</dd>
+      </div>
+      <div>
+        <dt>Your team</dt>
+        <dd>Options → Your team. Pick your franchise ORG after uploading data. Highlights matching players on Pitchers/Batters and your row on Teams.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="percentiles" class="panel glossary-section">
+    <h2>Percentiles &amp; player card</h2>
+    <p class="glossary-lead">Right-click (or Ctrl/Cmd-click) a player row for league-wide percentile bars, best/worst metrics, and archetype fits. Roster cards use <strong>Major League / MLB players only</strong> (blank Lev excluded). Batter bars include <strong>Defense</strong> (average of position tools, same as the radar DEF axis) and <strong>ZR</strong>. Draft cards rank ratings vs the <strong>Draft tab pool</strong> instead. OVR/POT star ratings are not included in percentiles. Tiers: Elite 90–100, Above Avg 70–89, Average 40–69, Below Avg 20–39, Poor 0–19.</p>
+  </section>
+
+  <section id="archetypes" class="panel glossary-section">
+    <h2>Franchise archetypes</h2>
+    <p class="glossary-lead">Seventeen team-building philosophies. Each has a checklist of ratings/stats; contributions use <em>smooth curves</em> between thresholds (so SPE 69 is nearly as good as 70, not a cliff). Fit % is that total, capped at 100.</p>
+    <dl class="glossary-list">
+      <div>
+        <dt>Fit %</dt>
+        <dd>0–100 from the archetype’s smoothed checklist. Shown on the Archetypes table and player card (labels like “Perfect Fit” are no longer displayed — the % is the score).</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="league" class="panel glossary-section">
+    <h2>League Analysis</h2>
+    <p class="glossary-lead">Under <strong>More → League Analysis</strong>. Needs a Team List upload plus Player List. Standings, parks, DIV, and year-over-year come from Team List; batting/pitching WAR are summed from <strong>majors</strong> roster players by ORG (not Team List WAR columns).</p>
+    <dl class="glossary-list">
+      <div>
+        <dt>Environment</dt>
+        <dd>Mean overall PF: hitter-friendly (&gt;1.05), pitcher-friendly (&lt;0.95), else neutral.</dd>
+      </div>
+      <div>
+        <dt>Parity</dt>
+        <dd>Win% standard deviation: high (&lt;0.070), medium (&lt;0.100), low otherwise. Near .500 ≈ ±5 / ±10 games in a 162-game season.</dd>
+      </div>
+      <div>
+        <dt>Extreme parks</dt>
+        <dd>PF HR or PF AVG outside 0.90–1.10 (HR friendly/suppressing, AVG inflating/suppressing).</dd>
+      </div>
+      <div>
+        <dt>Super teams</dt>
+        <dd>Both batting and pitching WAR at or above the ~90th percentile among clubs (requires ≥10 teams).</dd>
+      </div>
+      <div>
+        <dt>Year-over-year</dt>
+        <dd>Current W% − ly%. <strong>Wins +/- (pace)</strong> = projected full-season wins at current W% minus last year’s wins; season length is the median of last year’s W+L across clubs (so mid-season standings don’t look like huge win deficits). Needs ly% / lyW / lyL on the Team List export.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section id="highlights" class="panel glossary-section">
+    <h2>Row highlights</h2>
+    <p class="glossary-lead">Tinted rows flag training / role-change candidates, or your franchise when Your team is set in Options. Hover a highlighted row for the same tip.</p>
+    <dl class="glossary-list">
+      <div>
+        <dt>Your team</dt>
+        <dd>Green accent on Pitchers/Batters players whose ORG matches Options → Your team, and on that org’s Teams / League Analysis rows.</dd>
+      </div>
+      <div>
+        <dt>RP → SP potential</dt>
+        <dd>Reliever (RP/CL) with ≥3 pitches and stamina ≥ 50 — candidate to develop as a starter.</dd>
+      </div>
+      <div>
+        <dt>1B → 3B</dt>
+        <dd>First baseman with IF Range ≥ 50, IF Arm ≥ 55, IF Error ≥ 45 — candidate to train at third.</dd>
+      </div>
+      <div>
+        <dt>2B → SS</dt>
+        <dd>Second baseman with IF Range ≥ 65, IF Arm ≥ 50, IF Error ≥ 50, TDP ≥ 50 — candidate to train at shortstop.</dd>
+      </div>
+    </dl>
+  </section>
+</section>
+  </main>
+  <script type="module">
+    import { mountShell } from "./static/js/shell.js?v=40";
+    await mountShell("glossary");
+
+    const toc = document.getElementById("glossary-toc");
+    const sections = [...document.querySelectorAll(".glossary-section")];
+
+    function showSection(id) {
+      const all = !id || id === "all";
+      sections.forEach((sec) => {
+        sec.hidden = all ? false : sec.id !== id;
+      });
+      toc.querySelectorAll("a").forEach((a) => {
+        a.classList.toggle("is-active", a.dataset.section === (all ? "all" : id));
+      });
+      if (!all) {
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
+    toc.addEventListener("click", (e) => {
+      const a = e.target.closest("a[data-section]");
+      if (!a) return;
+      e.preventDefault();
+      const id = a.dataset.section;
+      history.replaceState({}, "", id === "all" ? "glossary.html" : `glossary.html#${id}`);
+      showSection(id);
+    });
+
+    const hash = (location.hash || "").replace(/^#/, "");
+    showSection(hash || "all");
+  </script>
+  <script src="static/js/tooltips.js"></script>
+</body>
+</html>

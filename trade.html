@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trade Analyzer — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=31" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+    <section class="panel">
+      <h2>League Settings</h2>
+      <form id="settings-form" class="inline-form">
+        <label># Teams <input type="number" id="num-teams" min="2" max="50" /></label>
+        <label># Rounds <input type="number" id="num-rounds" min="1" max="50" /></label>
+        <button type="submit" class="btn">Update</button>
+        <span class="muted" id="pick-base"></span>
+      </form>
+      <p class="park-toggle-row">
+        <label class="chk tip" data-tip="Park-adjust AVG/HR (batters) and ERA/HR/9 (pitchers), and scale each player’s Trade Total (and side totals / comparison) from home-team PF. OPS+, wRC+, ERA+, FIP-, WAR, Curr/Pot stay unchanged. Requires Team List upload.">
+          <input type="checkbox" id="park-normalize-toggle" /> Neutral park (counting stats)
+        </label>
+      </p>
+    </section>
+
+    <section class="trade-grid">
+      <div class="panel trade-side" data-side="a">
+        <h2>Team A</h2>
+        <form class="inline-form autocomplete-form" data-add-player="a">
+          <input type="text" class="ac-input search" placeholder="Player name" autocomplete="off" />
+          <button type="submit" class="btn">Add</button>
+        </form>
+        <form class="inline-form" data-add-pick="a">
+          <label>Rnd <input type="number" name="round_num" min="1" value="1" /></label>
+          <label>Standings <input type="number" name="position" min="1" value="14" title="1=best" /></label>
+          <button type="submit" class="btn">Add Pick</button>
+        </form>
+        <div class="table-wrap compact">
+          <table class="data-table trade-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Pos</th>
+                <th>Age</th>
+                <th class="col-num tip" data-tip="Ratings current">Curr</th>
+                <th class="col-num tip" data-tip="Ratings potential">Pot</th>
+                <th class="col-num tip" data-tip="Ratings defense (batters)">Def</th>
+                <th class="col-num tip" data-tip="Batters only — park-adjustable when Neutral park is on">AVG</th>
+                <th class="col-num tip" data-tip="Batters only — park-adjustable when Neutral park is on">HR</th>
+                <th class="col-num tip" data-tip="Batters only (already park-adjusted)">wRC+</th>
+                <th class="col-num tip" data-tip="Batters only (already park-adjusted)">OPS+</th>
+                <th class="col-num tip" data-tip="Catchers only (lower better)">CERA</th>
+                <th class="col-num tip" data-tip="Batter or pitcher WAR">WAR</th>
+                <th class="col-num tip" data-tip="Pitchers only — park-adjustable when Neutral park is on">ERA</th>
+                <th class="col-num tip" data-tip="Pitchers only — park-adjustable when Neutral park is on">HR/9</th>
+                <th class="col-num tip" data-tip="Pitchers only (already park-adjusted)">ERA+</th>
+                <th class="col-num tip" data-tip="Pitchers only (lower better, already park-adjusted)">FIP-</th>
+                <th class="col-num">SLR</th>
+                <th class="col-num tip" data-tip="Salary ÷ WAR vs role pool (SP / RP / batters)">$/WAR</th>
+                <th class="col-num">Total</th>
+              </tr>
+            </thead>
+            <tbody id="rows-a"></tbody>
+          </table>
+        </div>
+        <p class="side-total" id="totals-a"></p>
+      </div>
+      <div class="panel trade-side" data-side="b">
+        <h2>Team B</h2>
+        <form class="inline-form autocomplete-form" data-add-player="b">
+          <input type="text" class="ac-input search" placeholder="Player name" autocomplete="off" />
+          <button type="submit" class="btn">Add</button>
+        </form>
+        <form class="inline-form" data-add-pick="b">
+          <label>Rnd <input type="number" name="round_num" min="1" value="1" /></label>
+          <label>Standings <input type="number" name="position" min="1" value="14" title="1=best" /></label>
+          <button type="submit" class="btn">Add Pick</button>
+        </form>
+        <div class="table-wrap compact">
+          <table class="data-table trade-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Pos</th>
+                <th>Age</th>
+                <th class="col-num tip" data-tip="Ratings current">Curr</th>
+                <th class="col-num tip" data-tip="Ratings potential">Pot</th>
+                <th class="col-num tip" data-tip="Ratings defense (batters)">Def</th>
+                <th class="col-num tip" data-tip="Batters only — park-adjustable when Neutral park is on">AVG</th>
+                <th class="col-num tip" data-tip="Batters only — park-adjustable when Neutral park is on">HR</th>
+                <th class="col-num tip" data-tip="Batters only (already park-adjusted)">wRC+</th>
+                <th class="col-num tip" data-tip="Batters only (already park-adjusted)">OPS+</th>
+                <th class="col-num tip" data-tip="Catchers only (lower better)">CERA</th>
+                <th class="col-num tip" data-tip="Batter or pitcher WAR">WAR</th>
+                <th class="col-num tip" data-tip="Pitchers only — park-adjustable when Neutral park is on">ERA</th>
+                <th class="col-num tip" data-tip="Pitchers only — park-adjustable when Neutral park is on">HR/9</th>
+                <th class="col-num tip" data-tip="Pitchers only (already park-adjusted)">ERA+</th>
+                <th class="col-num tip" data-tip="Pitchers only (lower better, already park-adjusted)">FIP-</th>
+                <th class="col-num">SLR</th>
+                <th class="col-num tip" data-tip="Salary ÷ WAR vs role pool (SP / RP / batters)">$/WAR</th>
+                <th class="col-num">Total</th>
+              </tr>
+            </thead>
+            <tbody id="rows-b"></tbody>
+          </table>
+        </div>
+        <p class="side-total" id="totals-b"></p>
+      </div>
+    </section>
+
+    <section class="panel comparison">
+      <h2>Trade Comparison</h2>
+      <div class="cmp-layout" id="cmp-sides"></div>
+      <div class="cmp-grid" id="comparison"></div>
+    </section>
+  </main>
+  <script type="module" src="static/js/pages/trade.js?v=3"></script>
+  <script src="static/js/tooltips.js"></script>
+  <script type="module">
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=41";
+    bindPlayerCardRows();
+  </script>
+</body>
+</html>

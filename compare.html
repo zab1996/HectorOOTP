@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Compare — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=35" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+    <section class="panel">
+      <h2>Compare players</h2>
+      <p class="muted">Side-by-side ratings, season stats, and percentiles for 2–3 batters or pitchers (roster or draft class).</p>
+      <div class="compare-controls">
+        <div class="compare-type" role="group" aria-label="Player type">
+          <button type="button" class="btn compare-type-btn active" data-type="batter">Batters</button>
+          <button type="button" class="btn compare-type-btn" data-type="pitcher">Pitchers</button>
+        </div>
+        <div class="compare-type" role="group" aria-label="Player pool" id="compare-pool-group">
+          <button type="button" class="btn compare-pool-btn active tip" data-pool="roster"
+            data-tip="Search and compare from the main Player List.">Roster</button>
+          <button type="button" class="btn compare-pool-btn tip" data-pool="draft" id="compare-pool-draft"
+            data-tip="Search and compare from the Draft Class upload. Ratings only — no season stats ranks.">Draft class</button>
+        </div>
+        <form id="compare-add-form" class="inline-form autocomplete-form">
+          <input type="text" id="compare-search" class="ac-input search" placeholder="Player name" autocomplete="off" />
+          <button type="submit" class="btn btn-accent">Add</button>
+        </form>
+        <div id="compare-chips" class="compare-chips"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="compare-empty">
+      <p class="muted">Add 2–3 players of the same type to compare.</p>
+    </section>
+
+    <section id="compare-body" hidden>
+      <section class="panel">
+        <div id="compare-identity" class="compare-identity"></div>
+      </section>
+      <section class="panel">
+        <div class="panel-head-row">
+          <h3>Ratings radar</h3>
+          <div class="compare-type" role="group" aria-label="Radar grades">
+            <button type="button" class="btn compare-radar-btn tip" data-radar="cur"
+              data-tip="Plot current (present-day) scout grades on the radar.">Current</button>
+            <button type="button" class="btn compare-radar-btn tip" data-radar="pot"
+              data-tip="Plot potential scout grades on the radar. Default for Draft class compares.">Potential</button>
+          </div>
+        </div>
+        <p class="muted tip-note" id="compare-radar-note">20–80 scale · current grades</p>
+        <div id="compare-radar" class="compare-radar-wrap"></div>
+      </section>
+      <section class="panel">
+        <h3>Ratings</h3>
+        <div class="table-wrap compact">
+          <table class="data-table compare-table">
+            <thead id="compare-ratings-head"></thead>
+            <tbody id="compare-ratings-body"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="panel" id="compare-stats-panel">
+        <div class="panel-head-row">
+          <h3>Season stats</h3>
+          <label class="chk tip" id="park-normalize-wrap" data-tip="Estimate counting/raw rates (AVG, HR, ERA, HR/9, …) as if in a neutral park using Team List PF. OPS+, wRC+, ERA+, FIP-, and WAR stay unchanged. Requires Team List upload.">
+            <input type="checkbox" id="park-normalize-toggle" /> Neutral park
+          </label>
+        </div>
+        <p class="muted tip-note" id="compare-stats-draft-note" hidden>Draft class has no majors season stats — ratings and draft-class percentiles only.</p>
+        <div class="table-wrap compact" id="compare-stats-table-wrap">
+          <table class="data-table compare-table">
+            <thead id="compare-stats-head"></thead>
+            <tbody id="compare-stats-body"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="panel">
+        <h3>Percentiles</h3>
+        <div class="table-wrap compact">
+          <table class="data-table compare-table">
+            <thead id="compare-pct-head"></thead>
+            <tbody id="compare-pct-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </section>
+  </main>
+  <script type="module" src="static/js/pages/compare.js?v=6"></script>
+  <script src="static/js/tooltips.js"></script>
+</body>
+</html>

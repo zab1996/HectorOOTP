@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Batters — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=33" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+    <section class="toolbar">
+      <div class="filters" id="live-filters" data-kind="batters">
+        <div class="pos-grid">
+          <button type="button" class="btn pos-group-btn tip" data-pos-group="IF"
+            data-tip="Toggle infield: C, 1B, 2B, 3B, SS.">IF</button>
+          <button type="button" class="btn pos-group-btn tip" data-pos-group="OF"
+            data-tip="Toggle outfield: LF, CF, RF.">OF</button>
+          <span class="pos-sep" aria-hidden="true"></span>
+          <label class="chk"><input type="checkbox" name="pos" value="C" checked /> C</label>
+          <label class="chk"><input type="checkbox" name="pos" value="1B" checked /> 1B</label>
+          <label class="chk"><input type="checkbox" name="pos" value="2B" checked /> 2B</label>
+          <label class="chk"><input type="checkbox" name="pos" value="3B" checked /> 3B</label>
+          <label class="chk"><input type="checkbox" name="pos" value="SS" checked /> SS</label>
+          <label class="chk"><input type="checkbox" name="pos" value="LF" checked /> LF</label>
+          <label class="chk"><input type="checkbox" name="pos" value="CF" checked /> CF</label>
+          <label class="chk"><input type="checkbox" name="pos" value="RF" checked /> RF</label>
+          <label class="chk"><input type="checkbox" name="pos" value="DH" checked /> DH</label>
+        </div>
+        <input type="search" id="player-search" class="search tip" placeholder="Search: ATL 2B <30"
+          data-tip="Search tips:
+- Team / position text
+- Age: <30, >25, =22
+- Example: ATL 2B <30" />
+        <label class="chk tip" id="secondary-wrap" style="display:none"
+          data-tip="Include players with secondary position rating ≥ 50.">
+          <input type="checkbox" id="secondary-pos" /> Secondary ≥50
+        </label>
+        <button type="button" class="btn view-btn tip btn-accent" data-view="all" data-tip="Full batter list.">Show All</button>
+        <button type="button" class="btn view-btn tip" data-view="top10" data-tip="Top 10 batters by position.">Top 10 by POS</button>
+        <label class="chk tip" data-tip="When checked, shows Triple-A / Double-A / etc.
+Unchecked = Major League / MLB only.">
+          <input type="checkbox" id="include-minors-toggle" /> Include minors
+        </label>
+        <label class="chk tip" data-tip="When enabled, Total uses scout ratings instead of performance stats. Unchecked (default) = stats Total (wRC+, WAR, OPS+; ZR/UBR/CERA default off). Rate stats scale with games. Players under Min G get Total 0.">
+          <input type="checkbox" id="stats-scoring-toggle" /> Use Ratings-Based Scoring
+        </label>
+        <div class="sample-mins" id="sample-mins" hidden>
+          <label class="sample-field tip"
+            data-tip="Minimum games for a batter to use stats Total.
+Default: 50 G">Min G
+            <input type="number" id="min-games" min="0" step="1" />
+          </label>
+        </div>
+        <button type="button" id="edit-weights-link" class="btn tip"
+          data-tip="Open Options to edit the weights used for the current scoring mode.">Edit Batter weights</button>
+        <span class="muted" id="filter-count"></span>
+      </div>
+    </section>
+    <div class="table-wrap">
+      <table class="data-table sortable" id="players-table">
+        <thead><tr id="table-head-row"></tr></thead>
+        <tbody id="players-tbody"></tbody>
+      </table>
+    </div>
+  </main>
+  <script type="module">
+    import { mountShell, requireData } from "./static/js/shell.js?v=40";
+    import { batterDisplayRow, buildSummary, formatAppSummaryHtml } from "./static/js/hector/display.js?v=16";
+    import {
+      setUseStatsScoring,
+      setBatterSampleMinimum,
+      setMajorsOnly,
+    } from "./static/js/hector/store.js?v=17";
+    import {
+      mergeBatterStatWeights,
+      MIN_PLATE_APPEARANCES,
+    } from "./static/js/hector/stat_weights.js?v=14";
+
+    if (!(await requireData())) throw new Error("redirect");
+    let state = await mountShell("batters");
+    if (state.majorsOnly == null) state.majorsOnly = true;
+
+    function syncPlayers(next) {
+      state = next;
+      window.HECTOR_PLAYERS = state.batters.map((b) => batterDisplayRow(b));
+      window.HECTOR_USE_STATS = !!state.useStatsScoring;
+      window.HECTOR_MAJORS_ONLY = state.majorsOnly !== false;
+      window.dispatchEvent(new CustomEvent("hector:players"));
+      const summaryEl = document.getElementById("app-summary");
+      if (summaryEl && !summaryEl.hidden) {
+        summaryEl.innerHTML = formatAppSummaryHtml(buildSummary(state.pitchers, state.batters));
+      }
+    }
+
+    window.HECTOR_PLAYERS = state.batters.map((b) => batterDisplayRow(b));
+    window.HECTOR_VIEW = new URLSearchParams(location.search).get("view") || "all";
+    window.HECTOR_KIND = "batters";
+    window.HECTOR_USE_STATS = !!state.useStatsScoring;
+    window.HECTOR_MAJORS_ONLY = state.majorsOnly !== false;
+    window.PLAYER_URL_TEMPLATE = state.urlTemplate;
+    window.dispatchEvent(new CustomEvent("hector:players"));
+
+    const toggle = document.getElementById("stats-scoring-toggle");
+    const minorsToggle = document.getElementById("include-minors-toggle");
+    const weightsLink = document.getElementById("edit-weights-link");
+    const sampleMins = document.getElementById("sample-mins");
+    const minGamesEl = document.getElementById("min-games");
+
+    function weightsTab(useStats) {
+      return useStats ? "batter-stats" : "batters";
+    }
+    function syncWeightsLink(useStats) {
+      if (!weightsLink) return;
+      weightsLink.textContent = useStats ? "Edit Batter stats weights" : "Edit Batter weights";
+      weightsLink.dataset.tab = weightsTab(useStats);
+    }
+    function syncSampleMinsUi(useStats) {
+      if (!sampleMins) return;
+      sampleMins.hidden = !useStats;
+      if (!useStats) return;
+      const cfg = mergeBatterStatWeights(state.batterStatWeights);
+      if (minGamesEl) minGamesEl.value = String(cfg.MIN_PLATE_APPEARANCES ?? MIN_PLATE_APPEARANCES);
+    }
+
+    if (weightsLink) {
+      weightsLink.addEventListener("click", () => {
+        const t = weightsLink.dataset.tab || weightsTab(!!state.useStatsScoring);
+        const url = new URL("options", window.location.href);
+        url.searchParams.set("tab", t);
+        window.location.assign(url.pathname + "?" + url.searchParams.toString());
+      });
+    }
+
+    let minTimer = null;
+    function scheduleMinApply() {
+      clearTimeout(minTimer);
+      minTimer = setTimeout(async () => {
+        const g = parseFloat(minGamesEl?.value);
+        syncPlayers(await setBatterSampleMinimum(g));
+      }, 280);
+    }
+    minGamesEl?.addEventListener("input", scheduleMinApply);
+    minGamesEl?.addEventListener("change", scheduleMinApply);
+
+    if (minorsToggle) {
+      minorsToggle.checked = state.majorsOnly === false;
+      minorsToggle.addEventListener("change", async () => {
+        syncPlayers(await setMajorsOnly(!minorsToggle.checked));
+      });
+    }
+
+    if (toggle) {
+      toggle.checked = !state.useStatsScoring;
+      syncWeightsLink(!!state.useStatsScoring);
+      syncSampleMinsUi(!!state.useStatsScoring);
+      toggle.addEventListener("change", async () => {
+        const useStats = !toggle.checked;
+        syncPlayers(await setUseStatsScoring(useStats));
+        syncWeightsLink(useStats);
+        syncSampleMinsUi(useStats);
+      });
+    } else {
+      syncWeightsLink(!!state.useStatsScoring);
+      syncSampleMinsUi(!!state.useStatsScoring);
+    }
+  </script>
+  <script src="static/js/tooltips.js"></script>
+  <script type="module" src="static/js/live-filter.js?v=29"></script>
+  <script type="module">
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=41";
+    bindPlayerCardRows();
+  </script>
+</body>
+</html>

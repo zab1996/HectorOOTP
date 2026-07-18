@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Upcoming FA — Hector</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="static/css/app.css?v=35" />
+</head>
+<body>
+  <header class="topbar" id="app-header"></header>
+  <section class="summary" id="app-summary"></section>
+  <main>
+    <section class="panel">
+      <h2>Upcoming FA</h2>
+      <p class="lede muted tip"
+        data-tip="Signed players with YL = 1 and no extension (ECV/ETY blank or 0). Pre-arb and arbitration are excluded. Useful for deadline sellers and impending free agents.">
+        Final year of a signed deal with no extension in place — deadline / FA market candidates. Needs <strong>YL</strong> on the Player List export; <strong>ECV</strong> / <strong>ETY</strong> recommended so extensions are filtered out.
+      </p>
+      <div class="filters" id="upcoming-fa-filters">
+        <div class="compare-type" role="group" aria-label="Player type">
+          <button type="button" class="btn compare-type-btn active" data-type="all">All</button>
+          <button type="button" class="btn compare-type-btn" data-type="batter">Batters</button>
+          <button type="button" class="btn compare-type-btn" data-type="pitcher">Pitchers</button>
+        </div>
+        <label class="chk tip" data-tip="When checked, shows Triple-A / Double-A / etc. Unchecked = Major League / MLB only.">
+          <input type="checkbox" id="include-minors-toggle" /> Include minors
+        </label>
+        <label class="chk tip" data-tip="When enabled, Total uses scout ratings instead of performance stats (same global mode as Pitchers/Batters). Unchecked (default) = stats Total.">
+          <input type="checkbox" id="stats-scoring-toggle" /> Use Ratings-Based Scoring
+        </label>
+        <input type="search" id="player-search" class="search" placeholder="Search name / team / POS" />
+        <span class="muted" id="filter-count"></span>
+      </div>
+    </section>
+    <div class="table-wrap">
+      <table class="data-table sortable" id="upcoming-fa-table">
+        <thead>
+          <tr id="table-head-row">
+            <th data-col="Name">Name</th>
+            <th data-col="Team">Team</th>
+            <th data-col="Age">Age</th>
+            <th data-col="POS">POS</th>
+            <th data-col="Hand">B/T</th>
+            <th data-col="OVR">OVR</th>
+            <th data-col="POT">POT</th>
+            <th class="tip" data-col="YL" data-tip="Years left (signed). This list only includes YL = 1.">YL</th>
+            <th data-col="SLR">SLR</th>
+            <th data-col="CV">CV</th>
+            <th class="tip" data-col="WAR" data-tip="Export WAR for that player type.">WAR</th>
+            <th class="tip" data-col="Total" id="total-col-tip" data-tip="Hector Total Score. Default = stats Total (same as Pitchers/Batters). Toggle Use Ratings-Based Scoring for ratings Total.">Total</th>
+            <th class="tip" data-col="Dura" data-tip="Injury Prone / Durability from the export.">Dura</th>
+          </tr>
+        </thead>
+        <tbody id="upcoming-fa-body"></tbody>
+      </table>
+    </div>
+  </main>
+  <script type="module" src="static/js/pages/upcoming-fa.js?v=3"></script>
+  <script src="static/js/tooltips.js"></script>
+  <script src="static/js/app.js?v=20"></script>
+  <script type="module">
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=41";
+    bindPlayerCardRows();
+  </script>
+</body>
+</html>
