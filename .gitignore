@@ -8,3 +8,4 @@ __pycache__/
 Thumbs.db
 *.html.bak
 .wrangler/
+HECTOR_WEB_SUMMARY.txt
