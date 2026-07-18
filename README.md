@@ -35,6 +35,8 @@ Optional local deploy: `npx wrangler pages deploy . --project-name=hector`
 2. **Draft Class.html (optional)** — amateur pool for the **Draft** tab.
 3. **Team List.html (optional)** — standings + park factors on **Teams** and **League Analysis**.
 
+**Try without building OOTP views:** download [hector-sample-exports.zip](samples/hector-sample-exports.zip) (Player List + Draft Class + Team List HTML only — no `sortable.js` / `styles.css` needed), unzip, and upload those files on the live site.
+
 StatsPlus profile links use a `{pid}` URL template under **Options → Statsplus website integration**.
 
 ## Features
