@@ -13,7 +13,7 @@
   <main>
     <section class="panel">
       <h2>Compare players</h2>
-      <p class="muted">Side-by-side ratings, season stats, and percentiles for 2–3 batters or pitchers (roster or draft class).</p>
+      <p class="muted">Side-by-side ratings, season stats, and percentiles for 2–3 batters or pitchers (roster, draft class, or IFA).</p>
       <div class="compare-controls">
         <div class="compare-type" role="group" aria-label="Player type">
           <button type="button" class="btn compare-type-btn active" data-type="batter">Batters</button>
@@ -24,6 +24,8 @@
             data-tip="Search and compare from the main Player List.">Roster</button>
           <button type="button" class="btn compare-pool-btn tip" data-pool="draft" id="compare-pool-draft"
             data-tip="Search and compare from the Draft Class upload. Ratings only — no season stats ranks.">Draft class</button>
+          <button type="button" class="btn compare-pool-btn tip" data-pool="ifa" id="compare-pool-ifa"
+            data-tip="Search and compare from the Int'l amateurs (IFA) upload. Ratings only — no season stats ranks.">IFA</button>
         </div>
         <form id="compare-add-form" class="inline-form autocomplete-form">
           <input type="text" id="compare-search" class="ac-input search" placeholder="Player name" autocomplete="off" />
@@ -70,7 +72,7 @@
             <input type="checkbox" id="park-normalize-toggle" /> Neutral park
           </label>
         </div>
-        <p class="muted tip-note" id="compare-stats-draft-note" hidden>Draft class has no majors season stats — ratings and draft-class percentiles only.</p>
+        <p class="muted tip-note" id="compare-stats-draft-note" hidden>Amateur pools (Draft / IFA) have no majors season stats — ratings and pool percentiles only.</p>
         <div class="table-wrap compact" id="compare-stats-table-wrap">
           <table class="data-table compare-table">
             <thead id="compare-stats-head"></thead>
@@ -89,7 +91,7 @@
       </section>
     </section>
   </main>
-  <script type="module" src="static/js/pages/compare.js?v=6"></script>
+  <script type="module" src="static/js/pages/compare.js?v=7"></script>
   <script src="static/js/tooltips.js"></script>
 </body>
 </html>

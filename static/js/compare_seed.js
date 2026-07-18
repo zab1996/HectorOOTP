@@ -4,11 +4,12 @@ export const COMPARE_SEED_KEY = "hector_compare_seed";
 export const MAX_COMPARE_PLAYERS = 3;
 
 /**
- * @param {{ type: "batter"|"pitcher", pool?: "roster"|"draft", players?: {id?:string,name?:string}[], id?: string, name?: string }} seed
+ * @param {{ type: "batter"|"pitcher", pool?: "roster"|"draft"|"ifa", players?: {id?:string,name?:string}[], id?: string, name?: string }} seed
  */
 export function writeCompareSeed(seed) {
   const type = seed.type === "pitcher" ? "pitcher" : "batter";
-  const pool = seed.pool === "draft" ? "draft" : "roster";
+  const pool =
+    seed.pool === "draft" ? "draft" : seed.pool === "ifa" ? "ifa" : "roster";
   let players = [];
   if (Array.isArray(seed.players) && seed.players.length) {
     players = seed.players.slice(0, MAX_COMPARE_PLAYERS).map((p) => ({

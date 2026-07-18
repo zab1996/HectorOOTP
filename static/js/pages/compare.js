@@ -1,5 +1,5 @@
-import { mountShell, requireData } from "../shell.js?v=39";
-import { loadState, setParkNormalizeStats, hasDraftData } from "../hector/store.js";
+import { mountShell, requireData } from "../shell.js?v=41";
+import { loadState, setParkNormalizeStats, hasDraftData, hasIfaData } from "../hector/store.js?v=32";
 import { getMatchingPlayers, findPlayerByName } from "../hector/trade.js";
 import {
   initializePercentiles,
@@ -35,7 +35,7 @@ const MAX_PLAYERS = MAX_COMPARE_PLAYERS;
 
 /** @type {"batter"|"pitcher"} */
 let playerType = "batter";
-/** @type {"roster"|"draft"} */
+/** @type {"roster"|"draft"|"ifa"} */
 let playerPool = "roster";
 /** @type {"cur"|"pot"} */
 let radarMode = "cur";
@@ -51,24 +51,36 @@ const chipsEl = document.getElementById("compare-chips");
 const emptyEl = document.getElementById("compare-empty");
 const bodyEl = document.getElementById("compare-body");
 const draftPoolBtn = document.getElementById("compare-pool-draft");
+const ifaPoolBtn = document.getElementById("compare-pool-ifa");
 const statsDraftNote = document.getElementById("compare-stats-draft-note");
 const statsTableWrap = document.getElementById("compare-stats-table-wrap");
 const parkNormalizeWrap = document.getElementById("park-normalize-wrap");
 const radarNoteEl = document.getElementById("compare-radar-note");
 
+function isAmateurPool(p = playerPool) {
+  return p === "draft" || p === "ifa";
+}
+
 function pool() {
   if (playerPool === "draft") {
     return playerType === "pitcher" ? state.draftPitchers || [] : state.draftBatters || [];
+  }
+  if (playerPool === "ifa") {
+    return playerType === "pitcher" ? state.ifaPitchers || [] : state.ifaBatters || [];
   }
   return playerType === "pitcher" ? state.pitchers : state.batters;
 }
 
 function poolPitchers() {
-  return playerPool === "draft" ? state.draftPitchers || [] : state.pitchers;
+  if (playerPool === "draft") return state.draftPitchers || [];
+  if (playerPool === "ifa") return state.ifaPitchers || [];
+  return state.pitchers;
 }
 
 function poolBatters() {
-  return playerPool === "draft" ? state.draftBatters || [] : state.batters;
+  if (playerPool === "draft") return state.draftBatters || [];
+  if (playerPool === "ifa") return state.ifaBatters || [];
+  return state.batters;
 }
 
 function playerKey(p) {
@@ -204,20 +216,26 @@ function syncRadarToggleUi() {
 }
 
 function defaultRadarForPool(pool) {
-  return pool === "draft" ? "pot" : "cur";
+  return isAmateurPool(pool) ? "pot" : "cur";
 }
 
 function syncPoolToggleUi() {
   const hasDraft = hasDraftData(state);
+  const hasIfa = hasIfaData(state);
   if (draftPoolBtn) {
     draftPoolBtn.disabled = !hasDraft;
     draftPoolBtn.title = hasDraft
       ? ""
       : "Upload a Draft Class HTML on the Upload page first.";
   }
-  if (!hasDraft && playerPool === "draft") {
-    playerPool = "roster";
+  if (ifaPoolBtn) {
+    ifaPoolBtn.disabled = !hasIfa;
+    ifaPoolBtn.title = hasIfa
+      ? ""
+      : "Upload an Int'l amateurs HTML on the Upload page first.";
   }
+  if (playerPool === "draft" && !hasDraft) playerPool = "roster";
+  if (playerPool === "ifa" && !hasIfa) playerPool = "roster";
   poolBtns.forEach((b) => b.classList.toggle("active", b.dataset.pool === playerPool));
 }
 
@@ -300,8 +318,9 @@ function setType(t) {
 }
 
 function setPool(p) {
-  const next = p === "draft" ? "draft" : "roster";
+  const next = p === "draft" ? "draft" : p === "ifa" ? "ifa" : "roster";
   if (next === "draft" && !hasDraftData(state)) return;
+  if (next === "ifa" && !hasIfaData(state)) return;
   if (next === playerPool) return;
   playerPool = next;
   selected = [];
@@ -351,9 +370,11 @@ function renderIdentity() {
       const orgBit =
         playerPool === "draft"
           ? "Draft class"
-          : escapeHtml(dash(p.ORG));
+          : playerPool === "ifa"
+            ? "IFA"
+            : escapeHtml(dash(p.ORG));
       const contract =
-        playerPool === "draft"
+        isAmateurPool()
           ? ""
           : `<p class="compare-contract">${escapeHtml(contractLine(p))}</p>`;
       return `<div class="compare-id-card" style="--col:${color}">
@@ -423,20 +444,20 @@ function syncParkNormalizeToggle() {
   const el = document.getElementById("park-normalize-toggle");
   if (!el) return;
   const hasParks = hasTeamListParks(state.teamList);
-  const draft = playerPool === "draft";
-  el.disabled = draft || !hasParks;
-  el.checked = !draft && hasParks && !!loadState().parkNormalizeStats;
-  if (parkNormalizeWrap) parkNormalizeWrap.hidden = draft;
+  const amateur = isAmateurPool();
+  el.disabled = amateur || !hasParks;
+  el.checked = !amateur && hasParks && !!loadState().parkNormalizeStats;
+  if (parkNormalizeWrap) parkNormalizeWrap.hidden = amateur;
 }
 
 function renderStatsTable() {
   const head = document.getElementById("compare-stats-head");
   const body = document.getElementById("compare-stats-body");
-  const draft = playerPool === "draft";
+  const amateur = isAmateurPool();
 
-  if (statsDraftNote) statsDraftNote.hidden = !draft;
-  if (statsTableWrap) statsTableWrap.hidden = draft;
-  if (draft) {
+  if (statsDraftNote) statsDraftNote.hidden = !amateur;
+  if (statsTableWrap) statsTableWrap.hidden = amateur;
+  if (amateur) {
     if (head) head.innerHTML = "";
     if (body) body.innerHTML = "";
     return;
@@ -505,6 +526,13 @@ function renderPercentilesTable() {
           pitcherMetrics: DRAFT_PITCHER_METRICS,
           fresh: true,
         })
+      : playerPool === "ifa"
+        ? initializePercentiles(state.ifaBatters || [], state.ifaPitchers || [], {
+            majorsOnly: false,
+            batterMetrics: DRAFT_BATTER_METRICS,
+            pitcherMetrics: DRAFT_PITCHER_METRICS,
+            fresh: true,
+          })
       : initializePercentiles(state.batters, state.pitchers);
 
   const pctMaps = selected.map((s) =>
@@ -552,7 +580,8 @@ function render() {
     bodyEl.hidden = true;
     const hint = emptyEl.querySelector("p");
     if (hint) {
-      const poolLabel = playerPool === "draft" ? "draft-class" : "roster";
+      const poolLabel =
+        playerPool === "draft" ? "draft-class" : playerPool === "ifa" ? "IFA" : "roster";
       hint.textContent =
         selected.length === 0
           ? `Add 2–3 ${poolLabel} players of the same type to compare.`
@@ -619,7 +648,9 @@ function consumeCompareSeed() {
   if (!seed) return;
 
   const type = seed.type === "pitcher" ? "pitcher" : "batter";
-  const poolMode = seed.pool === "draft" && hasDraftData(state) ? "draft" : "roster";
+  let poolMode = "roster";
+  if (seed.pool === "draft" && hasDraftData(state)) poolMode = "draft";
+  else if (seed.pool === "ifa" && hasIfaData(state)) poolMode = "ifa";
   playerType = type;
   playerPool = poolMode;
   radarMode = defaultRadarForPool(playerPool);

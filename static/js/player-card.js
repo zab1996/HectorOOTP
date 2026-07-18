@@ -16,14 +16,14 @@ import { duraClass } from "./column-filter.js";
 const BAR_SCALE = 80;
 
 function findPlayer(name, id, playerType, state, pool = "roster") {
-  const list =
-    pool === "draft"
-      ? playerType === "pitcher"
-        ? state.draftPitchers
-        : state.draftBatters
-      : playerType === "pitcher"
-        ? state.pitchers
-        : state.batters;
+  let list;
+  if (pool === "draft") {
+    list = playerType === "pitcher" ? state.draftPitchers : state.draftBatters;
+  } else if (pool === "ifa") {
+    list = playerType === "pitcher" ? state.ifaPitchers : state.ifaBatters;
+  } else {
+    list = playerType === "pitcher" ? state.pitchers : state.batters;
+  }
   if (id) {
     const byId = (list || []).find((p) => String(p.ID || "") === String(id));
     if (byId) return byId;
@@ -440,15 +440,20 @@ export function showPlayerCard(player, playerType = "batter", options = {}) {
   const existing = document.getElementById("player-card-modal");
   if (existing) existing.remove();
 
-  const draftMode = options.mode === "draft";
+  const draftMode = options.mode === "draft" || options.mode === "ifa";
+  const poolLabel = options.mode === "ifa" ? "IFA" : "Draft class";
   const state = loadState();
   const calc = draftMode
-    ? initializePercentiles(state.draftBatters || [], state.draftPitchers || [], {
-        majorsOnly: false,
-        batterMetrics: DRAFT_BATTER_METRICS,
-        pitcherMetrics: DRAFT_PITCHER_METRICS,
-        fresh: true,
-      })
+    ? initializePercentiles(
+        options.mode === "ifa" ? state.ifaBatters || [] : state.draftBatters || [],
+        options.mode === "ifa" ? state.ifaPitchers || [] : state.draftPitchers || [],
+        {
+          majorsOnly: false,
+          batterMetrics: DRAFT_BATTER_METRICS,
+          pitcherMetrics: DRAFT_PITCHER_METRICS,
+          fresh: true,
+        },
+      )
     : initializePercentiles(state.batters, state.pitchers, { majorsOnly: true });
   const percentiles =
     playerType === "batter"
@@ -482,7 +487,7 @@ export function showPlayerCard(player, playerType = "batter", options = {}) {
   const radarHtml = profileRadarHtml(player, playerType);
 
   const identityBits = [];
-  if (draftMode) identityBits.push("Draft class");
+  if (draftMode) identityBits.push(poolLabel);
   else if (player.ORG) identityBits.push(escapeHtml(player.ORG));
   identityBits.push(escapeHtml(player.POS || ""));
   identityBits.push(`Age ${escapeHtml(player.Age || "")}`);
@@ -608,10 +613,10 @@ export function showPlayerCard(player, playerType = "batter", options = {}) {
             <div class="ratings-list">${ratingsHtml || '<p class="muted">No rating fields on this player</p>'}</div>
           </div>
           <div class="player-card-panel${defaultTab === "percentiles" ? " active" : ""}" data-panel="percentiles"${defaultTab === "percentiles" ? "" : " hidden"}>
-            <h3>${draftMode ? "Draft class percentiles" : "Percentile rankings"}</h3>
+            <h3>${draftMode ? `${poolLabel} percentiles` : "Percentile rankings"}</h3>
             ${
               draftMode
-                ? '<p class="muted tip-note">Ratings ranked vs other players on the Draft tab (not majors).</p>'
+                ? `<p class="muted tip-note">Ratings ranked vs other players on the ${poolLabel} tab (not majors).</p>`
                 : ""
             }
             <div class="pct-list">${pctHtml || '<p class="muted">No percentile data</p>'}</div>
@@ -685,7 +690,7 @@ export function showPlayerCard(player, playerType = "batter", options = {}) {
     compareBtn.addEventListener("click", () => {
       writeCompareSeed({
         type: playerType,
-        pool: draftMode ? "draft" : "roster",
+        pool: options.mode === "ifa" ? "ifa" : draftMode ? "draft" : "roster",
         id: String(player.ID || ""),
         name: String(player.Name || ""),
       });
@@ -730,11 +735,12 @@ function openFromRow(tr) {
   const name = tr.dataset.playerName;
   const id = tr.dataset.playerId;
   const playerType = tr.dataset.playerType || "batter";
-  const pool = tr.dataset.playerPool === "draft" ? "draft" : "roster";
+  const rawPool = tr.dataset.playerPool;
+  const pool = rawPool === "draft" || rawPool === "ifa" ? rawPool : "roster";
   const tab = tr.dataset.playerCardTab;
   const player = findPlayer(name, id, playerType, state, pool);
   if (!player) return;
-  const opts = pool === "draft" ? { mode: "draft" } : {};
+  const opts = pool === "draft" || pool === "ifa" ? { mode: pool } : {};
   if (tab === "ratings" || tab === "percentiles" || tab === "stats") {
     opts.defaultTab = tab;
   }

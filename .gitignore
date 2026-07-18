@@ -7,6 +7,3 @@ __pycache__/
 .DS_Store
 Thumbs.db
 *.html.bak
-.wrangler/
-HECTOR_WEB_SUMMARY.txt
-CHANGELOG.md

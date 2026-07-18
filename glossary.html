@@ -174,11 +174,15 @@
     <dl class="glossary-list">
       <div>
         <dt>Player compare</dt>
-        <dd>Side-by-side view of 2–3 batters or pitchers: identity/contract, overlaid 20–80 ratings radar (current grades), ratings (current/potential), season stats with majors ranks, and league percentiles. Same type only. Choose <strong>Roster</strong> or <strong>Draft class</strong> pool (draft needs a Draft Class upload). On Pitchers, Batters, and Draft, check up to 3 rows then use <strong>Compare (n)</strong> to open with those players preloaded. Player cards also have Compare.</dd>
+        <dd>Side-by-side view of 2–3 batters or pitchers: identity/contract, overlaid 20–80 ratings radar (current grades), ratings (current/potential), season stats with majors ranks, and league percentiles. Same type only. Choose <strong>Roster</strong>, <strong>Draft class</strong>, or <strong>IFA</strong> pool (draft/IFA need their uploads). On Pitchers, Batters, Draft, and IFA, check up to 3 rows then use <strong>Compare (n)</strong> to open with those players preloaded. Player cards also have Compare.</dd>
       </div>
       <div>
         <dt>Draft class pool</dt>
         <dd>Compare against the draft-class upload: search, percentiles, and ratings use that pool. Season stats ranks are omitted (amateurs have no majors production).</dd>
+      </div>
+      <div>
+        <dt>IFA pool</dt>
+        <dd>Compare against the Int'l amateurs upload. Same ratings-only behavior as Draft class (no majors season stats). Uses the IFA pool for percentiles.</dd>
       </div>
       <div>
         <dt>Neutral park (Season stats)</dt>
@@ -349,6 +353,10 @@
         <dd>Separate draft-class player pool from an optional Draft Class HTML upload. Scored with draft ratings meta (default potential ×1.5, current/overall ×0.9). A Current↔Potential slider on the Draft tab biases that meta without changing Options multipliers. Check rows and use <strong>Compare (n)</strong> to open Compare in draft-class pool. No Team column (amateurs are undrafted). Batter list shows Dura (Prone), Contact, Power, and EYE instead of OVR/POT stars. Pitchers also show G/F and Dura after Velo. Score columns have hover tips. Player cards use the draft pool for percentiles and show full ratings + radar (no majors Stats tab).</dd>
       </div>
       <div>
+        <dt>IFA tab</dt>
+        <dd>Separate Int'l amateurs player pool from an optional International Amateur FA HTML upload. Uses the <strong>same draft ratings meta</strong> as the Draft tab (default potential ×1.5, current/overall ×0.9) with its own Current↔Potential slider. Independent from Draft so both pools can be loaded. Same list UX as Draft (no Team column; ratings-only cards/Compare; no majors Stats tab).</dd>
+      </div>
+      <div>
         <dt>Top 20 by POS (pitchers)</dt>
         <dd>Top 20 by Total within SP and within RP (CL counted as RP), after your live filters.</dd>
       </div>
@@ -373,7 +381,7 @@
 
   <section id="percentiles" class="panel glossary-section">
     <h2>Percentiles &amp; player card</h2>
-    <p class="glossary-lead">Right-click (or Ctrl/Cmd-click) a player row for league-wide percentile bars, best/worst metrics, and archetype fits. Roster cards use <strong>Major League / MLB players only</strong> (blank Lev excluded). Batter bars include <strong>Defense</strong> (average of position tools, same as the radar DEF axis) and <strong>ZR</strong>. Draft cards rank ratings vs the <strong>Draft tab pool</strong> instead. OVR/POT star ratings are not included in percentiles. Tiers: Elite 90–100, Above Avg 70–89, Average 40–69, Below Avg 20–39, Poor 0–19.</p>
+    <p class="glossary-lead">Right-click (or Ctrl/Cmd-click) a player row for league-wide percentile bars, best/worst metrics, and archetype fits. Roster cards use <strong>Major League / MLB players only</strong> (blank Lev excluded). Batter bars include <strong>Defense</strong> (average of position tools, same as the radar DEF axis) and <strong>ZR</strong>. Draft and IFA cards rank ratings vs their own tab pools instead. OVR/POT star ratings are not included in percentiles. Tiers: Elite 90–100, Above Avg 70–89, Average 40–69, Below Avg 20–39, Poor 0–19.</p>
   </section>
 
   <section id="archetypes" class="panel glossary-section">

@@ -9,7 +9,7 @@ import { goToCompare, MAX_COMPARE_PLAYERS } from "./compare_seed.js";
  *   filtersEl: HTMLElement,
  *   tableEl: HTMLElement,
  *   getPlayerType: () => "batter"|"pitcher",
- *   getPool?: () => "roster"|"draft",
+ *   getPool?: () => "roster"|"draft"|"ifa",
  * }} opts
  */
 export function mountCompareSelect(opts) {
@@ -27,7 +27,7 @@ export function mountCompareSelect(opts) {
   wrap.className = "compare-select-controls";
   wrap.innerHTML = `
     <button type="button" class="btn tip btn-accent" id="compare-select-go" disabled
-      data-tip="Select 1–3 players of the same type, then open Compare. Draft selections use the draft-class pool.">
+      data-tip="Select 1–3 players of the same type, then open Compare. Draft/IFA selections use that pool.">
       Compare (0)
     </button>
     <button type="button" class="btn tip" id="compare-select-clear" hidden

@@ -16,6 +16,8 @@ const IDB_PITCHERS = "pitchers";
 const IDB_BATTERS = "batters";
 const IDB_DRAFT_PITCHERS = "draft_pitchers";
 const IDB_DRAFT_BATTERS = "draft_batters";
+const IDB_IFA_PITCHERS = "ifa_pitchers";
+const IDB_IFA_BATTERS = "ifa_batters";
 const IDB_TEAMS = "team_list";
 /** Keep in sync with shell.js SCORING_VERSION */
 const SCORING_VERSION = 14;
@@ -28,9 +30,12 @@ const defaults = () => ({
   batters: [],
   draftPitchers: [],
   draftBatters: [],
+  ifaPitchers: [],
+  ifaBatters: [],
   teamList: [],
   filename: null,
   draftFilename: null,
+  ifaFilename: null,
   teamListFilename: null,
   draftMode: false,
   /**
@@ -39,6 +44,8 @@ const defaults = () => ({
    * Does not change Options Meta multipliers.
    */
   draftMetaBias: 0,
+  /** IFA tab: same bias semantics as draftMetaBias. */
+  ifaMetaBias: 0,
   useStatsScoring: true,
   /** When true, hide players whose Lev is not Major League / MLB (blank Lev still shown). */
   majorsOnly: true,
@@ -91,6 +98,10 @@ function draftMetaForState(state) {
   return draftMetaFromBias(state?.draftMetaBias ?? 0);
 }
 
+function ifaMetaForState(state) {
+  return draftMetaFromBias(state?.ifaMetaBias ?? 0);
+}
+
 function scoreDraftPools(state) {
   const rawDp = (state.draftPitchers || []).map(({ Scores, ...rest }) => rest);
   const rawDb = (state.draftBatters || []).map(({ Scores, ...rest }) => rest);
@@ -108,6 +119,23 @@ function scoreDraftPools(state) {
   state.draftBatters = draftScored.batters;
 }
 
+function scoreIfaPools(state) {
+  const rawIp = (state.ifaPitchers || []).map(({ Scores, ...rest }) => rest);
+  const rawIb = (state.ifaBatters || []).map(({ Scores, ...rest }) => rest);
+  if (!rawIp.length && !rawIb.length) return;
+  const ifaScored = scorePlayers(rawIp, rawIb, {
+    draftMode: true,
+    draftMeta: ifaMetaForState(state),
+    pitcherWeights: state.pitcherWeights,
+    batterWeights: state.batterWeights,
+    useStats: false,
+    pitcherStatWeights: state.pitcherStatWeights,
+    batterStatWeights: state.batterStatWeights,
+  });
+  state.ifaPitchers = ifaScored.pitchers;
+  state.ifaBatters = ifaScored.batters;
+}
+
 function readMetaFromLocalStorage() {
   try {
     const raw = localStorage.getItem(KEY);
@@ -120,8 +148,11 @@ function readMetaFromLocalStorage() {
     if (!Array.isArray(state.batters)) state.batters = [];
     if (!Array.isArray(state.draftPitchers)) state.draftPitchers = [];
     if (!Array.isArray(state.draftBatters)) state.draftBatters = [];
+    if (!Array.isArray(state.ifaPitchers)) state.ifaPitchers = [];
+    if (!Array.isArray(state.ifaBatters)) state.ifaBatters = [];
     if (!Array.isArray(state.teamList)) state.teamList = [];
     state.draftMetaBias = clampDraftMetaBias(state.draftMetaBias);
+    state.ifaMetaBias = clampDraftMetaBias(state.ifaMetaBias);
     return state;
   } catch {
     return defaults();
@@ -134,6 +165,8 @@ function metaOnly(state) {
     batters: _b,
     draftPitchers: _dp,
     draftBatters: _db,
+    ifaPitchers: _ip,
+    ifaBatters: _ib,
     teamList: _t,
     ...rest
   } = state;
@@ -144,6 +177,8 @@ function metaOnly(state) {
     batters: [],
     draftPitchers: [],
     draftBatters: [],
+    ifaPitchers: [],
+    ifaBatters: [],
     teamList: [],
   };
 }
@@ -191,17 +226,22 @@ export async function hydrateState() {
 
   if (state.playersInIdb || !legacyPlayers) {
     try {
-      const [pitchers, batters, draftPitchers, draftBatters, teamList] = await Promise.all([
-        idbGet(IDB_PITCHERS),
-        idbGet(IDB_BATTERS),
-        idbGet(IDB_DRAFT_PITCHERS),
-        idbGet(IDB_DRAFT_BATTERS),
-        idbGet(IDB_TEAMS),
-      ]);
+      const [pitchers, batters, draftPitchers, draftBatters, ifaPitchers, ifaBatters, teamList] =
+        await Promise.all([
+          idbGet(IDB_PITCHERS),
+          idbGet(IDB_BATTERS),
+          idbGet(IDB_DRAFT_PITCHERS),
+          idbGet(IDB_DRAFT_BATTERS),
+          idbGet(IDB_IFA_PITCHERS),
+          idbGet(IDB_IFA_BATTERS),
+          idbGet(IDB_TEAMS),
+        ]);
       if (Array.isArray(pitchers)) state.pitchers = pitchers;
       if (Array.isArray(batters)) state.batters = batters;
       if (Array.isArray(draftPitchers)) state.draftPitchers = draftPitchers;
       if (Array.isArray(draftBatters)) state.draftBatters = draftBatters;
+      if (Array.isArray(ifaPitchers)) state.ifaPitchers = ifaPitchers;
+      if (Array.isArray(ifaBatters)) state.ifaBatters = ifaBatters;
       if (Array.isArray(teamList)) state.teamList = teamList;
       state.playersInIdb = true;
     } catch (err) {
@@ -221,6 +261,8 @@ export async function saveState(state) {
       idbSet(IDB_BATTERS, state.batters || []),
       idbSet(IDB_DRAFT_PITCHERS, state.draftPitchers || []),
       idbSet(IDB_DRAFT_BATTERS, state.draftBatters || []),
+      idbSet(IDB_IFA_PITCHERS, state.ifaPitchers || []),
+      idbSet(IDB_IFA_BATTERS, state.ifaBatters || []),
       idbSet(IDB_TEAMS, state.teamList || []),
     ]);
     state.playersInIdb = true;
@@ -241,6 +283,13 @@ export function hasDraftData(state = loadState()) {
   return (
     (state.draftPitchers && state.draftPitchers.length) ||
     (state.draftBatters && state.draftBatters.length)
+  );
+}
+
+export function hasIfaData(state = loadState()) {
+  return (
+    (state.ifaPitchers && state.ifaPitchers.length) ||
+    (state.ifaBatters && state.ifaBatters.length)
   );
 }
 
@@ -334,6 +383,25 @@ export async function ingestDraftClassHtml(html, filename) {
   return state;
 }
 
+/** Score and store an Int'l amateurs / IFA export (same draftMode scoring as Draft). */
+export async function ingestIfaHtml(html, filename) {
+  const state = await hydrateState();
+  const data = loadAndScoreHtml(html, {
+    draftMode: true,
+    draftMeta: ifaMetaForState(state),
+    pitcherWeights: state.pitcherWeights,
+    batterWeights: state.batterWeights,
+    useStats: false,
+    pitcherStatWeights: state.pitcherStatWeights,
+    batterStatWeights: state.batterStatWeights,
+  });
+  state.ifaPitchers = data.pitchers;
+  state.ifaBatters = data.batters;
+  state.ifaFilename = filename || "Int List.html";
+  await saveState(state);
+  return state;
+}
+
 export async function ingestTeamList(teams, filename) {
   const state = await hydrateState();
   state.teamList = Array.isArray(teams) ? teams : [];
@@ -361,6 +429,9 @@ export async function rescore(state) {
   if ((s.draftPitchers && s.draftPitchers.length) || (s.draftBatters && s.draftBatters.length)) {
     scoreDraftPools(s);
   }
+  if ((s.ifaPitchers && s.ifaPitchers.length) || (s.ifaBatters && s.ifaBatters.length)) {
+    scoreIfaPools(s);
+  }
 
   await saveState(s);
   return s;
@@ -372,6 +443,17 @@ export async function setDraftMetaBias(bias) {
   state.draftMetaBias = clampDraftMetaBias(bias);
   if ((state.draftPitchers && state.draftPitchers.length) || (state.draftBatters && state.draftBatters.length)) {
     scoreDraftPools(state);
+  }
+  await saveState(state);
+  return state;
+}
+
+/** IFA tab: bias current vs potential meta without editing Options multipliers. */
+export async function setIfaMetaBias(bias) {
+  const state = await hydrateState();
+  state.ifaMetaBias = clampDraftMetaBias(bias);
+  if ((state.ifaPitchers && state.ifaPitchers.length) || (state.ifaBatters && state.ifaBatters.length)) {
+    scoreIfaPools(state);
   }
   await saveState(state);
   return state;
