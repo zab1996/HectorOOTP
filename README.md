@@ -49,6 +49,9 @@ StatsPlus profile links use a `{pid}` URL template under **Options → Statsplus
 | **Contract** | Comp-based AAV suggestion + role-pooled $/WAR context |
 | **Archetypes** | Franchise philosophy fits (under **More**) |
 | **League Analysis** | Parity, parks, talent WAR, divisions, YoY trends |
+| **Upcoming FA** | Expiring deals with no extension — FA / deadline trade candidates (More) |
+| **Team Salary** | Multi-year org payroll grid + pie charts (More) |
+| **Hidden Gems** | Overlooked-player categories / Gem% (More; under construction) |
 | **Options** | Weights, StatsPlus URL, your team |
 | **Glossary** | Score definitions |
 
