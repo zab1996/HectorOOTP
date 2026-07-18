@@ -53,8 +53,10 @@ All Totals and tools run client-side from your HTML export. Weights are editable
 
 | Area | What it does / how it’s calculated |
 |------|-------------------------------------|
-| **Pitchers / Batters** | Default **stats Total** (e.g. pitchers: WAR / ERA+ / rWAR / FIP- / HLD; batters: wRC+ / OPS+ / WAR) with sample floors (IP/G → Total 0 below floor). Toggle **ratings Total** for weighted current + potential scout grades. Live filters, percentiles, player cards, StatsPlus links. |
+| **Pitchers / Batters** | Default **stats Total** (e.g. pitchers: WAR / ERA+ / rWAR / FIP- / HLD; batters: wRC+ / OPS+ / WAR) with sample floors (IP/G → Total 0 below floor). Toggle **ratings Total** for weighted current + potential scout grades. Live filters, percentiles, StatsPlus links. |
 | **Draft** | Separate Draft Class pool; ratings scoring with **potential ×1.5 / current ×0.9** emphasis. |
+| **Player cards** | On Pitchers, Batters, or Draft rows — ratings, percentiles, and archetype fits (Draft cards rank vs the draft class). |
+| **Your team** | Set your franchise in Options after loading data so your players highlight on Pitchers/Batters and your org on Teams. |
 | **Teams** | Org aggregates of pitching / offense / defense (ratings or stats modes). Optional Team List parks & standings; Avg $/WAR = SLR ÷ WAR (context only). |
 | **Compare** | 2–3 players side-by-side: 20–80 ratings **radar**, season stats + ranks, league percentiles. Optional **Neutral park** (raw rates ÷ park factors from Team List). |
 | **Trade** | Sides normalized so max pitcher/batter Totals map to 100. Role-pooled **$/WAR** medians (SP / RP / batters); Contract Δ ≈ WAR × pool rate − SLR; draft picks via exponential decay from R1P1. Optional Neutral park scales Totals. |
