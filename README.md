@@ -39,21 +39,23 @@ StatsPlus profile links use a `{pid}` URL template under **Options → Statsplus
 
 ## Features
 
-| Area | What it does |
-|------|----------------|
-| **Pitchers / Batters** | Live filters, stats or ratings Total, sample floors, row highlights, player cards, name → StatsPlus |
-| **Draft** | Separate draft-class list; potential-heavy ratings scoring |
-| **Teams** | Club aggregates; optional park / standings from Team List |
-| **Compare** | Side-by-side players + radar |
-| **Trade** | Two-sided trade with ratings, stats, $/WAR, contract Δ, draft picks |
-| **Contract** | Comp-based AAV suggestion + role-pooled $/WAR context |
-| **Archetypes** | Franchise philosophy fits (under **More**) |
-| **League Analysis** | Parity, parks, talent WAR, divisions, YoY trends |
-| **Upcoming FA** | Expiring deals with no extension — FA / deadline trade candidates (More) |
-| **Team Salary** | Multi-year org payroll grid + pie charts (More) |
-| **Hidden Gems** | Overlooked-player categories / Gem% (More; under construction) |
-| **Options** | Weights, StatsPlus URL, your team |
-| **Glossary** | Score definitions |
+All Totals and tools run client-side from your HTML export. Weights are editable in **Options**; full formula write-ups live in the in-app **Glossary**.
+
+| Area | What it does / how it’s calculated |
+|------|-------------------------------------|
+| **Pitchers / Batters** | Default **stats Total** (e.g. pitchers: WAR / ERA+ / rWAR / FIP- / HLD; batters: wRC+ / OPS+ / WAR) with sample floors (IP/G → Total 0 below floor). Toggle **ratings Total** for weighted current + potential scout grades. Live filters, percentiles, player cards, StatsPlus links. |
+| **Draft** | Separate Draft Class pool; ratings scoring with **potential ×1.5 / current ×0.9** emphasis. |
+| **Teams** | Org aggregates of pitching / offense / defense (ratings or stats modes). Optional Team List parks & standings; Avg $/WAR = SLR ÷ WAR (context only). |
+| **Compare** | 2–3 players side-by-side: 20–80 ratings **radar**, season stats + ranks, league percentiles. Optional **Neutral park** (raw rates ÷ park factors from Team List). |
+| **Trade** | Sides normalized so max pitcher/batter Totals map to 100. Role-pooled **$/WAR** medians (SP / RP / batters); Contract Δ ≈ WAR × pool rate − SLR; draft picks via exponential decay from R1P1. Optional Neutral park scales Totals. |
+| **Contract** | Comp similarity on OPS+/wRC+/ERA+/FIP-/WAR (not Hector Total). Suggested **AAV** from scarcity-group median $/WAR × player WAR (fallback median SLR). |
+| **Archetypes** | Franchise philosophy Fit % from rating profiles (More). |
+| **League Analysis** | League parity, park factors, talent WAR, divisions, YoY trends (More; needs Team List for parks/standings). |
+| **Upcoming FA** | Signed players in final year with **no extension** (YL/ECV signal) — FA / deadline candidates, not Extension Watch (More). |
+| **Team Salary** | Relative-year payroll (**Now / +1 / +2…**) from YL + extension AAV; per-player **$/WAR** = SLR ÷ WAR; pie charts by team / P-B / position (More). |
+| **Hidden Gems** | Category finders on **20–80 current ratings only** (AAAA, Miscast, converts, Park Nerfed, **Gem%**, …). Under construction (More). |
+| **Options** | Ratings + pitcher/batter **stats weights**, StatsPlus `{pid}` URL, your team — rescore without re-upload. |
+| **Glossary** | Full score definitions and weight breakdowns. |
 
 ## Desktop Hector (archived)
 
