@@ -8,6 +8,8 @@ export {
   normalizeBatsKey,
   normalizeThrows,
   normalizeThrowsKey,
+  formatBatsDisplay,
+  formatThrowsDisplay,
   normalizeFilterVal,
   DURA_VALUES,
   BATS_VALUES,

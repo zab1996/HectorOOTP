@@ -1,4 +1,5 @@
 import { round2 } from "./util.js";
+import { formatBatsDisplay, formatThrowsDisplay } from "../column-filter.js";
 
 export function getBatterHighlightTags(b) {
   const tags = [];
@@ -75,7 +76,7 @@ export function pitcherDisplayRow(p, rank = null) {
     pos,
     prone: p.Prone || "",
     scout: p.SctAcc || "",
-    throws: p.T || "",
+    throws: formatThrowsDisplay(p.T),
     velo: p.VELO || "",
     pitches: p.PIT || "",
     gf: p["G/F"] || "",
@@ -130,7 +131,7 @@ export function batterDisplayRow(b, rank = null) {
     team: b.ORG || "",
     age: b.Age || "",
     pos: b.POS || "",
-    bats: b.B || "",
+    bats: formatBatsDisplay(b.B),
     prone: b.Prone || "",
     scout: b.SctAcc || "",
     ovr: b.OVR || "0 Stars",

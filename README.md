@@ -12,7 +12,6 @@ Scoring and tools run entirely in your browser. Player data stays in **IndexedDB
 
 This is an AI coded website, and the original program was also AI coded. I'm not smart enough to do this stuff on my own but I hope you get some fun/value outta my AI slop.
 
-
 See the [changelog](#changelog--hector-30-web) below for what changed since Hector 2.4.5 Beta.
 
 <details>

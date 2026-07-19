@@ -70,6 +70,23 @@ export function normalizeThrowsKey(val) {
   return compact;
 }
 
+/** Display form for Bats column — L / R / S (accepts Left/Right/Switch). */
+export function formatBatsDisplay(val) {
+  const k = normalizeBatsKey(val);
+  if (k === "l") return "L";
+  if (k === "r") return "R";
+  if (k === "s") return "S";
+  return normalizeFilterVal(val);
+}
+
+/** Display form for Throws column — L / R (accepts Left/Right). */
+export function formatThrowsDisplay(val) {
+  const k = normalizeThrowsKey(val);
+  if (k === "l") return "L";
+  if (k === "r") return "R";
+  return normalizeFilterVal(val);
+}
+
 export function duraOptionClass(key) {
   const k = normalizeDuraKey(key);
   if (k === "ironman") return "dura-ironman";
