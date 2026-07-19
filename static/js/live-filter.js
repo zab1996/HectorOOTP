@@ -16,6 +16,7 @@ import {
   scoutOptionClass,
 } from "./column-filter.js";
 import { mountCompareSelect, comparePickTd, comparePickTh } from "./compare-select.js";
+import { bindTeamCardTargets, normalizeTeamAbbr } from "./team-card.js";
 
 (function () {
   let players = window.HECTOR_PLAYERS || [];
@@ -484,6 +485,13 @@ import { mountCompareSelect, comparePickTd, comparePickTh } from "./compare-sele
     return reasons.length ? reasons.join("\n") : "";
   }
 
+  function teamCellHtml(team) {
+    const display = escapeHtml(team);
+    const abbr = normalizeTeamAbbr(team);
+    if (!abbr) return `<td class="team-cell">${display || "—"}</td>`;
+    return `<td class="team-cell" data-team-abbr="${escapeHtml(abbr)}">${display}</td>`;
+  }
+
   function renderPitcherRow(p, rank) {
     const tags = rowTags(p);
     const tip = rowHighlightTip(tags);
@@ -496,7 +504,7 @@ import { mountCompareSelect, comparePickTd, comparePickTh } from "./compare-sele
     const top = view === "top20";
     let cells = comparePickTd(p.id, p.name);
     if (top) cells += `<td>${rank}</td>`;
-    cells += `<td>${nameCell}</td><td>${escapeHtml(p.team)}</td><td>${escapeHtml(p.age)}</td><td>${escapeHtml(p.pos)}</td>`;
+    cells += `<td>${nameCell}</td>${teamCellHtml(p.team)}<td>${escapeHtml(p.age)}</td><td>${escapeHtml(p.pos)}</td>`;
     if (useStats) {
       const rpOnly = isRpOnlyFilter();
       cells += `<td>${escapeHtml(dash(p.throws))}</td>`;
@@ -533,7 +541,7 @@ import { mountCompareSelect, comparePickTd, comparePickTh } from "./compare-sele
     const top = view === "top10";
     let cells = comparePickTd(p.id, p.name);
     if (top) cells += `<td>${rank}</td>`;
-    cells += `<td>${nameCell}</td><td>${escapeHtml(p.team)}</td><td>${escapeHtml(p.age)}</td><td>${escapeHtml(p.pos)}</td>`;
+    cells += `<td>${nameCell}</td>${teamCellHtml(p.team)}<td>${escapeHtml(p.age)}</td><td>${escapeHtml(p.pos)}</td>`;
     if (useStats) {
       cells += `<td>${escapeHtml(dash(p.bats))}</td>`;
       cells += duraTd(p.prone);
@@ -706,4 +714,5 @@ import { mountCompareSelect, comparePickTd, comparePickTh } from "./compare-sele
   // Initial paint — may be empty if the page module hasn't hydrated yet;
   // hector:players will re-render once data is ready.
   render();
+  bindTeamCardTargets(document);
 })();

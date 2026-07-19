@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Teams — Hector</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="static/css/app.css?v=31" />
+  <link rel="stylesheet" href="static/css/app.css?v=33" />
 </head>
 <body>
   <header class="topbar" id="app-header"></header>
@@ -34,10 +34,11 @@ Batters: Offense (wRC+, WAR, OPS+, G, UBR) + Defense (ZR, CERA, Errors).">
     </div>
   </main>
   <script type="module">
-    import { mountShell, requireData } from "./static/js/shell.js?v=36";
+    import { mountShell, requireData } from "./static/js/shell.js?v=42";
     import { aggregateTeams } from "./static/js/hector/teams.js?v=17";
     import { setMajorsOnly, saveState, isMyTeam } from "./static/js/hector/store.js?v=30";
     import { teamListByAbbr } from "./static/js/hector/team_list.js?v=31";
+    import { bindTeamCardTargets, normalizeTeamAbbr } from "./static/js/team-card.js?v=1";
 
     if (!(await requireData())) throw new Error("redirect");
     let state = await mountShell("teams");
@@ -110,6 +111,17 @@ Batters: Offense (wRC+, WAR, OPS+, G, UBR) + Defense (ZR, CERA, Errors).">
       return `<td>${extra.park}</td><td>${extra.record}</td><td>${extra.pct}</td><td>${extra.pf}</td>`;
     }
 
+    /** Whole-row target so RC / Ctrl-click anywhere on the row opens the team card. */
+    function teamRowOpen(r) {
+      const abbr = normalizeTeamAbbr(r.team);
+      const mine = isMyTeam(r.team, state);
+      const classes = ["team-row"];
+      if (mine) classes.push("tip", "hl-my-team");
+      const tip = mine ? ` data-tip="Your team (set in Options)."` : "";
+      const abbrAttr = abbr ? ` data-team-abbr="${abbr}"` : "";
+      return `<tr class="${classes.join(" ")}"${abbrAttr}${tip}>`;
+    }
+
     function render() {
       const useStats = !!state.teamsUseStats;
       const majorsOnly = state.majorsOnly !== false;
@@ -135,13 +147,9 @@ Batters: Offense (wRC+, WAR, OPS+, G, UBR) + Defense (ZR, CERA, Errors).">
         body.innerHTML = rows
           .map((r) => {
             const x = teamExtra(r);
-            const mine = isMyTeam(r.team, state);
-            const cls = mine
-              ? ` class="tip hl-my-team" data-tip="Your team (set in Options)."`
-              : "";
             return `
-          <tr${cls}>
-            <td>${r.team}</td>
+          ${teamRowOpen(r)}
+            <td class="team-cell">${r.team}</td>
             ${teamListCells(x, showTeamList)}
             <td>${r.avg_age}</td>
             <td class="meta-col muted">${formatDpw(r.dollar_per_war)}</td>
@@ -173,13 +181,9 @@ Batters: Offense (wRC+, WAR, OPS+, G, UBR) + Defense (ZR, CERA, Errors).">
         body.innerHTML = rows
           .map((r) => {
             const x = teamExtra(r);
-            const mine = isMyTeam(r.team, state);
-            const cls = mine
-              ? ` class="tip hl-my-team" data-tip="Your team (set in Options)."`
-              : "";
             return `
-          <tr${cls}>
-            <td>${r.team}</td>
+          ${teamRowOpen(r)}
+            <td class="team-cell">${r.team}</td>
             ${teamListCells(x, showTeamList)}
             <td>${r.avg_age}</td>
             <td class="meta-col muted">${formatDpw(r.dollar_per_war)}</td>
@@ -216,6 +220,7 @@ Batters: Offense (wRC+, WAR, OPS+, G, UBR) + Defense (ZR, CERA, Errors).">
     }
 
     render();
+    bindTeamCardTargets(document);
   </script>
   <script src="static/js/tooltips.js"></script>
   <script src="static/js/app.js?v=15"></script>

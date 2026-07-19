@@ -716,6 +716,7 @@ export function showPlayerCard(player, playerType = "batter", options = {}) {
 
 export function bindPlayerCardRows(root = document) {
   root.addEventListener("contextmenu", (e) => {
+    if (e.target.closest(".team-cell, [data-team-abbr]")) return;
     const tr = e.target.closest("tr[data-player-name]");
     if (!tr) return;
     e.preventDefault();
@@ -723,6 +724,7 @@ export function bindPlayerCardRows(root = document) {
   });
   root.addEventListener("click", (e) => {
     if (!(e.ctrlKey || e.metaKey)) return;
+    if (e.target.closest(".team-cell, [data-team-abbr]")) return;
     const tr = e.target.closest("tr[data-player-name]");
     if (!tr) return;
     e.preventDefault();

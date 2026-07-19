@@ -1148,6 +1148,11 @@ th.tip,
   vertical-align: middle;
 }
 
+.team-cell[data-team-abbr],
+tr.team-row[data-team-abbr] {
+  cursor: context-menu;
+}
+
 .player-card-overlay {
   position: fixed;
   inset: 0;
@@ -1158,6 +1163,99 @@ th.tip,
   justify-content: center;
   padding: 2rem 1rem;
   overflow: auto;
+}
+
+.team-card {
+  width: min(520px, 100%);
+}
+
+.team-card-header h2 {
+  margin: 0 0 0.15rem;
+}
+
+.team-card-yours {
+  display: inline-block;
+  margin: 0.15rem 0 0;
+  font-size: 0.8rem;
+  color: var(--accent, #2dff9a);
+}
+
+.team-card-section {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border, #2e3440);
+}
+
+.team-card-section h3 {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.team-card-empty {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.team-card-dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  gap: 0.55rem 1rem;
+  margin: 0;
+}
+
+.team-card-dl div {
+  margin: 0;
+}
+
+.team-card-dl dt {
+  margin: 0;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.team-card-dl dd {
+  margin: 0.1rem 0 0;
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.95rem;
+}
+
+.team-card-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.team-card-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid rgba(46, 52, 64, 0.5);
+}
+
+.team-card-list li:last-child {
+  border-bottom: none;
+}
+
+.team-card-player-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent, #2dff9a);
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.team-card-player-btn:hover {
+  text-decoration: underline;
 }
 
 .player-card {

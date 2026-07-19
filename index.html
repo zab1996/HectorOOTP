@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Upload — Hector 3.0 Web</title>
+  <title>Upload — Hector 3.2.0 Web</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="static/css/app.css?v=31" />
+  <link rel="stylesheet" href="static/css/app.css?v=32" />
 </head>
 <body>
   <header class="topbar" id="app-header"></header>
   <section class="summary" id="app-summary" hidden></section>
   <main>
     <section class="hero-panel">
-      <h1>Hector 3.0 Web</h1>
+      <h1 id="upload-hero-title">Hector 3.2.0 Web</h1>
       <p class="lede">OOTP analyzer — All scoring runs in your browser. Upload OOTP HTML exports.</p>
       <div id="upload-error" class="banner error" hidden></div>
 
@@ -270,7 +270,7 @@
           <kbd>Ctrl</kbd><span class="tip-callout-plus">/</span><kbd>⌘</kbd><span class="tip-callout-plus">+</span><kbd>Click</kbd>
         </div>
         <p class="tip-callout-body">
-          <strong>Player cards</strong> — on Pitchers, Batters, Draft, or IFA rows, open ratings, percentiles, and archetype fits (Draft/IFA cards rank vs that pool).
+          <strong>Player cards</strong> — right-click a player <em>name</em> (or the row) on Pitchers, Batters, Draft, or IFA. <strong>Team cards</strong> — right-click a Team abbr on Pitchers/Batters or the Teams tab.
         </p>
       </aside>
       <aside class="tip-callout tip-callout-secondary" aria-label="Your team tip">
@@ -286,7 +286,7 @@
     </section>
   </main>
   <script type="module">
-    import { mountShell } from "./static/js/shell.js?v=41";
+    import { mountShell, APP_VERSION } from "./static/js/shell.js?v=42";
     import {
       ingestHtml,
       ingestDraftClassHtml,
@@ -306,6 +306,9 @@
     } from "./static/js/upload-checklist.js?v=4";
 
     const state = await mountShell("home");
+    const heroTitle = document.getElementById("upload-hero-title");
+    if (heroTitle) heroTitle.textContent = `Hector ${APP_VERSION}`;
+    document.title = `Upload — Hector ${APP_VERSION}`;
     const alreadyLoaded = hasData(state);
     const fileInput = document.getElementById("file-input");
     const draftInput = document.getElementById("draft-input");
