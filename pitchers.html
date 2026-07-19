@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Pitchers — Hector</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="static/css/app.css?v=34" />
+  <link rel="stylesheet" href="static/css/app.css?v=38" />
 </head>
 <body>
   <header class="topbar" id="app-header"></header>
@@ -26,6 +26,9 @@
         <label class="chk tip" data-tip="When checked, shows Triple-A / Double-A / etc.
 Unchecked = Major League / MLB only.">
           <input type="checkbox" id="include-minors-toggle" /> Include minors
+        </label>
+        <label class="chk tip" data-tip="Hides all players with a current org/team. Also turns on ratings scoring (FAs have no season stats) and hides ages 20 and under (international complex).">
+          <input type="checkbox" id="fa-mode-toggle" /> FA Mode
         </label>
         <label class="chk tip" data-tip="When enabled, Total uses scout ratings instead of performance stats. Unchecked (default) = stats Total (WAR, ERA+, rWAR, IP, HLD). ERA+ scales with IP sample size. Players under the Min IP floors get Total 0 and are hidden from the list.">
           <input type="checkbox" id="stats-scoring-toggle" /> Use Ratings-Based Scoring
@@ -154,6 +157,30 @@ Default: 20 IP">Min RP IP
       });
     }
 
+    const faToggle = document.getElementById("fa-mode-toggle");
+    /** Scoring mode before FA Mode forced ratings (`true` = stats Total). */
+    let scoringBeforeFa = null;
+    if (faToggle && toggle) {
+      faToggle.addEventListener("change", async () => {
+        if (faToggle.checked) {
+          scoringBeforeFa = !!state.useStatsScoring;
+          if (toggle.checked) return; // already on ratings
+          toggle.checked = true;
+          syncPlayers(await setUseStatsScoring(false));
+          syncWeightsLink(false);
+          syncSampleMinsUi(false);
+          return;
+        }
+        if (scoringBeforeFa === true) {
+          toggle.checked = false;
+          syncPlayers(await setUseStatsScoring(true));
+          syncWeightsLink(true);
+          syncSampleMinsUi(true);
+        }
+        scoringBeforeFa = null;
+      });
+    }
+
     if (toggle) {
       toggle.checked = !state.useStatsScoring;
       syncWeightsLink(!!state.useStatsScoring);
@@ -170,9 +197,9 @@ Default: 20 IP">Min RP IP
     }
   </script>
   <script src="static/js/tooltips.js"></script>
-  <script type="module" src="static/js/live-filter.js?v=31"></script>
+  <script type="module" src="static/js/live-filter.js?v=35"></script>
   <script type="module">
-    import { bindPlayerCardRows } from "./static/js/player-card.js?v=43";
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=49";
     bindPlayerCardRows();
   </script>
 </body>

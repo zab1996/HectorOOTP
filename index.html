@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Upload — Hector 3.2.0 Web</title>
+  <title>Upload — Hector 3.3.0 Web</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="static/css/app.css?v=32" />
+  <link rel="stylesheet" href="static/css/app.css?v=39" />
 </head>
 <body>
   <header class="topbar" id="app-header"></header>
   <section class="summary" id="app-summary" hidden></section>
   <main>
     <section class="hero-panel">
-      <h1 id="upload-hero-title">Hector 3.2.0 Web</h1>
-      <p class="lede">OOTP analyzer — All scoring runs in your browser. Upload OOTP HTML exports.</p>
+      <h1 id="upload-hero-title">Hector 3.3.0 Web</h1>
+      <p class="lede">OOTP analyzer — All scoring runs in your browser. <a href="#export-guide" class="lede-jump">Upload OOTP HTML exports</a>.</p>
       <div id="upload-error" class="banner error" hidden></div>
 
       <form class="upload-form upload-form-multi" id="upload-form">
@@ -72,7 +72,7 @@
 
       <p class="muted" id="loaded-msg" hidden></p>
 
-      <section class="panel upload-instructions">
+      <section class="panel upload-instructions" id="export-guide">
         <h2>How to export from OOTP</h2>
         <p class="export-load-warn">
           <strong>Important:</strong> After <strong>Write report to disk</strong>, wait until the HTML page has <em>fully finished loading</em> in your browser before you Save as / upload.
@@ -88,7 +88,7 @@
               <img src="static/img/export-guide/playerlist/1.jpg" alt="Open league menu and choose Transactions" loading="lazy" width="640" height="360" />
             </li>
             <li class="export-step">
-              <p><strong>Players → Player List</strong> — include minor leaguers and free agents as shown (retirees / international complex off unless you need them).</p>
+              <p><strong>Players → Player List</strong> — include minor leaguers, free agents, and international complex.</p>
               <img src="static/img/export-guide/playerlist/2.jpg" alt="Open Players, Player List, and set include filters" loading="lazy" width="640" height="360" />
             </li>
             <li class="export-step">
@@ -136,7 +136,7 @@
               <img src="static/img/export-guide/playerlist/19.jpg" alt="Save View dialog with Save as Global" loading="lazy" width="640" height="360" />
             </li>
             <li class="export-step">
-              <p><strong>REPORT → Write report to disk</strong> to open the HTML export in your browser.</p>
+              <p>Set <strong>POSITION: All Players</strong>, then <strong>REPORT → Write report to disk</strong> to open the HTML export in your browser.</p>
               <p class="export-load-warn export-load-warn-inline"><strong>Wait for the page to finish loading completely</strong> before the next step — otherwise the saved file can be missing players.</p>
               <img src="static/img/export-guide/playerlist/20.jpg" alt="REPORT menu Write report to disk" loading="lazy" width="640" height="360" />
             </li>
@@ -173,9 +173,9 @@
               <img src="static/img/export-guide/draftlist/3.jpg" alt="Select saved Hector All view on draft pool" loading="lazy" width="640" height="360" />
             </li>
             <li class="export-step">
-              <p><strong>REPORT → Write report to disk</strong> to open the HTML in your browser.</p>
-              <p class="export-load-warn export-load-warn-inline"><strong>Wait for the page to finish loading completely</strong> before Save as — otherwise the draft file can be missing players.</p>
-              <img src="static/img/export-guide/draftlist/4.jpg" alt="REPORT menu Write report to disk for draft pool" loading="lazy" width="640" height="360" />
+              <p>Set <strong>POSITION: All Players</strong>, then <strong>REPORT → Write report to disk</strong> to open the HTML export in your browser.</p>
+              <p class="export-load-warn export-load-warn-inline"><strong>Wait for the page to finish loading completely</strong> before the next step — otherwise the saved file can be missing players.</p>
+              <img src="static/img/export-guide/playerlist/20.jpg" alt="REPORT menu Write report to disk" loading="lazy" width="640" height="360" />
             </li>
             <li class="export-step">
               <p>Once loading is done, <strong>right-click → Save as…</strong></p>
@@ -286,7 +286,7 @@
     </section>
   </main>
   <script type="module">
-    import { mountShell, APP_VERSION } from "./static/js/shell.js?v=42";
+    import { mountShell, APP_VERSION } from "./static/js/shell.js?v=43";
     import {
       ingestHtml,
       ingestDraftClassHtml,

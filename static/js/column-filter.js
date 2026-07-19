@@ -353,6 +353,15 @@ export function scoutOptionClass(key) {
   return "";
 }
 
+/** Color class for a raw SctAcc cell value (same mapping as player cards). */
+export function scoutClass(raw) {
+  const key = String(raw ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+  return scoutOptionClass(key);
+}
+
 /** @deprecated use createColumnFilter — kept for older imports */
 export function createDuraFilter({ onChange }) {
   return createColumnFilter({

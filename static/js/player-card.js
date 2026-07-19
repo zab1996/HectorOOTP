@@ -15,6 +15,68 @@ import { duraClass } from "./column-filter.js";
 
 const BAR_SCALE = 80;
 
+function escapeHtml(s) {
+  return String(s ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+/**
+ * Durability, scout accuracy, popularity, personality — shared by player card + Compare.
+ * @param {object} player
+ * @param {{ includePop?: boolean }} [opts] — set includePop false for Draft/IFA
+ * @returns {string[]} HTML fragments (already escaped)
+ */
+export function playerMetaExtraHtml(player, opts = {}) {
+  const includePop = opts.includePop !== false;
+  const bits = [];
+  const duraRaw = String(player?.Prone || "").trim();
+  if (duraRaw) {
+    const duraCls = duraClass(duraRaw);
+    bits.push(
+      duraCls
+        ? `<span class="${duraCls}">Durability: ${escapeHtml(duraRaw)}</span>`
+        : `Durability: ${escapeHtml(duraRaw)}`,
+    );
+  }
+  const scoutAcc = String(player?.SctAcc || "").trim();
+  const scoutKey = scoutAcc.toLowerCase().replace(/\s+/g, " ");
+  let scoutCls = "";
+  if (
+    scoutKey === "very high" ||
+    scoutKey === "extremely high" ||
+    scoutKey === "extremely good" ||
+    scoutKey === "excellent"
+  ) {
+    scoutCls = "scout-acc-very-high";
+  } else if (scoutKey === "high" || scoutKey === "good" || scoutKey === "very good") {
+    scoutCls = "scout-acc-high";
+  } else if (scoutKey === "average" || scoutKey === "medium" || scoutKey === "normal") {
+    scoutCls = "scout-acc-average";
+  } else if (scoutKey === "low" || scoutKey === "fair" || scoutKey === "poor") {
+    scoutCls = "scout-acc-low";
+  } else if (scoutKey === "very low" || scoutKey === "awful") {
+    scoutCls = "scout-acc-very-low";
+  }
+  const scoutText = escapeHtml(scoutAcc || "—");
+  bits.push(
+    scoutCls
+      ? `<span class="${scoutCls}">Scout Acc: ${scoutText}</span>`
+      : `Scout Acc: ${scoutText}`,
+  );
+  if (includePop) {
+    const natPop = String(player?.["Nat. Pop."] || "").trim();
+    const locPop = String(player?.["Loc. Pop."] || "").trim();
+    if (natPop) bits.push(`Nat. Pop: ${escapeHtml(natPop)}`);
+    if (locPop) bits.push(`Loc. Pop: ${escapeHtml(locPop)}`);
+  }
+  const personality = String(player?.Type || "").trim();
+  if (personality) bits.push(`Type: ${escapeHtml(personality)}`);
+  return bits;
+}
+
 function findPlayer(name, id, playerType, state, pool = "roster") {
   let list;
   if (pool === "draft") {
@@ -29,14 +91,6 @@ function findPlayer(name, id, playerType, state, pool = "roster") {
     if (byId) return byId;
   }
   return (list || []).find((p) => p.Name === name) || null;
-}
-
-function escapeHtml(s) {
-  return String(s ?? "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 function escapeAttr(s) {
@@ -81,19 +135,21 @@ function gradeColor(grade) {
   return "#ea580c";
 }
 
-function clampPct(n) {
-  return Math.max(0, Math.min(100, (n / BAR_SCALE) * 100));
+function clampPct(n, scale = BAR_SCALE) {
+  return Math.max(0, Math.min(100, (n / scale) * 100));
 }
 
-function ootpBarHtml(cur, pot) {
-  const curW = clampPct(cur);
-  const potW = pot != null && pot > cur ? clampPct(pot - cur) : 0;
+function ootpBarHtml(cur, pot, scale = BAR_SCALE, fixedColor = null) {
+  const curW = clampPct(cur, scale);
+  const potW = pot != null && pot > cur ? clampPct(pot - cur, scale) : 0;
+  const curColor = fixedColor || gradeColor(cur);
+  const potColor = fixedColor || gradeColor(pot);
   const potSeg =
     potW > 0
-      ? `<span class="ootp-bar-pot" style="width:${potW}%;background:${gradeColor(pot)}"></span>`
+      ? `<span class="ootp-bar-pot" style="width:${potW}%;background:${potColor}"></span>`
       : "";
   return `<span class="ootp-bar-track">
-    <span class="ootp-bar-cur" style="width:${curW}%;background:${gradeColor(cur)}"></span>
+    <span class="ootp-bar-cur" style="width:${curW}%;background:${curColor}"></span>
     ${potSeg}
   </span>`;
 }
@@ -115,7 +171,7 @@ function pairedRatingRow(label, curRaw, potRaw) {
   </div>`;
 }
 
-function singleRatingRow(label, raw) {
+function singleRatingRow(label, raw, scale = BAR_SCALE, fixedColor = null) {
   if (!hasRating(raw)) return "";
   const grade = parseGrade(raw);
   if (grade == null) {
@@ -127,7 +183,7 @@ function singleRatingRow(label, raw) {
   return `<div class="ootp-rating-row">
     <span class="ootp-rating-label">${escapeHtml(label)}</span>
     <span class="ootp-rating-val">${grade}</span>
-    ${ootpBarHtml(grade, grade)}
+    ${ootpBarHtml(grade, grade, scale, fixedColor)}
   </div>`;
 }
 
@@ -156,10 +212,14 @@ function pairedRows(player, pairs) {
 
 function singleRows(player, fields) {
   return fields
-    .map(([key, label]) => {
+    .map((entry) => {
+      const key = entry[0];
+      const label = entry[1];
+      const scale = entry[2] ?? BAR_SCALE;
+      const fixedColor = entry[3] ?? null;
       const keys = Array.isArray(key) ? key : [key];
       const val = pickField(player, ...keys);
-      return singleRatingRow(label, val);
+      return singleRatingRow(label, val, scale, fixedColor);
     })
     .filter(Boolean)
     .join("");
@@ -229,7 +289,7 @@ function pitcherRatingsHtml(player) {
     ["KN", "KNP", "Knuckleball"],
   ]);
   const other = singleRows(player, [
-    ["PIT", "# Pitches"],
+    ["PIT", "# Pitches", 8, gradeColor(55)],
     ["VELO", "Velocity"],
     ["STM", "Stamina"],
     ["G/F", "G/F"],
@@ -496,49 +556,10 @@ export function showPlayerCard(player, playerType = "batter", options = {}) {
       ? `Bats ${escapeHtml(player.B || "")}`
       : `Throws ${escapeHtml(player.T || "")}`,
   );
-  const duraRaw = String(player.Prone || "").trim();
-  if (duraRaw) {
-    const duraCls = duraClass(duraRaw);
-    identityBits.push(
-      duraCls
-        ? `<span class="${duraCls}">Durability ${escapeHtml(duraRaw)}</span>`
-        : `Durability ${escapeHtml(duraRaw)}`,
-    );
-  }
-  const scoutAcc = String(player.SctAcc || "").trim();
-  const scoutKey = scoutAcc.toLowerCase().replace(/\s+/g, " ");
-  let scoutCls = "";
-  if (
-    scoutKey === "very high" ||
-    scoutKey === "extremely high" ||
-    scoutKey === "extremely good" ||
-    scoutKey === "excellent"
-  ) {
-    scoutCls = "scout-acc-very-high";
-  } else if (scoutKey === "high" || scoutKey === "good" || scoutKey === "very good") {
-    scoutCls = "scout-acc-high";
-  } else if (scoutKey === "average" || scoutKey === "medium" || scoutKey === "normal") {
-    scoutCls = "scout-acc-average";
-  } else if (scoutKey === "low" || scoutKey === "fair" || scoutKey === "poor") {
-    scoutCls = "scout-acc-low";
-  } else if (scoutKey === "very low" || scoutKey === "awful") {
-    scoutCls = "scout-acc-very-low";
-  }
-  const scoutText = escapeHtml(scoutAcc || "—");
-  identityBits.push(
-    scoutCls
-      ? `<span class="${scoutCls}">Scout Acc. ${scoutText}</span>`
-      : `Scout Acc. ${scoutText}`,
-  );
-
-  const personality = String(player.Type || "").trim();
-  if (!draftMode) {
-    const natPop = String(player["Nat. Pop."] || "").trim();
-    const locPop = String(player["Loc. Pop."] || "").trim();
-    if (natPop) identityBits.push(`Nat. Pop. ${escapeHtml(natPop)}`);
-    if (locPop) identityBits.push(`Loc. Pop. ${escapeHtml(locPop)}`);
-  }
-  if (personality) identityBits.push(`Type ${escapeHtml(personality)}`);
+  const metaBits = playerMetaExtraHtml(player, { includePop: !draftMode });
+  const metaLine = metaBits.length
+    ? `<p class="muted player-card-meta">${metaBits.join(" · ")}</p>`
+    : "";
 
   const defaultTab =
     options.defaultTab === "ratings" ||
@@ -581,14 +602,14 @@ export function showPlayerCard(player, playerType = "batter", options = {}) {
         <div class="player-card-header-main">
           <h2>${escapeHtml(player.Name || "Unknown")}</h2>
           <p class="muted">${identityBits.join(" · ")}</p>
+          ${metaLine}
           ${
             draftMode
               ? ""
               : `<p class="player-card-contract tip" data-tip="Contract from export (SLR / years left / contract value). Not part of Hector Total.">${contractLine(player)}</p>`
           }
           <p><span class="ovr">OVR ${escapeHtml(player.OVR || "-")}</span>
-             <span class="pot">POT ${escapeHtml(player.POT || "-")}</span>
-             ${!draftMode && player.Scores?.used_stats ? '<span class="stat-badge">Stats score</span>' : ""}</p>
+             <span class="pot">POT ${escapeHtml(player.POT || "-")}</span></p>
           ${
             `<p class="player-card-actions">
             <button type="button" class="btn btn-accent player-card-compare-btn" data-compare>Compare</button>
@@ -717,29 +738,31 @@ export function showPlayerCard(player, playerType = "batter", options = {}) {
 export function bindPlayerCardRows(root = document) {
   root.addEventListener("contextmenu", (e) => {
     if (e.target.closest(".team-cell, [data-team-abbr]")) return;
-    const tr = e.target.closest("tr[data-player-name]");
-    if (!tr) return;
+    const el = e.target.closest("[data-player-name]");
+    if (!el) return;
     e.preventDefault();
-    openFromRow(tr);
+    openFromRow(el);
   });
   root.addEventListener("click", (e) => {
     if (!(e.ctrlKey || e.metaKey)) return;
     if (e.target.closest(".team-cell, [data-team-abbr]")) return;
-    const tr = e.target.closest("tr[data-player-name]");
-    if (!tr) return;
+    // Don't steal Ctrl/Cmd-click on StatsPlus links — open card from the row/card instead
+    if (e.target.closest("a[href]")) return;
+    const el = e.target.closest("[data-player-name]");
+    if (!el) return;
     e.preventDefault();
-    openFromRow(tr);
+    openFromRow(el);
   });
 }
 
-function openFromRow(tr) {
+function openFromRow(el) {
   const state = loadState();
-  const name = tr.dataset.playerName;
-  const id = tr.dataset.playerId;
-  const playerType = tr.dataset.playerType || "batter";
-  const rawPool = tr.dataset.playerPool;
+  const name = el.dataset.playerName;
+  const id = el.dataset.playerId;
+  const playerType = el.dataset.playerType || "batter";
+  const rawPool = el.dataset.playerPool;
   const pool = rawPool === "draft" || rawPool === "ifa" ? rawPool : "roster";
-  const tab = tr.dataset.playerCardTab;
+  const tab = el.dataset.playerCardTab;
   const player = findPlayer(name, id, playerType, state, pool);
   if (!player) return;
   const opts = pool === "draft" || pool === "ifa" ? { mode: pool } : {};

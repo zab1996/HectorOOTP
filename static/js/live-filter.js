@@ -14,9 +14,11 @@ import {
   duraOptionClass,
   duraClass,
   scoutOptionClass,
+  scoutClass,
 } from "./column-filter.js";
 import { mountCompareSelect, comparePickTd, comparePickTh } from "./compare-select.js";
 import { bindTeamCardTargets, normalizeTeamAbbr } from "./team-card.js";
+import { matchesPlayerSearch } from "./player-search.js";
 
 (function () {
   let players = window.HECTOR_PLAYERS || [];
@@ -25,6 +27,7 @@ import { bindTeamCardTargets, normalizeTeamAbbr } from "./team-card.js";
   let urlTemplate = window.PLAYER_URL_TEMPLATE || "";
   let useStats = !!window.HECTOR_USE_STATS;
   let majorsOnly = window.HECTOR_MAJORS_ONLY !== false;
+  let faMode = false;
 
   const searchEl = document.getElementById("player-search");
   const tbody = document.getElementById("players-tbody");
@@ -34,6 +37,7 @@ import { bindTeamCardTargets, normalizeTeamAbbr } from "./team-card.js";
   const secondaryWrap = document.getElementById("secondary-wrap");
   const tableEl = document.getElementById("players-table");
   const filtersEl = document.getElementById("live-filters");
+  const faModeEl = document.getElementById("fa-mode-toggle");
   if (!tbody || !headRow) return;
 
   const compareSelect =
@@ -189,6 +193,14 @@ import { bindTeamCardTargets, normalizeTeamAbbr } from "./team-card.js";
       : `<td>${escapeHtml(text)}</td>`;
   }
 
+  function scoutTd(scout) {
+    const text = dash(scout);
+    const cls = text === "—" ? "" : scoutClass(scout);
+    return cls
+      ? `<td class="${cls}">${escapeHtml(text)}</td>`
+      : `<td>${escapeHtml(text)}</td>`;
+  }
+
   function getAllowedPositions() {
     const boxes = document.querySelectorAll('#live-filters input[name="pos"]:checked');
     return new Set(Array.from(boxes).map((b) => b.value));
@@ -202,31 +214,7 @@ import { bindTeamCardTargets, normalizeTeamAbbr } from "./team-card.js";
   }
 
   function matchesSearch(player, search) {
-    const raw = (search || "").trim();
-    if (!raw) return true;
-    const terms = raw.split(/\s+/);
-    const textTerms = [];
-    const ageFilters = [];
-    const compRe = /^([<>]=?|=)?(\d+)$/;
-    for (const term of terms) {
-      const m = term.match(compRe);
-      if (m) ageFilters.push([m[1] || "=", parseInt(m[2], 10)]);
-      else textTerms.push(term.toLowerCase());
-    }
-    const pos = player.pos === "CL" ? "RP" : player.pos;
-    const fields = `${player.name || ""} ${player.team || ""} ${pos}`.toLowerCase();
-    if (!textTerms.every((t) => fields.includes(t))) return false;
-    if (!ageFilters.length) return true;
-    const age = /^\d+$/.test(String(player.age)) ? parseInt(player.age, 10) : null;
-    if (age == null) return false;
-    for (const [op, num] of ageFilters) {
-      if (op === ">" && !(age > num)) return false;
-      if (op === "<" && !(age < num)) return false;
-      if (op === ">=" && !(age >= num)) return false;
-      if (op === "<=" && !(age <= num)) return false;
-      if (op === "=" && !(age === num)) return false;
-    }
-    return true;
+    return matchesPlayerSearch(player, search, { includeTeam: true });
   }
 
   function parseSampleNum(v) {
@@ -236,14 +224,25 @@ import { bindTeamCardTargets, normalizeTeamAbbr } from "./team-card.js";
     return Number.isFinite(n) ? n : null;
   }
 
+  function isFreeAgent(player) {
+    const t = String(player?.team ?? player?.ORG ?? "").trim();
+    return !t || t === "-" || t === "—";
+  }
+
   function filterPlayers(list) {
     const allowed = getAllowedPositions();
     const search = searchEl ? searchEl.value : "";
     const minSp = Number(window.HECTOR_MIN_IP_SP);
     const minRp = Number(window.HECTOR_MIN_IP_RP);
+    faMode = !!(faModeEl && faModeEl.checked);
     return list.filter((p) => {
       const pos = p.pos === "CL" ? "RP" : p.pos;
       if (!allowed.has(pos)) return false;
+      if (faMode && !isFreeAgent(p)) return false;
+      if (faMode) {
+        const age = /^\d+$/.test(String(p.age)) ? parseInt(p.age, 10) : null;
+        if (age == null || age <= 20) return false;
+      }
       if (!duraFilter.isAllowed(p.prone)) return false;
       if (!scoutFilter.isAllowed(p.scout)) return false;
       if (kind === "pitchers") {
@@ -509,7 +508,7 @@ import { bindTeamCardTargets, normalizeTeamAbbr } from "./team-card.js";
       const rpOnly = isRpOnlyFilter();
       cells += `<td>${escapeHtml(dash(p.throws))}</td>`;
       cells += duraTd(p.prone);
-      cells += `<td>${escapeHtml(dash(p.scout))}</td>`;
+      cells += scoutTd(p.scout);
       cells += `<td>${escapeHtml(dash(p.velo))}</td><td>${escapeHtml(dash(p.gf))}</td>`;
       cells += `<td>${escapeHtml(dash(p.ip))}</td><td>${escapeHtml(dash(p.era_plus))}</td>`;
       cells += `<td>${escapeHtml(dash(p.fip))}</td>`;
@@ -522,7 +521,7 @@ import { bindTeamCardTargets, normalizeTeamAbbr } from "./team-card.js";
       cells += `<td class="num-strong">${escapeHtml(p.total)}</td>`;
     } else {
       cells += duraTd(p.prone);
-      cells += `<td>${escapeHtml(p.scout)}</td>`;
+      cells += scoutTd(p.scout);
       cells += `<td>${escapeHtml(p.throws)}</td><td>${escapeHtml(p.velo)}</td><td>${escapeHtml(p.pitches)}</td><td>${escapeHtml(p.gf)}</td>`;
       cells += `<td>${escapeHtml(p.pitch_score)}</td><td>${escapeHtml(p.pitch_pot)}</td><td>${escapeHtml(p.potential)}</td><td>${escapeHtml(p.current)}</td><td class="num-strong">${escapeHtml(p.total)}</td>`;
     }
@@ -545,14 +544,14 @@ import { bindTeamCardTargets, normalizeTeamAbbr } from "./team-card.js";
     if (useStats) {
       cells += `<td>${escapeHtml(dash(p.bats))}</td>`;
       cells += duraTd(p.prone);
-      cells += `<td>${escapeHtml(dash(p.scout))}</td>`;
+      cells += scoutTd(p.scout);
       cells += `<td>${escapeHtml(dash(p.g))}</td><td>${escapeHtml(dash(p.wrc_plus))}</td><td>${escapeHtml(dash(p.war))}</td><td>${escapeHtml(dash(p.ops_plus))}</td>`;
       cells += `<td>${escapeHtml(dash(p.avg))}</td><td>${escapeHtml(dash(p.obp))}</td><td>${escapeHtml(dash(p.slg))}</td><td>${escapeHtml(dash(p.iso))}</td>`;
       cells += `<td>${escapeHtml(dash(p.zr))}</td>`;
       cells += `<td>${escapeHtml(dash(p.bb_pct))}</td><td>${escapeHtml(dash(p.so_pct))}</td>`;
       cells += `<td class="num-strong">${escapeHtml(p.total)}</td>`;
     } else {
-      cells += `<td>${escapeHtml(p.bats)}</td>` + duraTd(p.prone) + `<td>${escapeHtml(p.scout)}</td>`;
+      cells += `<td>${escapeHtml(p.bats)}</td>` + duraTd(p.prone) + scoutTd(p.scout);
       if (!top) cells += `<td>${escapeHtml(p.ovr)}</td><td>${escapeHtml(p.pot_stars)}</td>`;
       cells += `<td>${escapeHtml(p.offense)}</td><td>${escapeHtml(p.offense_pot)}</td><td>${escapeHtml(p.defense)}</td><td class="num-strong">${escapeHtml(p.total)}</td>`;
     }
@@ -661,6 +660,7 @@ import { bindTeamCardTargets, normalizeTeamAbbr } from "./team-card.js";
   });
 
   if (searchEl) searchEl.addEventListener("input", scheduleRender);
+  if (faModeEl) faModeEl.addEventListener("change", scheduleRender);
   document.querySelectorAll('#live-filters input[name="pos"]').forEach((el) => {
     el.addEventListener("change", () => {
       syncPosGroupButtons();

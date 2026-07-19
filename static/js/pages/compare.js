@@ -1,5 +1,5 @@
-import { mountShell, requireData } from "../shell.js?v=41";
-import { loadState, setParkNormalizeStats, hasDraftData, hasIfaData } from "../hector/store.js?v=32";
+import { mountShell, requireData } from "../shell.js?v=42";
+import { loadState, setParkNormalizeStats, hasDraftData, hasIfaData, playerUrl } from "../hector/store.js?v=32";
 import { getMatchingPlayers, findPlayerByName } from "../hector/trade.js";
 import {
   initializePercentiles,
@@ -26,6 +26,7 @@ import {
   radarSvgCompare,
   pitcherArsenalGrade,
 } from "../hector/radar.js";
+import { bindPlayerCardRows, playerMetaExtraHtml } from "../player-card.js?v=49";
 
 if (!(await requireData())) throw new Error("redirect");
 const state = await mountShell("compare");
@@ -338,9 +339,28 @@ function setRadarMode(mode) {
   if (selected.length >= 2) renderRadar();
 }
 
-function tableHead(labels) {
-  return `<tr><th></th>${labels
-    .map((n, i) => `<th style="color:${COLORS[i % COLORS.length]}">${escapeHtml(n)}</th>`)
+function poolAttr() {
+  return playerPool === "draft" || playerPool === "ifa" ? playerPool : "roster";
+}
+
+/** StatsPlus link + data-* for player-card gestures. */
+function playerNameCell(player, color) {
+  const name = player?.Name || "?";
+  const href = player?.ID ? playerUrl(player.ID, state) : "";
+  const nameHtml = href
+    ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(name)}</a>`
+    : escapeHtml(name);
+  const style = color ? ` style="color:${color}"` : "";
+  return `<span class="compare-player-name"${style}
+    data-player-name="${escapeHtml(name)}"
+    data-player-id="${escapeHtml(String(player?.ID || ""))}"
+    data-player-type="${playerType}"
+    data-player-pool="${poolAttr()}">${nameHtml}</span>`;
+}
+
+function tableHead() {
+  return `<tr><th></th>${selected
+    .map((s, i) => `<th>${playerNameCell(s.player, COLORS[i % COLORS.length])}</th>`)
     .join("")}</tr>`;
 }
 
@@ -377,9 +397,23 @@ function renderIdentity() {
         isAmateurPool()
           ? ""
           : `<p class="compare-contract">${escapeHtml(contractLine(p))}</p>`;
-      return `<div class="compare-id-card" style="--col:${color}">
-        <h3>${escapeHtml(p.Name || "?")}</h3>
+      const name = p.Name || "?";
+      const href = p.ID ? playerUrl(p.ID, state) : "";
+      const nameHtml = href
+        ? `<a href="${escapeHtml(href)}" target="_blank" rel="noopener">${escapeHtml(name)}</a>`
+        : escapeHtml(name);
+      const extra = playerMetaExtraHtml(p, { includePop: !isAmateurPool() });
+      const metaLine = extra.length
+        ? `<p class="muted compare-id-meta">${extra.join(" · ")}</p>`
+        : "";
+      return `<div class="compare-id-card" style="--col:${color}"
+        data-player-name="${escapeHtml(name)}"
+        data-player-id="${escapeHtml(String(p.ID || ""))}"
+        data-player-type="${playerType}"
+        data-player-pool="${poolAttr()}">
+        <h3>${nameHtml}</h3>
         <p class="muted">${orgBit} · ${escapeHtml(dash(p.POS))} · Age ${escapeHtml(dash(p.Age))} · ${hand}</p>
+        ${metaLine}
         ${contract}
         <p><span class="ovr">OVR ${escapeHtml(dash(p.OVR))}</span>
            <span class="pot">POT ${escapeHtml(dash(p.POT))}</span></p>
@@ -404,7 +438,7 @@ function renderRadar() {
   const legend = selected
     .map(
       (s, i) =>
-        `<span class="compare-legend-item"><span class="compare-legend-swatch" style="background:${COLORS[i]}"></span>${escapeHtml(s.player.Name || "")}</span>`,
+        `<span class="compare-legend-item"><span class="compare-legend-swatch" style="background:${COLORS[i]}"></span>${playerNameCell(s.player, COLORS[i % COLORS.length])}</span>`,
     )
     .join("");
   wrap.innerHTML = `${svg}<div class="compare-legend">${legend}</div>`;
@@ -413,8 +447,7 @@ function renderRadar() {
 function renderRatingsTable() {
   const head = document.getElementById("compare-ratings-head");
   const body = document.getElementById("compare-ratings-body");
-  const names = selected.map((s) => s.player.Name || "?");
-  head.innerHTML = tableHead(names);
+  head.innerHTML = tableHead();
 
   let labels;
   if (playerType === "batter") {
@@ -463,8 +496,7 @@ function renderStatsTable() {
     return;
   }
 
-  const names = selected.map((s) => s.player.Name || "?");
-  head.innerHTML = tableHead(names);
+  head.innerHTML = tableHead();
 
   const majors = majorLeaguePool(pool());
   const includeCera =
@@ -515,8 +547,7 @@ function renderStatsTable() {
 function renderPercentilesTable() {
   const head = document.getElementById("compare-pct-head");
   const body = document.getElementById("compare-pct-body");
-  const names = selected.map((s) => s.player.Name || "?");
-  head.innerHTML = tableHead(names);
+  head.innerHTML = tableHead();
 
   const calc =
     playerPool === "draft"
@@ -681,3 +712,4 @@ function consumeCompareSeed() {
 
 consumeCompareSeed();
 render();
+bindPlayerCardRows();

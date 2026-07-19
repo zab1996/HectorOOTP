@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Draft — Hector 3.0 Web</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="static/css/app.css?v=33" />
+  <link rel="stylesheet" href="static/css/app.css?v=38" />
 </head>
 <body>
   <header class="topbar" id="app-header"></header>
@@ -44,7 +44,11 @@
           data-tip="Include batters with secondary position rating ≥ 50 in that position’s top 10.">
           <input type="checkbox" id="draft-secondary-pos" /> Secondary ≥50
         </label>
-        <input type="search" id="player-search" class="search" placeholder="Search name / POS" />
+        <input type="search" id="player-search" class="search tip" placeholder="Search: SS <23"
+          data-tip="Search tips:
+- Filter by name or position: SS, SP, yonemura
+- Age filters: >21, <23, >=18, =19
+- Combine: SS <23" />
         <label class="draft-blend tip"
           data-tip="Biases draft Total between current and potential without editing Options Meta multipliers. Center = default (curr ×0.9 / pot ×1.5). Does not affect Pitchers/Batters tabs.">
           <span class="draft-blend-label">Current</span>
@@ -70,7 +74,7 @@
     import { pitcherDisplayRow, batterDisplayRow } from "./static/js/hector/display.js?v=32";
     import { hasDraftData, playerUrl, setDraftMetaBias } from "./static/js/hector/store.js?v=31";
     import { draftMetaFromBias } from "./static/js/hector/parse.js?v=31";
-    import { bindPlayerCardRows } from "./static/js/player-card.js?v=41";
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=49";
     import {
       mountCompareSelect,
       comparePickTd,
@@ -90,7 +94,9 @@
       duraOptionClass,
       duraClass,
       scoutOptionClass,
-    } from "./static/js/column-filter.js?v=4";
+      scoutClass,
+    } from "./static/js/column-filter.js?v=5";
+    import { matchesPlayerSearch } from "./static/js/player-search.js?v=1";
 
     if (!(await requireData())) throw new Error("redirect");
     const state = await mountShell("draft");
@@ -231,6 +237,14 @@
     function duraTd(prone) {
       const text = String(prone ?? "").trim() || "—";
       const cls = text === "—" ? "" : duraClass(prone);
+      return cls
+        ? `<td class="${cls}">${escapeHtml(text)}</td>`
+        : `<td>${escapeHtml(text)}</td>`;
+    }
+
+    function scoutTd(scout) {
+      const text = String(scout ?? "").trim() || "—";
+      const cls = text === "—" ? "" : scoutClass(scout);
       return cls
         ? `<td class="${cls}">${escapeHtml(text)}</td>`
         : `<td>${escapeHtml(text)}</td>`;
@@ -386,7 +400,7 @@
       const rankTd = rank != null ? `<td>${rank}</td>` : "";
       return `<tr data-player-id="${escapeHtml(p.id)}" data-player-name="${escapeHtml(p.name)}" data-player-type="pitcher" data-player-pool="draft">
         ${comparePickTd(p.id, p.name)}${rankTd}<td>${nameCell(p)}</td><td>${escapeHtml(p.age)}</td><td>${escapeHtml(p.pos)}</td>
-        <td>${escapeHtml(p.throws)}</td><td>${escapeHtml(p.velo)}</td><td>${escapeHtml(p.gf)}</td>${duraTd(p.prone)}<td>${escapeHtml(p.scout)}</td><td>${escapeHtml(p.pitches)}</td>
+        <td>${escapeHtml(p.throws)}</td><td>${escapeHtml(p.velo)}</td><td>${escapeHtml(p.gf)}</td>${duraTd(p.prone)}${scoutTd(p.scout)}<td>${escapeHtml(p.pitches)}</td>
         <td>${escapeHtml(p.pitch_score)}</td><td>${escapeHtml(p.pitch_pot)}</td>
         <td>${escapeHtml(p.potential)}</td><td>${escapeHtml(p.current)}</td>
         <td class="num-strong">${escapeHtml(p.total)}</td>
@@ -397,7 +411,7 @@
       const rankTd = rank != null ? `<td>${rank}</td>` : "";
       return `<tr data-player-id="${escapeHtml(p.id)}" data-player-name="${escapeHtml(p.name)}" data-player-type="batter" data-player-pool="draft">
         ${comparePickTd(p.id, p.name)}${rankTd}<td>${nameCell(p)}</td><td>${escapeHtml(p.age)}</td><td>${escapeHtml(p.pos)}</td>
-        <td>${escapeHtml(p.bats)}</td>${duraTd(p.prone)}<td>${escapeHtml(p.scout)}</td>
+        <td>${escapeHtml(p.bats)}</td>${duraTd(p.prone)}${scoutTd(p.scout)}
         <td>${escapeHtml(p.contact)}</td><td>${escapeHtml(p.power)}</td><td>${escapeHtml(p.eye)}</td>
         <td>${escapeHtml(p.offense)}</td><td>${escapeHtml(p.offense_pot)}</td><td>${escapeHtml(p.defense)}</td>
         <td class="num-strong">${escapeHtml(p.total)}</td>
@@ -419,7 +433,7 @@
       syncChrome();
       renderHead(topMode);
 
-      const q = (searchEl.value || "").trim().toLowerCase();
+      const q = searchEl.value || "";
       const pos = allowedPos();
       const secondary = playerType === "batter" && topMode && !!(secondaryEl && secondaryEl.checked);
       let rows = pool().filter((p) => {
@@ -432,15 +446,8 @@
         } else if (!batsFilter.isAllowed(p.bats)) {
           return false;
         }
-        return true;
+        return matchesPlayerSearch(p, q, { includeTeam: false });
       });
-      if (q) {
-        const tokens = q.split(/\s+/).filter(Boolean);
-        rows = rows.filter((p) => {
-          const hay = `${p.name} ${p.pos}`.toLowerCase();
-          return tokens.every((t) => hay.includes(t));
-        });
-      }
       rows.sort((a, b) => Number(b.total || 0) - Number(a.total || 0));
 
       const colSpan = head.querySelectorAll("th").length || (playerType === "pitcher" ? 14 : 13);
