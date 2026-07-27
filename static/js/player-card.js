@@ -397,7 +397,15 @@ function batterStatGetters(player) {
     ],
     [
       "SO%",
-      (p) => pickStat(p["SO% (Batter)"], p["SO%"], p["SO&#37;"]),
+      (p) =>
+        pickStat(
+          p["SO% (Batter)"],
+          p["SO%"],
+          p["SO&#37;"],
+          p["K% (Batter)"],
+          p["K%"],
+          p["K&#37;"],
+        ),
       true,
     ],
     ["OPS+", (p) => p["OPS+"], false],

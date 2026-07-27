@@ -1,4 +1,4 @@
-import { mountShell, requireData } from "../shell.js?v=40";
+import { mountShell, requireData } from "../shell.js?v=44";
 import { ARCHETYPES, findPlayersByArchetype, archetypeTipText } from "../hector/archetypes.js";
 
 if (!(await requireData())) throw new Error("redirect");

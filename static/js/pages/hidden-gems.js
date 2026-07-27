@@ -1,4 +1,4 @@
-import { mountShell, requireData } from "../shell.js?v=42";
+import { mountShell, requireData } from "../shell.js?v=44";
 import { playerUrl } from "../hector/store.js";
 import { isMajorLeague } from "../hector/league.js";
 import {

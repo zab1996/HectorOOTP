@@ -161,9 +161,16 @@ export function batterDisplayRow(b, rank = null) {
     obp: b.OBP ?? "",
     slg: b.SLG ?? "",
     iso: b.ISO ?? "",
-    // BB%/SO% — prefer disambiguated keys; also accept HTML-entity headers (BB&#37;)
+    // BB%/SO% — prefer disambiguated keys; OOTP 27 batter SO% is K%; also accept HTML-entity headers
     bb_pct: pickStat(b["BB% (Batter)"], b["BB%"], b["BB&#37;"]),
-    so_pct: pickStat(b["SO% (Batter)"], b["SO%"], b["SO&#37;"]),
+    so_pct: pickStat(
+      b["SO% (Batter)"],
+      b["SO%"],
+      b["SO&#37;"],
+      b["K% (Batter)"],
+      b["K%"],
+      b["K&#37;"],
+    ),
     hr: b.HR ?? "",
     // background for future use + ZR for stats mode
     cs: b.CS ?? "",

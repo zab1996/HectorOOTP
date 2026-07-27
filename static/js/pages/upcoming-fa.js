@@ -1,4 +1,4 @@
-import { mountShell, requireData } from "../shell.js?v=40";
+import { mountShell, requireData } from "../shell.js?v=44";
 import { setMajorsOnly, setUseStatsScoring, playerUrl, isMyTeam } from "../hector/store.js";
 import { isUpcomingFA, getWar, parseYearsLeft } from "../hector/player_analytics.js";
 import { shouldHideNonMajor } from "../hector/league.js";

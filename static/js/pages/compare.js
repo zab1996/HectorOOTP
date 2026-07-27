@@ -1,4 +1,4 @@
-import { mountShell, requireData } from "../shell.js?v=42";
+import { mountShell, requireData } from "../shell.js?v=44";
 import { loadState, setParkNormalizeStats, hasDraftData, hasIfaData, playerUrl } from "../hector/store.js?v=32";
 import { getMatchingPlayers, findPlayerByName } from "../hector/trade.js";
 import {
@@ -26,7 +26,7 @@ import {
   radarSvgCompare,
   pitcherArsenalGrade,
 } from "../hector/radar.js";
-import { bindPlayerCardRows, playerMetaExtraHtml } from "../player-card.js?v=49";
+import { bindPlayerCardRows, playerMetaExtraHtml } from "../player-card.js?v=50";
 
 if (!(await requireData())) throw new Error("redirect");
 const state = await mountShell("compare");
@@ -127,7 +127,11 @@ function batterStatGetters(includeCera) {
     ["SB", (p) => p.SB, false],
     ["CS", (p) => p.CS, true],
     ["BB%", (p) => pickField(p, "BB% (Batter)", "BB%", "BB&#37;"), false],
-    ["SO%", (p) => pickField(p, "SO% (Batter)", "SO%", "SO&#37;"), true],
+    [
+      "SO%",
+      (p) => pickField(p, "SO% (Batter)", "SO%", "SO&#37;", "K% (Batter)", "K%", "K&#37;"),
+      true,
+    ],
     ["OPS+", (p) => p["OPS+"], false],
     ["wRC+", (p) => p["wRC+"], false],
     ["WAR", (p) => pickField(p, "WAR (Batter)", "WAR"), false],

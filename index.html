@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Upload — Hector 3.3.0 Web</title>
+  <title>Upload — Hector 3.3.1 Web</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
@@ -14,7 +14,7 @@
   <section class="summary" id="app-summary" hidden></section>
   <main>
     <section class="hero-panel">
-      <h1 id="upload-hero-title">Hector 3.3.0 Web</h1>
+      <h1 id="upload-hero-title">Hector 3.3.1 Web</h1>
       <p class="lede">OOTP analyzer — All scoring runs in your browser. <a href="#export-guide" class="lede-jump">Upload OOTP HTML exports</a>.</p>
       <div id="upload-error" class="banner error" hidden></div>
 
@@ -286,7 +286,7 @@
     </section>
   </main>
   <script type="module">
-    import { mountShell, APP_VERSION } from "./static/js/shell.js?v=43";
+    import { mountShell, APP_VERSION } from "./static/js/shell.js?v=44";
     import {
       ingestHtml,
       ingestDraftClassHtml,
@@ -303,7 +303,7 @@
       checkPlayerListHtml,
       checkTeamListHtml,
       fieldCheckHtml,
-    } from "./static/js/upload-checklist.js?v=4";
+    } from "./static/js/upload-checklist.js?v=5";
 
     const state = await mountShell("home");
     const heroTitle = document.getElementById("upload-hero-title");

@@ -70,32 +70,53 @@ export function disambiguateHeaders(headers) {
       else processed.push("HLD");
     } else if (header === "BB%") {
       bbPctSeen += 1;
-      // Batter BB% sits with AVG/OBP; pitcher BB% sits with IP / BB/9 / K/9
+      // Batter BB% sits with AVG/OBP (OOTP 27: next is often K%, formerly SO%).
+      // Pitcher BB% sits after K%/K/9 — do not treat next=K% alone as pitching
+      // (that is the batter K% column in combined OOTP 27 lists).
       const battingCtx =
-        ["RBI", "HR", "G", "SB", "R"].includes(prev) || ["SO%", "AVG", "OBP"].includes(next);
+        ["RBI", "HR", "G", "SB", "R"].includes(prev) ||
+        ["SO%", "K%", "AVG", "OBP"].includes(next);
       const pitchingCtx =
         ["BB/9", "K/9", "K%", "HR/9", "ERA", "ERA+", "IP", "WHIP", "pLi"].includes(prev) ||
-        ["HR/9", "K/9", "WHIP", "K%", "ERA+", "FIP", "FIP-", "pLi", "RSG"].includes(next);
+        ["HR/9", "K/9", "WHIP", "ERA+", "FIP", "FIP-", "pLi", "RSG"].includes(next);
       if (battingCtx && !pitchingCtx) processed.push("BB% (Batter)");
       else if (pitchingCtx && !battingCtx) processed.push("BB% (Pitcher)");
       else if (battingCtx && pitchingCtx) {
-        processed.push(["SO%", "AVG", "OBP"].includes(next) ? "BB% (Batter)" : "BB% (Pitcher)");
+        processed.push(
+          ["SO%", "K%", "AVG", "OBP"].includes(next) ? "BB% (Batter)" : "BB% (Pitcher)",
+        );
       } else if (bbPctSeen >= 2) processed.push("BB% (Pitcher)");
       else processed.push("BB% (Batter)");
-    } else if (header === "SO%") {
+    } else if (header === "SO%" || header === "K%") {
+      // OOTP 27 renamed batter SO% → K%. Map batting-context K% to SO% (Batter)
+      // so scoring/UI keep the same internal key; pitcher K% stays K%.
       soPctSeen += 1;
       const battingCtx =
-        ["BB%", "RBI", "HR"].includes(prev) || ["AVG", "OBP"].includes(next);
-      // Don't treat prev BB% as pitching — that's the batter BB% column in combined lists
+        ["BB%", "BB% (Batter)", "RBI", "HR"].includes(prev) || ["AVG", "OBP"].includes(next);
       const pitchingCtx =
-        ["K/9", "BB/9", "K%", "BB% (Pitcher)"].includes(prev) ||
-        ["BB/9", "K/9", "HR/9", "WHIP", "ERA+"].includes(next);
-      if (battingCtx && !pitchingCtx) processed.push("SO% (Batter)");
-      else if (pitchingCtx && !battingCtx) processed.push("SO% (Pitcher)");
-      else if (battingCtx && pitchingCtx) {
-        processed.push(["AVG", "OBP"].includes(next) ? "SO% (Batter)" : "SO% (Pitcher)");
-      } else if (soPctSeen >= 2) processed.push("SO% (Pitcher)");
-      else processed.push("SO% (Batter)");
+        ["K/9", "BB/9", "HR/9"].includes(prev) ||
+        ["BB%", "BB/9", "K/9", "HR/9", "WHIP", "ERA+", "pLi", "BB% (Pitcher)"].includes(next);
+      if (battingCtx && !pitchingCtx) {
+        processed.push("SO% (Batter)");
+      } else if (pitchingCtx && !battingCtx) {
+        processed.push(header === "SO%" ? "SO% (Pitcher)" : "K%");
+      } else if (battingCtx && pitchingCtx) {
+        processed.push(
+          ["AVG", "OBP"].includes(next)
+            ? "SO% (Batter)"
+            : header === "SO%"
+              ? "SO% (Pitcher)"
+              : "K%",
+        );
+      } else if (soPctSeen >= 2) {
+        processed.push(header === "SO%" ? "SO% (Pitcher)" : "K%");
+      } else if (header === "K%") {
+        // Ambiguous first K%: prefer pitcher K% only when clearly pitching neighbors;
+        // otherwise treat as batter SO% for OOTP 27 combined lists.
+        processed.push("SO% (Batter)");
+      } else {
+        processed.push("SO% (Batter)");
+      }
     } else if (header === "CON") {
       if (conSeen === 0) {
         processed.push("CON");
@@ -156,18 +177,32 @@ export function normalizeHeaders(headers) {
 }
 
 /**
- * After parse: alias leftover entity keys and promote plain BB%/SO% to batter keys
+ * After parse: alias leftover entity keys and promote plain BB%/SO%/K% to batter keys
  * when batting context is present (combined player lists).
  */
 export function normalizePlayerStatKeys(player) {
   const p = { ...player };
   if ("BB&#37;" in p && !("BB%" in p) && !("BB% (Batter)" in p)) p["BB%"] = p["BB&#37;"];
   if ("SO&#37;" in p && !("SO%" in p) && !("SO% (Batter)" in p)) p["SO%"] = p["SO&#37;"];
+  if ("K&#37;" in p && !("K%" in p) && !("SO% (Batter)" in p)) p["K%"] = p["K&#37;"];
   if (!("BB% (Batter)" in p) && !("BB% (Pitcher)" in p) && "BB%" in p && ("AVG" in p || "wRC+" in p || "OBP" in p)) {
     p["BB% (Batter)"] = p["BB%"];
   }
   if (!("SO% (Batter)" in p) && !("SO% (Pitcher)" in p) && "SO%" in p && ("AVG" in p || "wRC+" in p || "OBP" in p)) {
     p["SO% (Batter)"] = p["SO%"];
+  }
+  // OOTP 27 batter K% — only promote when we do not already have pitcher K% + no batter SO%
+  if (
+    !("SO% (Batter)" in p) &&
+    !("SO% (Pitcher)" in p) &&
+    "K%" in p &&
+    ("AVG" in p || "wRC+" in p || "OBP" in p) &&
+    !("BB% (Pitcher)" in p && "K/9" in p && !("RBI" in p))
+  ) {
+    // Prefer explicit batter context; avoid stealing the only K% when it is clearly pitcher-only
+    if ("RBI" in p || "HR" in p || "BB% (Batter)" in p || "BB%" in p) {
+      p["SO% (Batter)"] = p["K%"];
+    }
   }
   if ((!p.G || String(p.G).trim() === "" || String(p.G).trim() === "-" || Number(p.G) === 0) && p.Games) {
     p.G = p.Games;
