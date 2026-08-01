@@ -8,6 +8,8 @@ export {
   normalizeBatsKey,
   normalizeThrows,
   normalizeThrowsKey,
+  normalizeScout,
+  normalizeScoutKey,
   formatBatsDisplay,
   formatThrowsDisplay,
   normalizeFilterVal,
@@ -19,4 +21,5 @@ export {
   duraOptionClass,
   duraClass,
   scoutOptionClass,
+  scoutClass,
 } from "./column-filter.js";

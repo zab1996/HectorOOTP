@@ -342,24 +342,50 @@ export const THROWS_VALUES = [
 export const SCOUT_ACC_VALUES = ["Very High", "High", "Average", "Low", "Very Low"];
 export const GF_VALUES = ["EX GB", "GB", "NEU", "FB", "EX FB"];
 
-export function scoutOptionClass(key) {
-  if (key === "very high" || key === "extremely high" || key === "extremely good" || key === "excellent") {
-    return "scout-acc-very-high";
+/**
+ * Canonical scout accuracy key — exports may use "V.High" / "Avg" or full "Very High" / "Average".
+ * Returns "very high" | "high" | "average" | "low" | "very low" | "" (or lowercased unknown).
+ */
+export function normalizeScoutKey(val) {
+  const s = normalizeFilterVal(val);
+  if (!s) return "";
+  const compact = s.toLowerCase().replace(/[\s_\-.]+/g, "");
+  if (
+    compact === "vhigh" ||
+    compact === "veryhigh" ||
+    compact === "extremelyhigh" ||
+    compact === "extremelygood" ||
+    compact === "excellent"
+  ) {
+    return "very high";
   }
-  if (key === "high" || key === "good" || key === "very good") return "scout-acc-high";
-  if (key === "average" || key === "medium" || key === "normal") return "scout-acc-average";
-  if (key === "low" || key === "fair" || key === "poor") return "scout-acc-low";
-  if (key === "very low" || key === "awful") return "scout-acc-very-low";
+  if (compact === "high" || compact === "good" || compact === "verygood") return "high";
+  if (
+    compact === "avg" ||
+    compact === "average" ||
+    compact === "medium" ||
+    compact === "normal"
+  ) {
+    return "average";
+  }
+  if (compact === "low" || compact === "fair" || compact === "poor") return "low";
+  if (compact === "vlow" || compact === "verylow" || compact === "awful") return "very low";
+  return s.toLowerCase().replace(/\s+/g, " ");
+}
+
+export function scoutOptionClass(key) {
+  const k = normalizeScoutKey(key);
+  if (k === "very high") return "scout-acc-very-high";
+  if (k === "high") return "scout-acc-high";
+  if (k === "average") return "scout-acc-average";
+  if (k === "low") return "scout-acc-low";
+  if (k === "very low") return "scout-acc-very-low";
   return "";
 }
 
 /** Color class for a raw SctAcc cell value (same mapping as player cards). */
 export function scoutClass(raw) {
-  const key = String(raw ?? "")
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, " ");
-  return scoutOptionClass(key);
+  return scoutOptionClass(raw);
 }
 
 /** @deprecated use createColumnFilter — kept for older imports */
@@ -377,3 +403,4 @@ export function createDuraFilter({ onChange }) {
 export const normalizeDura = normalizeDuraKey;
 export const normalizeBats = normalizeBatsKey;
 export const normalizeThrows = normalizeThrowsKey;
+export const normalizeScout = normalizeScoutKey;

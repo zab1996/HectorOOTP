@@ -11,7 +11,7 @@ import { getPlayerArchetypeFits, archetypeTipText } from "./hector/archetypes.js
 import { isMajorLeague } from "./hector/league.js";
 import { profileRadarHtml } from "./hector/radar.js";
 import { formatOrdinal } from "./hector/util.js";
-import { duraClass } from "./column-filter.js";
+import { duraClass, scoutClass } from "./column-filter.js";
 
 const BAR_SCALE = 80;
 
@@ -42,24 +42,7 @@ export function playerMetaExtraHtml(player, opts = {}) {
     );
   }
   const scoutAcc = String(player?.SctAcc || "").trim();
-  const scoutKey = scoutAcc.toLowerCase().replace(/\s+/g, " ");
-  let scoutCls = "";
-  if (
-    scoutKey === "very high" ||
-    scoutKey === "extremely high" ||
-    scoutKey === "extremely good" ||
-    scoutKey === "excellent"
-  ) {
-    scoutCls = "scout-acc-very-high";
-  } else if (scoutKey === "high" || scoutKey === "good" || scoutKey === "very good") {
-    scoutCls = "scout-acc-high";
-  } else if (scoutKey === "average" || scoutKey === "medium" || scoutKey === "normal") {
-    scoutCls = "scout-acc-average";
-  } else if (scoutKey === "low" || scoutKey === "fair" || scoutKey === "poor") {
-    scoutCls = "scout-acc-low";
-  } else if (scoutKey === "very low" || scoutKey === "awful") {
-    scoutCls = "scout-acc-very-low";
-  }
+  const scoutCls = scoutClass(scoutAcc);
   const scoutText = escapeHtml(scoutAcc || "—");
   bits.push(
     scoutCls

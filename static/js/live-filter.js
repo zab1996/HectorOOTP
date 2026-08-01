@@ -6,6 +6,7 @@ import {
   normalizeDuraKey,
   normalizeBatsKey,
   normalizeThrowsKey,
+  normalizeScoutKey,
   DURA_VALUES,
   BATS_VALUES,
   THROWS_VALUES,
@@ -81,6 +82,7 @@ import { matchesPlayerSearch } from "./player-search.js";
     title: "Scout Acc.",
     values: SCOUT_ACC_VALUES,
     optionClass: scoutOptionClass,
+    normalizeKey: normalizeScoutKey,
     onChange: onFilterChange,
   });
   const gfFilter = createColumnFilter({

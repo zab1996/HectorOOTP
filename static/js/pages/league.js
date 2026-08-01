@@ -1,4 +1,4 @@
-import { mountShell, requireData } from "../shell.js?v=44";
+import { mountShell, requireData } from "../shell.js?v=45";
 import { isMyTeam } from "../hector/store.js";
 import {
   enrichTeamsWithRosterWar,

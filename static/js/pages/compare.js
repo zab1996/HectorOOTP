@@ -1,4 +1,4 @@
-import { mountShell, requireData } from "../shell.js?v=44";
+import { mountShell, requireData } from "../shell.js?v=45";
 import { loadState, setParkNormalizeStats, hasDraftData, hasIfaData, playerUrl } from "../hector/store.js?v=32";
 import { getMatchingPlayers, findPlayerByName } from "../hector/trade.js";
 import {
@@ -26,7 +26,7 @@ import {
   radarSvgCompare,
   pitcherArsenalGrade,
 } from "../hector/radar.js";
-import { bindPlayerCardRows, playerMetaExtraHtml } from "../player-card.js?v=50";
+import { bindPlayerCardRows, playerMetaExtraHtml } from "../player-card.js?v=51";
 
 if (!(await requireData())) throw new Error("redirect");
 const state = await mountShell("compare");

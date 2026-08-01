@@ -70,11 +70,11 @@
     </div>
   </main>
   <script type="module">
-    import { mountShell, requireData } from "./static/js/shell.js?v=44";
+    import { mountShell, requireData } from "./static/js/shell.js?v=45";
     import { pitcherDisplayRow, batterDisplayRow } from "./static/js/hector/display.js?v=33";
     import { hasIfaData, playerUrl, setIfaMetaBias } from "./static/js/hector/store.js?v=32";
     import { draftMetaFromBias } from "./static/js/hector/parse.js?v=32";
-    import { bindPlayerCardRows } from "./static/js/player-card.js?v=50";
+    import { bindPlayerCardRows } from "./static/js/player-card.js?v=51";
     import {
       mountCompareSelect,
       comparePickTd,
@@ -86,6 +86,7 @@
       normalizeDuraKey,
       normalizeBatsKey,
       normalizeThrowsKey,
+      normalizeScoutKey,
       DURA_VALUES,
       BATS_VALUES,
       THROWS_VALUES,
@@ -95,7 +96,7 @@
       duraClass,
       scoutOptionClass,
       scoutClass,
-    } from "./static/js/column-filter.js?v=5";
+    } from "./static/js/column-filter.js?v=6";
     import { matchesPlayerSearch } from "./static/js/player-search.js?v=1";
 
     if (!(await requireData())) throw new Error("redirect");
@@ -168,6 +169,7 @@
       title: "Scout Acc.",
       values: SCOUT_ACC_VALUES,
       optionClass: scoutOptionClass,
+      normalizeKey: normalizeScoutKey,
       onChange: onFilterChange,
     });
     const gfFilter = createColumnFilter({
