@@ -70,7 +70,7 @@
     </div>
   </main>
   <script type="module">
-    import { mountShell, requireData } from "./static/js/shell.js?v=45";
+    import { mountShell, requireData } from "./static/js/shell.js?v=46";
     import { pitcherDisplayRow, batterDisplayRow } from "./static/js/hector/display.js?v=33";
     import { hasDraftData, playerUrl, setDraftMetaBias } from "./static/js/hector/store.js?v=31";
     import { draftMetaFromBias } from "./static/js/hector/parse.js?v=32";
@@ -79,7 +79,7 @@
       mountCompareSelect,
       comparePickTd,
       comparePickTh,
-    } from "./static/js/compare-select.js?v=1";
+    } from "./static/js/compare-select.js?v=3";
     import {
       createColumnFilter,
       normalizeFilterVal,
@@ -120,11 +120,17 @@
     let playerType = "pitcher";
     let view = "all"; // "all" | "top"
 
+    const DRAFT_CMP_TIP =
+      "Select as many players as you want, then Compare (up to 3) or Export to text.";
+
     const compareSelect = mountCompareSelect({
       filtersEl,
       tableEl,
       getPlayerType: () => playerType,
       getPool: () => "draft",
+      maxSelect: 500,
+      showExportIds: true,
+      cmpTip: DRAFT_CMP_TIP,
     });
 
     function biasFromSlider() {
@@ -356,7 +362,7 @@
     }
 
     function renderHead(topMode) {
-      const cmp = comparePickTh();
+      const cmp = comparePickTh(DRAFT_CMP_TIP);
       const rank = topMode ? th("Rank") : "";
       if (playerType === "pitcher") {
         const t = PITCHER_TIPS;

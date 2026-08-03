@@ -4,9 +4,9 @@ Hector OOTP analyzer has changed to a web page! Instead of having to install a p
 
 On the website you will find instructions on how to setup your views in OOTP to export the proper data for the program.
 
-You can also **Try without building OOTP views:** download [hector-sample-exports.zip](https://github.com/zab1996/HectorOOTP/releases/download/3.3.2/hector-sample-exports.zip) (Player List + Draft Class + Int List + Team List HTML), unzip, and upload those files on the live site.
+You can also **Try without building OOTP views:** download [hector-sample-exports.zip](https://github.com/zab1996/HectorOOTP/releases/download/3.3.3/hector-sample-exports.zip) (Player List + Draft Class + Int List + Team List HTML), unzip, and upload those files on the live site.
 
-To run the app yourself offline, grab **hector-3.3.2-web.zip** from the [3.3.2 release](https://github.com/zab1996/HectorOOTP/releases/tag/3.3.2).
+To run the app yourself offline, grab **hector-3.3.3-web.zip** from the [3.3.3 release](https://github.com/zab1996/HectorOOTP/releases/tag/3.3.3).
 
 Scoring and tools run entirely in your browser. Player data stays in **IndexedDB** and settings in **localStorage** — nothing is uploaded to a server for analysis. Thanks to @quarterback for forking the original desktop app into PortalOOTP and giving some fresh ideas to the program! Such as Player cards, Archetypes, League analysis, and stat/rating percentiles.
 
@@ -167,6 +167,10 @@ Features inspired by PortalOOTP, reimplemented for the browser app:
 | Discovery | **Percentiles**, **player cards**, **Archetypes** (franchise philosophies + Fit %) |
 | Hidden Gems | Categories such as AAAA, Miscast, Toolsy (further evolved below) |
 | Contracts / market | Richer MISC columns (YL, CV/TY, ECV/ETY); role-pooled **$/WAR**; **Neutral park** on Trade & Compare |
+
+### 3.3.3
+
+- **Draft Export to text** — select many Cmp rows (up to 500); download selected player IDs in selection order; Compare still opens with the first 3
 
 ### 3.3.2
 

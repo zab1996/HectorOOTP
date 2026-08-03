@@ -174,7 +174,7 @@
     <dl class="glossary-list">
       <div>
         <dt>Player compare</dt>
-        <dd>Side-by-side view of 2–3 batters or pitchers: identity/contract, overlaid 20–80 ratings radar (current grades), ratings (current/potential), season stats with majors ranks, and league percentiles. Same type only. Choose <strong>Roster</strong>, <strong>Draft class</strong>, or <strong>IFA</strong> pool (draft/IFA need their uploads). On Pitchers, Batters, Draft, and IFA, check up to 3 rows then use <strong>Compare (n)</strong> to open with those players preloaded. Player cards also have Compare.</dd>
+        <dd>Side-by-side view of 2–3 batters or pitchers: identity/contract, overlaid 20–80 ratings radar (current grades), ratings (current/potential), season stats with majors ranks, and league percentiles. Same type only. Choose <strong>Roster</strong>, <strong>Draft class</strong>, or <strong>IFA</strong> pool (draft/IFA need their uploads). On Pitchers, Batters, and IFA, check up to 3 rows then use <strong>Compare (n)</strong> to open with those players preloaded. On Draft you can select many rows: <strong>Compare</strong> still opens with the first 3, or use <strong>Export to text</strong> for all selected IDs in order. Player cards also have Compare.</dd>
       </div>
       <div>
         <dt>Draft class pool</dt>
@@ -350,7 +350,7 @@
     <dl class="glossary-list">
       <div>
         <dt>Draft tab</dt>
-        <dd>Separate draft-class player pool from an optional Draft Class HTML upload. Scored with draft ratings meta (default potential ×1.5, current/overall ×0.9). A Current↔Potential slider on the Draft tab biases that meta without changing Options multipliers. Check rows and use <strong>Compare (n)</strong> to open Compare in draft-class pool. No Team column (amateurs are undrafted). Batter list shows Dura (Prone), Contact, Power, and EYE instead of OVR/POT stars. Pitchers also show G/F and Dura after Velo. Score columns have hover tips. Player cards use the draft pool for percentiles and show full ratings + radar (no majors Stats tab).</dd>
+        <dd>Separate draft-class player pool from an optional Draft Class HTML upload. Scored with draft ratings meta (default potential ×1.5, current/overall ×0.9). A Current↔Potential slider on the Draft tab biases that meta without changing Options multipliers. Check as many rows as you want: use <strong>Compare (n)</strong> for the first 3 in selection order, or <strong>Export to text</strong> for all selected player IDs (one per line, selection order). No Team column (amateurs are undrafted). Batter list shows Dura (Prone), Contact, Power, and EYE instead of OVR/POT stars. Pitchers also show G/F and Dura after Velo. Score columns have hover tips. Player cards use the draft pool for percentiles and show full ratings + radar (no majors Stats tab).</dd>
       </div>
       <div>
         <dt>IFA tab</dt>
@@ -447,7 +447,7 @@
 </section>
   </main>
   <script type="module">
-    import { mountShell } from "./static/js/shell.js?v=45";
+    import { mountShell } from "./static/js/shell.js?v=46";
     await mountShell("glossary");
 
     const toc = document.getElementById("glossary-toc");

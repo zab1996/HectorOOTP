@@ -1,4 +1,4 @@
-import { mountShell, requireData } from "../shell.js?v=45";
+import { mountShell, requireData } from "../shell.js?v=46";
 import { loadState, setParkNormalizeStats, hasDraftData, hasIfaData, playerUrl } from "../hector/store.js?v=32";
 import { getMatchingPlayers, findPlayerByName } from "../hector/trade.js";
 import {
