@@ -38,6 +38,8 @@ const defaults = () => ({
   ifaFilename: null,
   teamListFilename: null,
   draftMode: false,
+  /** Raw draft-log text used to hide already drafted players on the Draft tab. */
+  draftedPlayersText: "",
   /**
    * Draft tab only: bias between current and potential meta.
    * -1 = current-heavy, 0 = default (curr ×0.9 / pot ×1.5), +1 = potential-heavy.
@@ -153,6 +155,7 @@ function readMetaFromLocalStorage() {
     if (!Array.isArray(state.teamList)) state.teamList = [];
     state.draftMetaBias = clampDraftMetaBias(state.draftMetaBias);
     state.ifaMetaBias = clampDraftMetaBias(state.ifaMetaBias);
+    state.draftedPlayersText = String(state.draftedPlayersText ?? "");
     return state;
   } catch {
     return defaults();
@@ -444,6 +447,14 @@ export async function setDraftMetaBias(bias) {
   if ((state.draftPitchers && state.draftPitchers.length) || (state.draftBatters && state.draftBatters.length)) {
     scoreDraftPools(state);
   }
+  await saveState(state);
+  return state;
+}
+
+/** Draft tab: persist the pasted draft-log text used for player exclusions. */
+export async function setDraftedPlayersText(text) {
+  const state = await hydrateState();
+  state.draftedPlayersText = String(text ?? "");
   await saveState(state);
   return state;
 }

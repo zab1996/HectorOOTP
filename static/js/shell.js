@@ -3,7 +3,7 @@ import { buildSummary, formatAppSummaryHtml } from "./hector/display.js";
 import { normalizePlayerStatKeys } from "./hector/parse.js";
 
 /** Shown in the topbar brand. Bump on user-facing releases. */
-export const APP_VERSION = "3.3.3 Web";
+export const APP_VERSION = "3.3.4 Web";
 
 /** Bump when scoring formulas change so cached Totals refresh on next page load. */
 export const SCORING_VERSION = 14;

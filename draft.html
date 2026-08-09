@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Draft — Hector 3.0 Web</title>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="static/css/app.css?v=38" />
+  <link rel="stylesheet" href="static/css/app.css?v=40" />
 </head>
 <body>
   <header class="topbar" id="app-header"></header>
@@ -49,6 +49,8 @@
 - Filter by name or position: SS, SP, yonemura
 - Age filters: >21, <23, >=18, =19
 - Combine: SS <23" />
+        <button type="button" class="btn" id="drafted-players-btn">Paste drafted players</button>
+        <span class="muted drafted-players-toolbar-summary" id="drafted-players-toolbar-summary" aria-live="polite"></span>
         <label class="draft-blend tip"
           data-tip="Biases draft Total between current and potential without editing Options Meta multipliers. Center = default (curr ×0.9 / pot ×1.5). Does not affect Pitchers/Batters tabs.">
           <span class="draft-blend-label">Current</span>
@@ -70,9 +72,13 @@
     </div>
   </main>
   <script type="module">
-    import { mountShell, requireData } from "./static/js/shell.js?v=46";
+    import { mountShell, requireData } from "./static/js/shell.js?v=47";
     import { pitcherDisplayRow, batterDisplayRow } from "./static/js/hector/display.js?v=33";
-    import { hasDraftData, playerUrl, setDraftMetaBias } from "./static/js/hector/store.js?v=31";
+    import {
+      hasDraftData,
+      playerUrl,
+      setDraftMetaBias,
+    } from "./static/js/hector/store.js?v=32";
     import { draftMetaFromBias } from "./static/js/hector/parse.js?v=32";
     import { bindPlayerCardRows } from "./static/js/player-card.js?v=51";
     import {
@@ -98,6 +104,7 @@
       scoutClass,
     } from "./static/js/column-filter.js?v=6";
     import { matchesPlayerSearch } from "./static/js/player-search.js?v=1";
+    import { mountDraftedPlayersFilter } from "./static/js/drafted-players-ui.js?v=1";
 
     if (!(await requireData())) throw new Error("redirect");
     const state = await mountShell("draft");
@@ -116,6 +123,8 @@
     const biasLabelEl = document.getElementById("draft-meta-bias-label");
     const filtersEl = document.getElementById("live-filters");
     const tableEl = document.getElementById("players-table");
+    const draftedPlayersBtn = document.getElementById("drafted-players-btn");
+    const draftedPlayersSummaryEl = document.getElementById("drafted-players-toolbar-summary");
 
     let playerType = "pitcher";
     let view = "all"; // "all" | "top"
@@ -131,6 +140,16 @@
       maxSelect: 500,
       showExportIds: true,
       cmpTip: DRAFT_CMP_TIP,
+    });
+
+    const draftedPlayersFilter = mountDraftedPlayersFilter({
+      state,
+      button: draftedPlayersBtn,
+      summaryEl: draftedPlayersSummaryEl,
+      onChange: () => {
+        compareSelect.clear();
+        render();
+      },
     });
 
     function biasFromSlider() {
@@ -446,6 +465,7 @@
       const secondary = playerType === "batter" && topMode && !!(secondaryEl && secondaryEl.checked);
       let rows = pool().filter((p) => {
         if (!posAllowed(p, pos, secondary)) return false;
+        if (draftedPlayersFilter.isDrafted(p.name)) return false;
         if (!duraFilter.isAllowed(p.prone)) return false;
         if (!scoutFilter.isAllowed(p.scout)) return false;
         if (playerType === "pitcher") {
